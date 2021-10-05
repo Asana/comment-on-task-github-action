@@ -10760,10 +10760,18 @@ var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(5438);
 ;// CONCATENATED MODULE: ./src/constants/errors.ts
-const WRONG_TRIGGER = "Only pull_request trigger is supported";
+const WRONG_TRIGGER = "Only pull_request, pull_request_review and pull_request_review_comment triggers are supported";
 const BOTH_PROJECT_LISTS_ARE_NOT_EMPTY = "Forbidden to specify allowed and blocked lists at the same time";
 
+;// CONCATENATED MODULE: ./src/constants/triggers.ts
+const allowed = [
+    "pull_request",
+    "pull_request_review",
+    "pull_request_review_comment",
+];
+
 ;// CONCATENATED MODULE: ./src/utils/index.ts
+
 
 
 const getProjectsFromInput = (inputName) => {
@@ -10773,7 +10781,7 @@ const getProjectsFromInput = (inputName) => {
     return projects.split("\n").map((gid) => `${gid}`);
 };
 const validateTrigger = (eventName) => {
-    if (eventName !== "pull_request")
+    if (!allowed.includes(eventName))
         throw new Error(WRONG_TRIGGER);
 };
 const validateProjectLists = (allowedProjects, blockedProjects) => {
@@ -10858,7 +10866,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestName: (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.title,
             pullRequestURL: (_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.html_url,
             pullRequestState: (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.state,
-            pullRequestMerged: (_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.merged,
+            pullRequestMerged: ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.merged) || false,
         });
         console.log(result.data);
         (0,core.setOutput)("status", result.status);

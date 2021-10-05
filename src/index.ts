@@ -23,7 +23,7 @@ export const run = async () => {
       pullRequestName: context.payload.pull_request?.title,
       pullRequestURL: context.payload.pull_request?.html_url,
       pullRequestState: context.payload.pull_request?.state,
-      pullRequestMerged: context.payload.pull_request?.merged,
+      pullRequestMerged: context.payload.pull_request?.merged || false,
     });
 
     console.log(result.data);
