@@ -1,28 +1,36 @@
-# Asana GitHub Action for create a comment in Asana task
+# Automate GitHub pull request notifications in Asana
 
-This action allows you to create a comment in Asana task.
-Links to the Asana tasks must be added in the description of the Pull Request (before the Pull Request is created).
+When a pull request is updated, this GitHub Action will automatically notify Asana task collaborators for seamless communication. 
+
+How does it work? The GitHub Action will check the description of the pull request for the specific Asana task URL to comment on.
+
+This is available to all Asana users on Premium, Business, and Enterprise plans. 
+
+To learn more about using the GitHub + Asana integration, visit the [Asana Guide](https://asana.com/guide/help/api/github).
 
 ## Usage
 
-### Step 1: Prepare values for setting up your variables for Actions
+#### Step 1: Generate a secret token for your Action
 
-* Go to the https://github.integrations.asana.plus/auth?domainId=ghactions
-* After authorization flow you'll see your Asana secret, please click on "Copy" button
+* go to https://github-qa.integrations.asana.plus/auth?domainId=ghactions
+* authorize the Asana app and the GitHub app
+* copy the generated secret
 
-### Step 2: Configure Secrets in your GitHub repository
+#### Step 2: Set up a repository secret for the secret token
 
-On GitHub, go in your repository settings, click on *Secrets* and create a new secret called ```ASANA_SECRET``` and add paste Asana secret from the previous step
+* go to settings page for your repository
+* click on *Secrets* on left sidebar
+* click **New repository secret**
+* create a new secret called `ASANA_SECRET` with value set to the secret token
+* click **Add secret**
 
-### Step 3: Add action to your .github/workflows/ directory
+#### Step 3: Create a workflow file
 
-To use the action simply create an ```create-asana-comment.yml``` (or choose custom *.yml name) in the .github/workflows/ directory.
+Pick a name and create a `.yml` workflow file with that name in the `.github/workflows/` directory (e.g, `.github/workflows/add-asana-comment.yml`). 
 
-### Step 4: Example Workflow Template
+This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. Below is an example `.github/workflows/add-asana-comment.yml` file.
 
-Please make sure you use ```pull_request``` as your action trigger, other triggers are not supported
-
-```
+```yaml
 on:
   pull_request:
     types: [opened, reopened]
@@ -42,32 +50,33 @@ jobs:
         run: echo "Status is ${{ steps.createComment.outputs.status }}"
 ```
 
-### Step 5: Configure the GitHub Action if need to adapt for your needs or workflows
+#### Step 4: Adapt the GitHub Action to your workflow
 
-#### Available parameters
+##### Available parameters
 
 *Required*:
+
 * ```asana-secret``` - Should contain Asana secret from Step 3
 * ```comment-text``` - Comment to send to Asana task. You can use the following placeholders in your comment text:
-    * ```{{PR_URL}}``` - Link to GitHub Pull Request
-    * ```{{PR_ID}}``` - Id of Pull Request
-    * ```{{PR_NAME}}``` - Name of Pull Request
-    * ```{{PR_STATE}}```  - State of Pull Request (opened, closed, merged)
+  * ```{{PR_URL}}``` - Link to GitHub Pull Request
+  * ```{{PR_ID}}``` - Id of Pull Request
+  * ```{{PR_NAME}}``` - Name of Pull Request
+  * ```{{PR_STATE}}```  - State of Pull Request (opened, closed, merged)
 
 *Optional*:
-* ```allowed-projects``` - List of Asana projects gids where comment can be added
-* ```blocked-projects``` - List of Asana projects gids where comment cannot be added
 
-If both lists are empty, comments can be added to any task that was parsed from the Pull Request description
-Using both ```allowed-projects``` and ```blocked-projects``` lists at the same time will result in an error
+* ```allowed-projects``` - List of Asana projects IDs where comments can be added
+* ```blocked-projects``` - List of Asana projects IDs where comments cannot be added
 
-#### Examples of use allowed and blocked lists
+If values are provided for neither the `allowed-projects` parameter or the `blocked-projects` parameter, the GitHub action will be able to comment on any task in the workspace. Providing values for both ```allowed-projects``` and ```blocked-projects``` lists at the same time will result in an error.
 
-``` 
+In the workflow file below, we provide an allowlist to the GitHub Action. The Action will only comment on tasks that are in project 1125036528002799 or 1192160553314033.
+
+``` yaml
 jobs:
   create-comment-in-asana-task-job:
     runs-on: ubuntu-latest
-    name: Create a comment in Asana Task
+    name: Comment on Asana Task
     steps:
       - name: Create a comment
         uses: Asana/comment-on-task-github-action@v1.0
@@ -82,7 +91,9 @@ jobs:
         run: echo "Status is ${{ steps.createComment.outputs.status }}"
 ```
 
-```
+In the workflow file below, we provide an allowlist to the GitHub Action. The Action will only comment on tasks that are **not** in project 1125036528002799 or 1192160553314033.
+
+```yaml
 jobs:
   create-comment-in-asana-task-job:
     runs-on: ubuntu-latest
