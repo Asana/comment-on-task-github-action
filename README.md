@@ -12,7 +12,7 @@ To learn more about using the GitHub + Asana integration, visit the [Asana Guide
 
 #### Step 1: Generate a secret token for your Action
 
-* go to https://github-qa.integrations.asana.plus/auth?domainId=ghactions
+* go to https://github.integrations.asana.plus/auth?domainId=ghactions
 * authorize the Asana app and the GitHub app
 * copy the generated secret
 
