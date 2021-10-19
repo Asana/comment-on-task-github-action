@@ -2,11 +2,11 @@
 
 When a pull request is updated, this GitHub Action will automatically notify Asana task collaborators for seamless communication. 
 
-How does it work? The GitHub Action will check the description of the pull request for the specific Asana task URL to comment on. The action will then comment on the Asana task as the authenticated user.
+How does it work? The GitHub Action will check the description of the pull request for the specific Asana task URL to comment on. The action will then comment on the Asana task as the authenticated Asana user.
 
 This is available to all Asana users on Premium, Business, and Enterprise plans. 
 
-To automatically connect pull request attachments from GitHub to Asana tasks in the pull request description, check out [GitHub action](https://github.com/Asana/create-app-attachment-github-action).
+To automatically connect pull request attachments from GitHub to Asana tasks in the pull request description, check out [GitHub Action](https://github.com/Asana/create-app-attachment-github-action).
 
 To learn more about using the GitHub + Asana integration, visit the [Asana Guide](https://asana.com/guide/help/api/github).
 
