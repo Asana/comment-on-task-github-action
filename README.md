@@ -45,7 +45,7 @@ jobs:
         id: createComment
         with:
           asana-secret: ${{ secrets.ASANA_SECRET }}
-          comment-text: "{{PR_NAME}} was {{PR_STATE}}, link - {{PR_URL}}"
+          comment-text: "{{PR_NAME}} is {{PR_STATE}}: {{PR_URL}}"
       - name: Get status
         run: echo "Status is ${{ steps.createComment.outputs.status }}"
 ```
@@ -58,10 +58,10 @@ jobs:
 
 * ```asana-secret``` - Should contain Asana secret from Step 3
 * ```comment-text``` - Comment to send to Asana task. You can use the following placeholders in your comment text:
-  * ```{{PR_URL}}``` - Link to GitHub Pull Request
-  * ```{{PR_ID}}``` - Id of Pull Request
-  * ```{{PR_NAME}}``` - Name of Pull Request
-  * ```{{PR_STATE}}```  - State of Pull Request (opened, closed, merged)
+  * ```{{PR_URL}}``` - pull request link
+  * ```{{PR_ID}}``` - pull request number
+  * ```{{PR_NAME}}``` - pull request name
+  * ```{{PR_STATE}}```  - pull request state (opened, closed, merged)
 
 *Optional*:
 
