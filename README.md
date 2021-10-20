@@ -2,9 +2,11 @@
 
 When a pull request is updated, this GitHub Action will automatically notify Asana task collaborators for seamless communication. 
 
-How does it work? The GitHub Action will check the description of the pull request for the specific Asana task URL to comment on.
+How does it work? The GitHub Action will check the description of the pull request for the specific Asana task URL to comment on. The action will then comment on the Asana task as the authenticated Asana user.
 
 This is available to all Asana users on Premium, Business, and Enterprise plans. 
+
+To automatically connect pull request attachments from GitHub to Asana tasks in the pull request description, check out [GitHub Action](https://github.com/Asana/create-app-attachment-github-action).
 
 To learn more about using the GitHub + Asana integration, visit the [Asana Guide](https://asana.com/guide/help/api/github).
 
@@ -12,17 +14,17 @@ To learn more about using the GitHub + Asana integration, visit the [Asana Guide
 
 #### Step 1: Generate a secret token for your Action
 
-* go to https://github.integrations.asana.plus/auth?domainId=ghactions
-* authorize the Asana app and the GitHub app
-* copy the generated secret
+* Go to https://github.integrations.asana.plus/auth?domainId=ghactions.
+* Authorize the Asana app and the GitHub app.
+* Copy the generated secret.
 
 #### Step 2: Set up a repository secret for the secret token
 
-* go to settings page for your repository
-* click on *Secrets* on left sidebar
-* click **New repository secret**
-* create a new secret called `ASANA_SECRET` with value set to the secret token
-* click **Add secret**
+* Go to settings page for your repository.
+* Click on *Secrets* on left sidebar.
+* Click **New repository secret**.
+* Create a new secret called `ASANA_SECRET` with value set to the secret token.
+* Click **Add secret**.
 
 #### Step 3: Create a workflow file
 
