@@ -30,7 +30,7 @@ To learn more about using the GitHub + Asana integration, visit the [Asana Guide
 
 Pick a name and create a `.yml` workflow file with that name in the `.github/workflows/` directory (e.g, `.github/workflows/add-asana-comment.yml`). 
 
-This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. Below is an example `.github/workflows/add-asana-comment.yml` file.
+This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. Below is an example [`.github/workflows/add-asana-comment.yml`](https://github.com/Asana/comment-on-task-github-action/blob/main/example-workflow-file.yaml) file.
 
 ```yaml
 on:
