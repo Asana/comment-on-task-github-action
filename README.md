@@ -14,11 +14,17 @@ To learn more about using the GitHub + Asana integration, visit the [Asana Guide
 
 #### Step 1: Generate a secret token for your Action
 
+Skip this step if you've done this for a different GitHub action for this repository.
+
 * Go to https://github.integrations.asana.plus/auth?domainId=ghactions.
 * Authorize the Asana app and the GitHub app.
-* Copy the generated secret.
+* Copy the generated secret. **Do not share this secret with anyone!**
+
+At any point, you can revoke this generated token at https://github.integrations.asana.plus/auth?domainId=manage_tokens.
 
 #### Step 2: Set up a repository secret for the secret token
+
+Skip this step if you've done this for a different GitHub action for this repository.
 
 * Go to settings page for your repository.
 * Click on *Secrets* on left sidebar.
@@ -28,14 +34,33 @@ To learn more about using the GitHub + Asana integration, visit the [Asana Guide
 
 #### Step 3: Create a workflow file
 
-Pick a name and create a `.yml` workflow file with that name in the `.github/workflows/` directory (e.g, `.github/workflows/add-asana-comment.yml`). 
+##### Quick Start for Unix Command Line
+To get started quickly, `cd` into the GitHub repository root and checkout the main branch
 
-This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. Below is an example [`.github/workflows/add-asana-comment.yml`](https://github.com/Asana/comment-on-task-github-action/blob/main/example-workflow-file.yaml) file.
+```sh
+cd <REPOSITORY ROOT>
+git checkout main
+```
+
+Then, run the commands below from the command line to create a workflow file, commit the change, and push it to GitHub. 
+
+```sh
+mkdir -p .github/workflows && curl https://raw.githubusercontent.com/Asana/comment-on-task-github-action/main/example-workflow-file.yaml --output .github/workflows/comment-on-task.yaml
+git add .github/workflows/comment-on-task.yaml
+git commit -m "automatically comment on Asana task when pull request status changes"
+git push
+```
+
+The action should work after this step and post comments on Asana tasks whenever someone opens, closes, merges, or reopens a pull request with a default comment text. You should now see a file called `.github/workflows/comment-on-task.yaml` in your repository on GitHub.  Find out how to edit what events trigger the action and how to change the comment text in the next section.
+
+##### Step-by-Step
+
+Instead of running the commands in the previous section, you can create a YAML file with a name of your choosing in `.github/workflows/` directory (e.g, `.github/workflows/add-asana-comment.yml`. You may have to create the directory.). We provide an example [`.github/workflows/add-asana-comment.yml`](https://raw.githubusercontent.com/Asana/comment-on-task-github-action/main/example-workflow-file.yaml) file below.
 
 ```yaml
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, closed, reopened]
 
 jobs:
   create-comment-in-asana-task-job:
@@ -52,7 +77,11 @@ jobs:
         run: echo "Status is ${{ steps.createComment.outputs.status }}"
 ```
 
-#### Step 4: Adapt the GitHub Action to your workflow
+The workflow set up in the file above will run whenever a pull request is opened, closed (including merged), or reopened. This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. 
+
+Once this file is set up, commit and push your change to the **main branch of your repository.** The GitHub action is now set up, congratulations!
+
+#### Step 4: Adapt the GitHub Action to your workflow (optional)
 
 ##### Available parameters
 
@@ -113,6 +142,10 @@ jobs:
       - name: Get status
         run: echo "Status is ${{ steps.createComment.outputs.status }}"
 ```
+
+#### Revoking your secret token
+
+If at any point you want to stop using your GitHub action or want to rotate your secret token, you may invalidate all of your tokens at https://github.integrations.asana.plus/auth?domainId=manage_tokens
 
 ## Contributing
 

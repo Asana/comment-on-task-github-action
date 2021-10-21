@@ -1,20 +1,24 @@
 name: 'Add comment to Asana Task'
-description: 'Add comment to Asana Task'
+description: 'Check pull request description for specific Asana task URLs and post comments to them whenever the workflow runs'
+author: Asana
+branding:
+  icon: circle
+  color: green
 inputs:
   asana-secret:
-    description: 'Asana secret'
+    description: 'The Asana secret for the action. Read more about how to generate this secret at https://github.com/Asana/create-app-attachment-github-action#step-2-set-up-a-repository-secret-for-the-secret-token'
     required: true
     default: ''
   allowed-projects:
-    description: 'allowed Asana projects'
+    description: 'List of allowed projects. The action will only add comments to tasks in these projects. Only one of allowed-projects or blocked-projects can be specified.'
     required: false
     default: ''
   blocked-projects:
-    description: 'blocked Asana projects'
+    description: 'List of allowed projects. The action will not add comments to tasks or subtasks of tasks in any of these projects. Only one of allowed-projects or blocked-projects can be specified.'
     required: false
     default: ''
   comment-text:
-    description: 'Comment text'
+    description: 'What comment the action should use. Learn how to customize this message at https://github.com/Asana/create-app-attachment-github-action#step-2-set-up-a-repository-secret-for-the-secret-token'
     required: true
     default: ''
 outputs:
