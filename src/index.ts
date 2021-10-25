@@ -19,7 +19,7 @@ export const run = async () => {
       blockedProjects,
       commentText,
       pullRequestDescription: context.payload.pull_request?.body,
-      pullRequestId: context.payload.pull_request?.id,
+      pullRequestId: context.payload.pull_request?.number,
       pullRequestName: context.payload.pull_request?.title,
       pullRequestURL: context.payload.pull_request?.html_url,
       pullRequestState: context.payload.pull_request?.state,
