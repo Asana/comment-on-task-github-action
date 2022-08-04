@@ -41,6 +41,7 @@ export const run = async () => {
     }
 
     console.log(result.data);
+    setOutput("data", result.data);
     setOutput("status", result.status);
   } catch (error) {
     if (utils.isAxiosError(error)) console.log(error.response?.data || "Unknown error");
