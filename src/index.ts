@@ -11,6 +11,7 @@ const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
 
 export const run = async () => {
   try {
+    console.log("RUNNING NEW CODE");
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
