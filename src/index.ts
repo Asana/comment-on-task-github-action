@@ -15,19 +15,19 @@ export const run = async () => {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
-    if (context.eventName == 'issue_comment'){
-      const result = await axios.post(REQUESTS.ACTION_URL, {
-        allowedProjects,
-        blockedProjects,
-        commentText,
-        issueId: context.payload.issue.number,
-        issueName: context.payload.issue.title,
-        issueUrl: context.payload.issue.html_url,
-        issueState: context.payload.issue.state,
-        commentOwner: context.payload.issue.comment.user.login,
-        commentBody: context.payload.issue.comment.body,
-      });
-    } else {
+    // if (context.eventName == 'issue_comment'){
+    //   const result = await axios.post(REQUESTS.ACTION_URL, {
+    //     allowedProjects,
+    //     blockedProjects,
+    //     commentText,
+    //     issueId: context.payload.issue.number,
+    //     issueName: context.payload.issue.title,
+    //     issueUrl: context.payload.issue.html_url,
+    //     issueState: context.payload.issue.state,
+    //     commentOwner: context.payload.issue.comment.user.login,
+    //     commentBody: context.payload.issue.comment.body,
+    //   });
+    // } else {
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
@@ -39,10 +39,10 @@ export const run = async () => {
         pullRequestState: context.payload.pull_request?.state,
         pullRequestMerged: context.payload.pull_request?.merged || false,
       });
-    }
+    // }
 
     console.log(result.data);
-    setOutput("data", result.data);
+    // setOutput("data", result.data);
     setOutput("status", result.status);
   } catch (error) {
     if (utils.isAxiosError(error)) console.log(error.response?.data || "Unknown error");
