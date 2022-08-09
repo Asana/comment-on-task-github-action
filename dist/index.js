@@ -13152,6 +13152,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         if (github.context.eventName === "issue_comment") {
+            console.log("ISSUE_COMMENT");
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
@@ -13180,13 +13181,15 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 pullRequestMerged: ((_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.merged) || false,
             });
             console.log(result);
-            (0,core.setOutput)("data", result.data);
+            (0,core.setOutput)("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }
     }
     catch (error) {
-        if (isAxiosError(error))
+        if (isAxiosError(error)) {
+            console.log("AXIOS ERROR");
             console.log(((_o = error.response) === null || _o === void 0 ? void 0 : _o.data) || "Unknown error");
+        }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
         else

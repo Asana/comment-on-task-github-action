@@ -15,6 +15,7 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     if (context.eventName === "issue_comment") {
+      console.log("ISSUE_COMMENT");
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
@@ -42,12 +43,14 @@ export const run = async () => {
         pullRequestMerged: context.payload.pull_request?.merged || false,
       });
       console.log(result);
-      setOutput("data", result.data);
+      setOutput("data", result.config.data);
       setOutput("status", result.status);
     }
   } catch (error) {
-    if (utils.isAxiosError(error))
+    if (utils.isAxiosError(error)){
+      console.log("AXIOS ERROR");
       console.log(error.response?.data || "Unknown error");
+    }
     if (error instanceof Error) setFailed(error.message);
     else setFailed("Unknown error");
   }
