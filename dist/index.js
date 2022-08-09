@@ -13163,8 +13163,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentOwner: (_e = github.context.payload.issue_comment) === null || _e === void 0 ? void 0 : _e.user.login,
                 commentBody: (_f = github.context.payload.issue_comment) === null || _f === void 0 ? void 0 : _f.body,
             });
-            console.log(result.data);
-            (0,core.setOutput)("data", result.data);
+            console.log(result.config.data);
+            (0,core.setOutput)("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }
         else {

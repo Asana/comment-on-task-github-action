@@ -26,8 +26,8 @@ export const run = async () => {
         commentOwner: context.payload.issue_comment?.user.login,
         commentBody: context.payload.issue_comment?.body,
       });
-      console.log(result.data);
-      setOutput("data", result.data);
+      console.log(result.config.data);
+      setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
       const result = await axios.post(REQUESTS.ACTION_URL, {
