@@ -15,8 +15,7 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     if (context.eventName === "issue_comment") {
-      console.log(REQUESTS.ACTION_URL);
-      const result = await axios.post("https://github.integrations.asana.plus/custom/v1/actions/comment", {
+      const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
         commentText,
@@ -30,6 +29,7 @@ export const run = async () => {
       setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
+      console.log(commentText);
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
