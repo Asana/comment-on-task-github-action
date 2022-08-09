@@ -13163,7 +13163,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentOwner: (_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login,
                 commentBody: (_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body,
             });
-            console.log(result.config.data);
+            console.log(result);
             (0,core.setOutput)("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }

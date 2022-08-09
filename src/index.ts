@@ -26,7 +26,7 @@ export const run = async () => {
         commentOwner: context.payload.sender?.login,
         commentBody: context.payload.comment?.body,
       });
-      console.log(result.config.data);
+      console.log(result);
       setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
