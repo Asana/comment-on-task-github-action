@@ -21,7 +21,9 @@ export const run = async () => {
       console.log(context.payload.issue?.state);
       console.log(context.payload.sender?.login);
       console.log(context.payload.comment?.body);
-
+      console.log(allowedProjects);
+      console.log(blockedProjects);
+      console.log(commentText);
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
@@ -52,7 +54,7 @@ export const run = async () => {
   } catch (error) {
     if (utils.isAxiosError(error)) {
       console.log("AXIOS ERROR");
-      console.log(error.response?.data.message || "Unknown error");
+      console.log(error.response?.data || "Unknown error");
     }
     if (error instanceof Error) setFailed(error.message);
     else setFailed("Unknown error");

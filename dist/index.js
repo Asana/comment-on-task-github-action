@@ -13158,6 +13158,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             console.log((_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.state);
             console.log((_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login);
             console.log((_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body);
+            console.log(allowedProjects);
+            console.log(blockedProjects);
+            console.log(commentText);
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
@@ -13190,7 +13193,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log("AXIOS ERROR");
-            console.log(((_u = error.response) === null || _u === void 0 ? void 0 : _u.data.message) || "Unknown error");
+            console.log(((_u = error.response) === null || _u === void 0 ? void 0 : _u.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
