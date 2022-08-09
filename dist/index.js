@@ -13156,13 +13156,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                issueId: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.number,
-                issueName: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.title,
-                issueUrl: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.html_url,
-                issueState: (_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.state,
-                commentOwner: (_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login,
-                commentBody: (_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body,
+                pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.number,
+                pullRequestId: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.title,
+                pullRequestName: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.html_url,
+                pullRequestURL: (_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.state,
+                pullRequestState: (_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login,
+                pullRequestMerged: (_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body,
             });
+            console.log(result);
             (0,core.setOutput)("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }
