@@ -19,14 +19,13 @@ export const run = async () => {
         allowedProjects,
         blockedProjects,
         commentText,
-        pullRequestDescription: context.payload.issue?.number,
-        pullRequestId: context.payload.issue?.title,
-        pullRequestName: context.payload.issue?.html_url,
-        pullRequestURL: context.payload.issue?.state,
-        pullRequestState: context.payload.sender?.login,
-        pullRequestMerged: context.payload.comment?.body,
+        issueId: context.payload.issue?.number,
+        issueName: context.payload.issue?.title,
+        issueUrl: context.payload.issue?.html_url,
+        issueState: context.payload.issue?.state,
+        commentOwner: context.payload.sender?.login,
+        commentBody: context.payload.comment?.body,
       });
-      console.log(result);
       setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
