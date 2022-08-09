@@ -13189,6 +13189,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         if (isAxiosError(error)) {
+            console.log("AXIOS ERROR");
             console.log(((_u = error.response) === null || _u === void 0 ? void 0 : _u.data) || "Unknown error");
         }
         if (error instanceof Error)
