@@ -20,12 +20,12 @@ export const run = async () => {
         allowedProjects,
         blockedProjects,
         commentText,
-        issueId: context.payload.issue?.number,
-        issueName: context.payload.issue?.title,
-        issueUrl: context.payload.issue?.html_url,
-        issueState: context.payload.issue?.state,
-        commentOwner: context.payload.issue?.comment.user.login,
-        commentBody: context.payload.issue?.comment.body,
+        issueId: context.payload.issue_comment.issue.number,
+        issueName: context.payload.issue_comment.issue.title,
+        issueUrl: context.payload.issue_comment.issue.html_url,
+        issueState: context.payload.issue_comment.issue.state,
+        commentOwner: context.payload.issue_comment.user.login,
+        commentBody: context.payload.issue_comment.body,
       });
       console.log(result.data);
       setOutput("data", result.data);
