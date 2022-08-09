@@ -13151,9 +13151,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        console.log(github.context.eventName);
         if (github.context.eventName === "issue_comment") {
-            console.log("ISSUE_COMMENT");
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
@@ -13165,7 +13163,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentOwner: (_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login,
                 commentBody: (_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body,
             });
-            console.log(result);
             (0,core.setOutput)("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }

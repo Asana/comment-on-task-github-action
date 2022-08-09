@@ -14,9 +14,7 @@ export const run = async () => {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
-    console.log(context.eventName);
     if (context.eventName === "issue_comment") {
-      console.log("ISSUE_COMMENT");
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
@@ -28,7 +26,6 @@ export const run = async () => {
         commentOwner: context.payload.sender?.login,
         commentBody: context.payload.comment?.body,
       });
-      console.log(result);
       setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
