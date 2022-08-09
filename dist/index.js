@@ -13149,7 +13149,6 @@ const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     try {
-        console.log("RUNNING NEW CODE");
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         if (github.context.eventName === "issue_comment") {
@@ -13180,7 +13179,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 pullRequestState: (_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.state,
                 pullRequestMerged: ((_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.merged) || false,
             });
-            console.log(result.data);
+            console.log(result);
             (0,core.setOutput)("data", result.data);
             (0,core.setOutput)("status", result.status);
         }

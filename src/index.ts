@@ -11,7 +11,6 @@ const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
 
 export const run = async () => {
   try {
-    console.log("RUNNING NEW CODE");
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
@@ -42,7 +41,7 @@ export const run = async () => {
         pullRequestState: context.payload.pull_request?.state,
         pullRequestMerged: context.payload.pull_request?.merged || false,
       });
-      console.log(result.data);
+      console.log(result);
       setOutput("data", result.data);
       setOutput("status", result.status);
     }
