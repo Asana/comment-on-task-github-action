@@ -13153,7 +13153,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateProjectLists(allowedProjects, blockedProjects);
         if (github.context.eventName === "issue_comment") {
             console.log(ACTION_URL);
-            const result = yield requests_axios.post(ACTION_URL, {
+            const result = yield requests_axios.post("https://github.integrations.asana.plus/custom/v1/actions/comment", {
                 allowedProjects,
                 blockedProjects,
                 commentText,

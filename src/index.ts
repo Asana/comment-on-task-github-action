@@ -16,7 +16,7 @@ export const run = async () => {
 
     if (context.eventName === "issue_comment") {
       console.log(REQUESTS.ACTION_URL);
-      const result = await axios.post(REQUESTS.ACTION_URL, {
+      const result = await axios.post("https://github.integrations.asana.plus/custom/v1/actions/comment", {
         allowedProjects,
         blockedProjects,
         commentText,
