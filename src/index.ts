@@ -51,7 +51,7 @@ export const run = async () => {
     }
   } catch (error) {
     if (utils.isAxiosError(error)) {
-      console.log ("AXIOS ERROR");
+      console.log("AXIOS ERROR");
       console.log(error.response?.data || "Unknown error");
     }
     if (error instanceof Error) setFailed(error.message);
