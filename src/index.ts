@@ -21,7 +21,7 @@ export const run = async () => {
       console.log(context.payload.issue?.state);
       console.log(context.payload.sender?.login);
       console.log(context.payload.comment?.body);
-      
+
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
