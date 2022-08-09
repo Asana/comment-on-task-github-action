@@ -27,7 +27,7 @@ export const run = async () => {
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
-        commentText,
+        commentText: "hello",
         issueId: context.payload.issue?.number,
         issueName: context.payload.issue?.title,
         issueUrl: context.payload.issue?.html_url,
