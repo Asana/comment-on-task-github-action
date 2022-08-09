@@ -14,6 +14,7 @@ export const run = async () => {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
+    console.log(context.eventName);
     if (context.eventName === "issue_comment") {
       console.log("ISSUE_COMMENT");
       const result = await axios.post(REQUESTS.ACTION_URL, {
@@ -42,13 +43,10 @@ export const run = async () => {
         pullRequestState: context.payload.pull_request?.state,
         pullRequestMerged: context.payload.pull_request?.merged || false,
       });
-      console.log(result);
-      setOutput("data", result.config.data);
       setOutput("status", result.status);
     }
   } catch (error) {
-    if (utils.isAxiosError(error)){
-      console.log("AXIOS ERROR");
+    if (utils.isAxiosError(error)) {
       console.log(error.response?.data || "Unknown error");
     }
     if (error instanceof Error) setFailed(error.message);
