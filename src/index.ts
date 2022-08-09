@@ -15,6 +15,13 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     if (context.eventName === "issue_comment") {
+      console.log(context.payload.issue?.number);
+      console.log(context.payload.issue?.title);
+      console.log(context.payload.issue?.html_url);
+      console.log(context.payload.issue?.state);
+      console.log(context.payload.sender?.login);
+      console.log(context.payload.comment?.body);
+      
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,

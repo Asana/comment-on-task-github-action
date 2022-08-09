@@ -13147,21 +13147,27 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         if (github.context.eventName === "issue_comment") {
+            console.log((_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.number);
+            console.log((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.title);
+            console.log((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.html_url);
+            console.log((_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.state);
+            console.log((_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login);
+            console.log((_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body);
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                issueId: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.number,
-                issueName: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.title,
-                issueUrl: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.html_url,
-                issueState: (_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.state,
-                commentOwner: (_e = github.context.payload.sender) === null || _e === void 0 ? void 0 : _e.login,
-                commentBody: (_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.body,
+                issueId: (_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.number,
+                issueName: (_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.title,
+                issueUrl: (_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.html_url,
+                issueState: (_k = github.context.payload.issue) === null || _k === void 0 ? void 0 : _k.state,
+                commentOwner: (_l = github.context.payload.sender) === null || _l === void 0 ? void 0 : _l.login,
+                commentBody: (_m = github.context.payload.comment) === null || _m === void 0 ? void 0 : _m.body,
             });
             (0,core.setOutput)("data", result.config.data);
             (0,core.setOutput)("status", result.status);
@@ -13171,19 +13177,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                pullRequestDescription: (_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.body,
-                pullRequestId: (_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.number,
-                pullRequestName: (_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.title,
-                pullRequestURL: (_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.html_url,
-                pullRequestState: (_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.state,
-                pullRequestMerged: ((_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.merged) || false,
+                pullRequestDescription: (_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.body,
+                pullRequestId: (_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.number,
+                pullRequestName: (_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.title,
+                pullRequestURL: (_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.html_url,
+                pullRequestState: (_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.state,
+                pullRequestMerged: ((_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.merged) || false,
             });
             (0,core.setOutput)("status", result.status);
         }
     }
     catch (error) {
         if (isAxiosError(error)) {
-            console.log(((_o = error.response) === null || _o === void 0 ? void 0 : _o.data) || "Unknown error");
+            console.log(((_u = error.response) === null || _u === void 0 ? void 0 : _u.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
