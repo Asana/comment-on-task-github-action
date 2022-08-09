@@ -13147,7 +13147,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     try {
         console.log("RUNNING NEW CODE");
         validateTrigger(github.context.eventName);
@@ -13157,12 +13157,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                issueId: github.context.payload.issue_comment.issue.number,
-                issueName: github.context.payload.issue_comment.issue.title,
-                issueUrl: github.context.payload.issue_comment.issue.html_url,
-                issueState: github.context.payload.issue_comment.issue.state,
-                commentOwner: github.context.payload.issue_comment.user.login,
-                commentBody: github.context.payload.issue_comment.body,
+                issueId: (_a = github.context.payload.issue_comment) === null || _a === void 0 ? void 0 : _a.issue.number,
+                issueName: (_b = github.context.payload.issue_comment) === null || _b === void 0 ? void 0 : _b.issue.title,
+                issueUrl: (_c = github.context.payload.issue_comment) === null || _c === void 0 ? void 0 : _c.issue.html_url,
+                issueState: (_d = github.context.payload.issue_comment) === null || _d === void 0 ? void 0 : _d.issue.state,
+                commentOwner: (_e = github.context.payload.issue_comment) === null || _e === void 0 ? void 0 : _e.user.login,
+                commentBody: (_f = github.context.payload.issue_comment) === null || _f === void 0 ? void 0 : _f.body,
             });
             console.log(result.data);
             (0,core.setOutput)("data", result.data);
@@ -13173,12 +13173,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                pullRequestDescription: (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body,
-                pullRequestId: (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.number,
-                pullRequestName: (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.title,
-                pullRequestURL: (_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.html_url,
-                pullRequestState: (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.state,
-                pullRequestMerged: ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.merged) || false,
+                pullRequestDescription: (_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.body,
+                pullRequestId: (_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.number,
+                pullRequestName: (_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.title,
+                pullRequestURL: (_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.html_url,
+                pullRequestState: (_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.state,
+                pullRequestMerged: ((_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.merged) || false,
             });
             console.log(result.data);
             (0,core.setOutput)("data", result.data);
@@ -13187,7 +13187,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         if (isAxiosError(error))
-            console.log(((_g = error.response) === null || _g === void 0 ? void 0 : _g.data) || "Unknown error");
+            console.log(((_o = error.response) === null || _o === void 0 ? void 0 : _o.data) || "Unknown error");
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
         else
