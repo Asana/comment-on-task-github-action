@@ -15,6 +15,7 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     if (context.eventName === "issue_comment") {
+      console.log(commentText);
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
@@ -45,8 +46,6 @@ export const run = async () => {
     }
   } catch (error) {
     if (utils.isAxiosError(error)) {
-      console.log(error);
-      console.log(error.response);
       console.log(error.response?.data || "Unknown error");
     }
     if (error instanceof Error) setFailed(error.message);
