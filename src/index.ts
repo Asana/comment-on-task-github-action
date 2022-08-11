@@ -26,7 +26,7 @@ export const run = async () => {
         pullRequestName: context.payload.pull_request?.title,
         pullRequestURL: context.payload.issue?.html_url,
         pullRequestState: context.payload.issue?.state,
-        pullRequestMerged: context.payload.sender?.login,
+        pullRequestMerged: false,
         // issueId: context.payload.issue?.number,
         // issueName: context.payload.issue?.title,
         // issueUrl: context.payload.issue?.html_url,
