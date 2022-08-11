@@ -16,16 +16,17 @@ export const run = async () => {
 
     if (context.eventName === "issue_comment") {
       console.log("ISSUE_COMMENT");
+      console.log(context.payload);
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
         commentText: "hello",
-        pullRequestDescription: context.payload.pull_request?.body,
-        pullRequestId: context.payload.pull_request?.number,
+        pullRequestDescription: context.payload.issue?.title,
+        pullRequestId: context.payload.issue?.number,
         pullRequestName: context.payload.pull_request?.title,
-        pullRequestURL: context.payload.pull_request?.html_url,
-        pullRequestState: context.payload.pull_request?.state,
-        pullRequestMerged: context.payload.pull_request?.merged || false,
+        pullRequestURL: context.payload.issue?.html_url,
+        pullRequestState: context.payload.issue?.state,
+        pullRequestMerged: context.payload.sender?.login,
         // issueId: context.payload.issue?.number,
         // issueName: context.payload.issue?.title,
         // issueUrl: context.payload.issue?.html_url,
@@ -52,6 +53,7 @@ export const run = async () => {
     }
   } catch (error) {
     if (utils.isAxiosError(error)) {
+      console.log(error.response);
       console.log(error.response?.data || "Unknown error");
     }
     if (error instanceof Error) setFailed(error.message);

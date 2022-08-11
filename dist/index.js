@@ -13153,16 +13153,17 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateProjectLists(allowedProjects, blockedProjects);
         if (github.context.eventName === "issue_comment") {
             console.log("ISSUE_COMMENT");
+            console.log(github.context.payload);
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
                 commentText: "hello",
-                pullRequestDescription: (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body,
-                pullRequestId: (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.number,
+                pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.title,
+                pullRequestId: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number,
                 pullRequestName: (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.title,
-                pullRequestURL: (_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.html_url,
-                pullRequestState: (_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.state,
-                pullRequestMerged: ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.merged) || false,
+                pullRequestURL: (_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.html_url,
+                pullRequestState: (_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.state,
+                pullRequestMerged: (_f = github.context.payload.sender) === null || _f === void 0 ? void 0 : _f.login,
                 // issueId: context.payload.issue?.number,
                 // issueName: context.payload.issue?.title,
                 // issueUrl: context.payload.issue?.html_url,
@@ -13191,6 +13192,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         if (isAxiosError(error)) {
+            console.log(error.response);
             console.log(((_o = error.response) === null || _o === void 0 ? void 0 : _o.data) || "Unknown error");
         }
         if (error instanceof Error)
