@@ -20,7 +20,7 @@ export const run = async () => {
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
-        commentText: "hello",
+        commentText: "hello sdfh",
         pullRequestDescription: context.payload.issue?.title,
         pullRequestId: context.payload.issue?.number,
         pullRequestName: context.payload.issue?.title,

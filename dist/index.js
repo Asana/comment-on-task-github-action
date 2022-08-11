@@ -13157,7 +13157,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
-                commentText: "hello",
+                commentText: "hello sdfh",
                 pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.title,
                 pullRequestId: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number,
                 pullRequestName: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.title,
