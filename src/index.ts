@@ -13,14 +13,12 @@ export const run = async () => {
   try {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
-    console.log(context.payload);
 
     if (context.eventName === "issue_comment") {
-      console.log("ISSUE_COMMENT");
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
-        commentText: "hello sdfh",
+        commentText,
         pullRequestDescription: context.payload.issue?.title,
         pullRequestId: context.payload.issue?.number,
         pullRequestName: context.payload.issue?.title,
@@ -32,7 +30,7 @@ export const run = async () => {
         // issueUrl: context.payload.issue?.html_url,
         // issueState: context.payload.issue?.state,
         // commentOwner: context.payload.sender?.login,
-        // commentBody: context.payload.comment?.body,
+        // commentBody: ,
       });
       // setOutput("data", result.config.data);
       setOutput("status", result.status);

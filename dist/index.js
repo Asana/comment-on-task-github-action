@@ -13151,13 +13151,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        console.log(github.context.payload);
         if (github.context.eventName === "issue_comment") {
-            console.log("ISSUE_COMMENT");
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
-                commentText: "hello sdfh",
+                commentText,
                 pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.title,
                 pullRequestId: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number,
                 pullRequestName: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.title,
@@ -13169,7 +13167,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // issueUrl: context.payload.issue?.html_url,
                 // issueState: context.payload.issue?.state,
                 // commentOwner: context.payload.sender?.login,
-                // commentBody: context.payload.comment?.body,
+                // commentBody: ,
             });
             // setOutput("data", result.config.data);
             (0,core.setOutput)("status", result.status);
