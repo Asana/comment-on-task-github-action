@@ -13152,11 +13152,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         if (github.context.eventName === "issue_comment") {
-            console.log(commentText);
+            console.log("ISSUE_COMMENT");
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
-                commentText,
+                commentText: "hello",
                 pullRequestDescription: (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body,
                 pullRequestId: (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.number,
                 pullRequestName: (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.title,
