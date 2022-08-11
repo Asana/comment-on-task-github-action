@@ -13151,9 +13151,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
+        console.log(github.context.payload);
         if (github.context.eventName === "issue_comment") {
             console.log("ISSUE_COMMENT");
-            console.log(github.context.payload);
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
