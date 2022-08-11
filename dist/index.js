@@ -13160,7 +13160,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentText: "hello",
                 pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.title,
                 pullRequestId: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number,
-                pullRequestName: (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.title,
+                pullRequestName: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.title,
                 pullRequestURL: (_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.html_url,
                 pullRequestState: (_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.state,
                 pullRequestMerged: false,
@@ -13171,7 +13171,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // commentOwner: context.payload.sender?.login,
                 // commentBody: context.payload.comment?.body,
             });
-            (0,core.setOutput)("data", result.config.data);
+            // setOutput("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }
         else {

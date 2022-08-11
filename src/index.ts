@@ -23,7 +23,7 @@ export const run = async () => {
         commentText: "hello",
         pullRequestDescription: context.payload.issue?.title,
         pullRequestId: context.payload.issue?.number,
-        pullRequestName: context.payload.pull_request?.title,
+        pullRequestName: context.payload.issue?.title,
         pullRequestURL: context.payload.issue?.html_url,
         pullRequestState: context.payload.issue?.state,
         pullRequestMerged: false,
@@ -34,7 +34,7 @@ export const run = async () => {
         // commentOwner: context.payload.sender?.login,
         // commentBody: context.payload.comment?.body,
       });
-      setOutput("data", result.config.data);
+      // setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
       console.log(commentText);
