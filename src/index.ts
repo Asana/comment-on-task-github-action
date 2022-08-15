@@ -13,7 +13,7 @@ export const run = async () => {
   try {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
-    var dynamicCommentText = context.payload.comment?.user.login + ' commented: ' + context.payload.comment?.body;
+    const dynamicCommentText = `${context.payload.comment?.user.login} commented: ${context.payload.comment?.body}`;
     if (context.eventName === "issue_comment") {
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
