@@ -13147,7 +13147,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13156,11 +13156,28 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.title,
+                pullRequestDescription: (_a = github.context.payload.issue) === null || _a === void 0 ? void 0 : _a.body,
                 pullRequestId: (_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number,
                 pullRequestName: (_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.title,
                 pullRequestURL: (_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.html_url,
                 pullRequestState: (_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.state,
+                pullRequestMerged: false,
+                // issueId: context.payload.issue?.number,
+                // issueName: context.payload.issue?.title,
+                // issueUrl: context.payload.issue?.html_url,
+                // issueState: context.payload.issue?.state,
+                // commentOwner: context.payload.sender?.login,
+                // commentBody: ,
+            });
+            console.log({
+                allowedProjects,
+                blockedProjects,
+                commentText,
+                pullRequestDescription: (_f = github.context.payload.issue) === null || _f === void 0 ? void 0 : _f.body,
+                pullRequestId: (_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.number,
+                pullRequestName: (_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.title,
+                pullRequestURL: (_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.html_url,
+                pullRequestState: (_k = github.context.payload.issue) === null || _k === void 0 ? void 0 : _k.state,
                 pullRequestMerged: false,
                 // issueId: context.payload.issue?.number,
                 // issueName: context.payload.issue?.title,
@@ -13174,16 +13191,27 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         else {
             console.log(commentText);
+            console.log({
+                allowedProjects,
+                blockedProjects,
+                commentText,
+                pullRequestDescription: (_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.body,
+                pullRequestId: (_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.number,
+                pullRequestName: (_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.title,
+                pullRequestURL: (_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.html_url,
+                pullRequestState: (_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.state,
+                pullRequestMerged: ((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.merged) || false,
+            });
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
                 commentText,
-                pullRequestDescription: (_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.body,
-                pullRequestId: (_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.number,
-                pullRequestName: (_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.title,
-                pullRequestURL: (_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.html_url,
-                pullRequestState: (_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.state,
-                pullRequestMerged: ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.merged) || false,
+                pullRequestDescription: (_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.body,
+                pullRequestId: (_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.number,
+                pullRequestName: (_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.title,
+                pullRequestURL: (_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.html_url,
+                pullRequestState: (_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.state,
+                pullRequestMerged: ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.merged) || false,
             });
             (0,core.setOutput)("status", result.status);
         }
@@ -13191,7 +13219,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_m = error.response) === null || _m === void 0 ? void 0 : _m.data) || "Unknown error");
+            console.log(((_y = error.response) === null || _y === void 0 ? void 0 : _y.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

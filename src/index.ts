@@ -19,7 +19,24 @@ export const run = async () => {
         allowedProjects,
         blockedProjects,
         commentText,
-        pullRequestDescription: context.payload.issue?.title,
+        pullRequestDescription: context.payload.issue?.body,
+        pullRequestId: context.payload.issue?.number,
+        pullRequestName: context.payload.issue?.title,
+        pullRequestURL: context.payload.issue?.html_url,
+        pullRequestState: context.payload.issue?.state,
+        pullRequestMerged: false,
+        // issueId: context.payload.issue?.number,
+        // issueName: context.payload.issue?.title,
+        // issueUrl: context.payload.issue?.html_url,
+        // issueState: context.payload.issue?.state,
+        // commentOwner: context.payload.sender?.login,
+        // commentBody: ,
+      });
+      console.log({
+        allowedProjects,
+        blockedProjects,
+        commentText,
+        pullRequestDescription: context.payload.issue?.body,
         pullRequestId: context.payload.issue?.number,
         pullRequestName: context.payload.issue?.title,
         pullRequestURL: context.payload.issue?.html_url,
@@ -36,6 +53,17 @@ export const run = async () => {
       setOutput("status", result.status);
     } else {
       console.log(commentText);
+      console.log({
+        allowedProjects,
+        blockedProjects,
+        commentText,
+        pullRequestDescription: context.payload.pull_request?.body,
+        pullRequestId: context.payload.pull_request?.number,
+        pullRequestName: context.payload.pull_request?.title,
+        pullRequestURL: context.payload.pull_request?.html_url,
+        pullRequestState: context.payload.pull_request?.state,
+        pullRequestMerged: context.payload.pull_request?.merged || false,
+      });
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
