@@ -13163,14 +13163,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 pullRequestURL: (_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.html_url,
                 pullRequestState: (_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.state,
                 pullRequestMerged: false,
-                // issueId: context.payload.issue?.number,
-                // issueName: context.payload.issue?.title,
-                // issueUrl: context.payload.issue?.html_url,
-                // issueState: context.payload.issue?.state,
-                // commentOwner: context.payload.sender?.login,
-                // commentBody: ,
             });
-            // setOutput("data", result.config.data);
             (0,core.setOutput)("status", result.status);
         }
         else {

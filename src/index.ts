@@ -25,14 +25,7 @@ export const run = async () => {
         pullRequestURL: context.payload.issue?.html_url,
         pullRequestState: context.payload.issue?.state,
         pullRequestMerged: false,
-        // issueId: context.payload.issue?.number,
-        // issueName: context.payload.issue?.title,
-        // issueUrl: context.payload.issue?.html_url,
-        // issueState: context.payload.issue?.state,
-        // commentOwner: context.payload.sender?.login,
-        // commentBody: ,
       });
-      // setOutput("data", result.config.data);
       setOutput("status", result.status);
     } else {
       const result = await axios.post(REQUESTS.ACTION_URL, {
