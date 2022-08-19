@@ -13151,7 +13151,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        const dynamicCommentText = `${(_a = github.context.payload.comment) === null || _a === void 0 ? void 0 : _a.user.login} commented: ${(_b = github.context.payload.comment) === null || _b === void 0 ? void 0 : _b.body} on ${(_c = github.context.payload.comment) === null || _c === void 0 ? void 0 : _c.html_url}`;
+        const dynamicCommentText = `${(_a = github.context.payload.comment) === null || _a === void 0 ? void 0 : _a.user.login} commented:\n${(_b = github.context.payload.comment) === null || _b === void 0 ? void 0 : _b.body}\n\nComment URL -> ${(_c = github.context.payload.comment) === null || _c === void 0 ? void 0 : _c.html_url}`;
         if (github.context.eventName === "issue_comment") {
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
