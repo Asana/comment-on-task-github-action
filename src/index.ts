@@ -20,7 +20,7 @@ export const run = async () => {
         User commented:
         hello world!
         Comment URL -> git.com */
-      console.log();
+      console.log(context);
       const dynamicCommentText =
         context.payload.comment?.user.login === "github-actions"
           ? `${context.payload.comment?.user.login} commented -> ${context.payload.comment?.html_url}`
