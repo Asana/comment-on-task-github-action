@@ -38,15 +38,13 @@ export const run = async () => {
       /*Check If It's a Pull Request With Review Requested Status
         Construct The Comment as: 
         PR #50 Title is requesting a review from User1, User2, User3 -> git.com */
-      const dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.pull_request?.requested_reviewers} -> ${context.payload.pull_request?.html_url}`;
+      const dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.pull_request?.state} and awaiting a review from ${context.payload.pull_request?.requested_reviewer.login} -> ${context.payload.pull_request?.html_url}`;
 
-      console.log(context.action);
-      console.log(context);
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
         commentText:
-          context.action === "review_requested"
+          context.payload.action === "review_requested"
             ? dynamicCommentText
             : commentText,
         pullRequestDescription: context.payload.pull_request?.body,
