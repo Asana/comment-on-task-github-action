@@ -41,7 +41,7 @@ export const run = async () => {
       console.log(context);
       const dynamicCommentText =
         context.payload.action === "review_requested"
-          ? `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.pull_request?.state} and awaiting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`
+          ? `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`
           : commentText;
 
       const result = await axios.post(REQUESTS.ACTION_URL, {
