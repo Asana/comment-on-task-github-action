@@ -16,7 +16,6 @@ export const run = async () => {
 
     // Check If It's a Pull Request Comment
     if (context.eventName === "issue_comment") {
-
       /*Construct The Comment as: 
         User commented:
         hello world!
@@ -35,7 +34,6 @@ export const run = async () => {
         pullRequestMerged: false,
       });
       setOutput("status", result.status);
-
     } else {
       /*Check If It's a Pull Request With Review Requested Status
         Construct The Comment as: 
@@ -46,7 +44,10 @@ export const run = async () => {
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
-        commentText: context.action === "review_requested"? dynamicCommentText : commentText,
+        commentText:
+          context.action === "review_requested"
+            ? dynamicCommentText
+            : commentText,
         pullRequestDescription: context.payload.pull_request?.body,
         pullRequestId: context.payload.pull_request?.number,
         pullRequestName: context.payload.pull_request?.title,
