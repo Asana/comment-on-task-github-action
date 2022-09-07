@@ -13,8 +13,16 @@ export const run = async () => {
   try {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
-    const dynamicCommentText = `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+
+    // Check If It's a Pull Request Comment
     if (context.eventName === "issue_comment") {
+
+      /*Construct The Comment as: 
+        User commented:
+        hello world!
+        Comment URL -> git.com */
+      const dynamicCommentText = `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
@@ -27,11 +35,18 @@ export const run = async () => {
         pullRequestMerged: false,
       });
       setOutput("status", result.status);
+
     } else {
+      /*Check If It's a Pull Request With Review Requested Status
+        Construct The Comment as: 
+        PR #50 Title is requesting a review from User1, User2, User3 -> git.com */
+      const dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.pull_request?.requested_reviewers} -> ${context.payload.pull_request?.html_url}`;
+
+      console.log(context.action);
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
         blockedProjects,
-        commentText,
+        commentText: context.action === "review_requested"? dynamicCommentText : commentText,
         pullRequestDescription: context.payload.pull_request?.body,
         pullRequestId: context.payload.pull_request?.number,
         pullRequestName: context.payload.pull_request?.title,

@@ -13147,12 +13147,17 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        const dynamicCommentText = `${(_a = github.context.payload.comment) === null || _a === void 0 ? void 0 : _a.user.login} commented:\n\n${(_b = github.context.payload.comment) === null || _b === void 0 ? void 0 : _b.body}\n\nComment URL -> ${(_c = github.context.payload.comment) === null || _c === void 0 ? void 0 : _c.html_url}`;
+        // Check If It's a Pull Request Comment
         if (github.context.eventName === "issue_comment") {
+            /*Construct The Comment as:
+              User commented:
+              hello world!
+              Comment URL -> git.com */
+            const dynamicCommentText = `${(_a = github.context.payload.comment) === null || _a === void 0 ? void 0 : _a.user.login} commented:\n\n${(_b = github.context.payload.comment) === null || _b === void 0 ? void 0 : _b.body}\n\nComment URL -> ${(_c = github.context.payload.comment) === null || _c === void 0 ? void 0 : _c.html_url}`;
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
@@ -13167,16 +13172,23 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setOutput)("status", result.status);
         }
         else {
+            /*Check If It's a Pull Request With Review Requested Status
+              Construct The Comment as:
+              PR #50 Title is requesting a review from User1, User2, User3 -> git.com */
+            const dynamicCommentText = `PR #${(_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.number} ${(_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.title} is requesting a review from ${(_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.requested_reviewers} -> ${(_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.html_url}`;
+            console.log(github.context.action);
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
-                commentText,
-                pullRequestDescription: (_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.body,
-                pullRequestId: (_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.number,
-                pullRequestName: (_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.title,
-                pullRequestURL: (_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.html_url,
-                pullRequestState: (_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.state,
-                pullRequestMerged: ((_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.merged) || false,
+                commentText: github.context.action === "review_requested"
+                    ? dynamicCommentText
+                    : commentText,
+                pullRequestDescription: (_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.body,
+                pullRequestId: (_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.number,
+                pullRequestName: (_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.title,
+                pullRequestURL: (_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.html_url,
+                pullRequestState: (_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.state,
+                pullRequestMerged: ((_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.merged) || false,
             });
             (0,core.setOutput)("status", result.status);
         }
@@ -13184,7 +13196,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_q = error.response) === null || _q === void 0 ? void 0 : _q.data) || "Unknown error");
+            console.log(((_u = error.response) === null || _u === void 0 ? void 0 : _u.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
