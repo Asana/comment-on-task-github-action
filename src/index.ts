@@ -38,7 +38,7 @@ export const run = async () => {
       /*Check If It's a Pull Request With Review Requested Status
         If So, Construct The Comment as: 
         PR #50 Title is requesting a review from User1 -> git.com */
-        console.log(context);
+      console.log(context);
       const dynamicCommentText =
         context.payload.action === "review_requested"
           ? `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.pull_request?.state} and awaiting a review from ${context.payload.pull_request?.requested_reviewer.login} -> ${context.payload.pull_request?.html_url}`
