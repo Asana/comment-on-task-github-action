@@ -13175,6 +13175,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             /*Check If It's a Pull Request With Review Requested Status
               If So, Construct The Comment as:
               PR #50 Title is requesting a review from User1 -> git.com */
+            console.log(github.context);
             const dynamicCommentText = github.context.payload.action === "review_requested"
                 ? `PR #${(_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.number} ${(_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.title} is ${(_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.state} and awaiting a review from ${(_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.requested_reviewer.login} -> ${(_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.html_url}`
                 : commentText;
