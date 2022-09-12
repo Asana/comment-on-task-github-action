@@ -13179,7 +13179,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
               PR #50 Title is requesting a review from User1 -> git.com */
             let dynamicCommentText = commentText;
             if (github.context.eventName === "pull_request_review") {
-                dynamicCommentText = `${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.user.login} commented:\n\n${(_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.body}\n\nComment URL -> ${(_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url}`;
+                dynamicCommentText = `${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.user.login} is requesting the following changes:\n\n${(_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.body}\n\nComment URL -> ${(_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url}`;
             }
             else if (github.context.payload.action === "review_requested") {
                 dynamicCommentText = `PR #${(_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.number} ${(_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.title} is requesting a review from ${(_s = github.context.payload.requested_reviewer) === null || _s === void 0 ? void 0 : _s.login} -> ${(_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.html_url}`;

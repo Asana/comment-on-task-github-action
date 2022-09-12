@@ -45,7 +45,7 @@ export const run = async () => {
 
       let dynamicCommentText = commentText;
       if (context.eventName === "pull_request_review") {
-        dynamicCommentText = `${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
+        dynamicCommentText = `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
       } else if (context.payload.action === "review_requested") {
         dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`;
       }
