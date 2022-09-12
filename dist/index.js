@@ -13153,14 +13153,18 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateProjectLists(allowedProjects, blockedProjects);
         // Check If It's a Pull Request Comment
         if (github.context.eventName === "issue_comment" ||
-            github.context.eventName === "pull_request_review_comment") {
+            github.context.eventName === "pull_request_review") {
             /*Construct The Comment as:
               User commented:
               hello world!
               Comment URL -> git.com */
-            const dynamicCommentText = ((_a = github.context.payload.comment) === null || _a === void 0 ? void 0 : _a.user.login) === "github-actions"
-                ? `${(_b = github.context.payload.comment) === null || _b === void 0 ? void 0 : _b.user.login} commented -> ${(_c = github.context.payload.comment) === null || _c === void 0 ? void 0 : _c.html_url}`
+            const dynamicCommentText = github.context.eventName === "pull_request_review"
+                ? `${(_a = github.context.payload.review) === null || _a === void 0 ? void 0 : _a.user.login} commented:\n\n${(_b = github.context.payload.review) === null || _b === void 0 ? void 0 : _b.body}\n\nComment URL -> ${(_c = github.context.payload.review) === null || _c === void 0 ? void 0 : _c.html_url}`
                 : `${(_d = github.context.payload.comment) === null || _d === void 0 ? void 0 : _d.user.login} commented:\n\n${(_e = github.context.payload.comment) === null || _e === void 0 ? void 0 : _e.body}\n\nComment URL -> ${(_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.html_url}`;
+            // const dynamicCommentText =
+            //   context.payload.comment?.user.login === "github-actions"
+            //     ? `${context.payload.comment?.user.login} commented -> ${context.payload.comment?.html_url}`
+            //     : `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
