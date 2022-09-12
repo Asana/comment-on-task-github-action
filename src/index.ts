@@ -15,12 +15,11 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     // Check If It's a Pull Request Comment
-    if (context.eventName === "issue_comment") {
+    if (context.eventName === "issue_comment" || context.eventName === "pull_request_review_comment") {
       /*Construct The Comment as: 
         User commented:
         hello world!
         Comment URL -> git.com */
-      console.log(context);
       const dynamicCommentText =
         context.payload.comment?.user.login === "github-actions"
           ? `${context.payload.comment?.user.login} commented -> ${context.payload.comment?.html_url}`
