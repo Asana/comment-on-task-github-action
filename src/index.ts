@@ -15,23 +15,7 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     // Check If It's a Pull Request Comment
-    if (context.eventName === "pull_request_review"){
-      const dynamicCommentText =`${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
-
-      const result = await axios.post(REQUESTS.ACTION_URL, {
-        allowedProjects,
-        blockedProjects,
-        commentText: dynamicCommentText,
-        pullRequestDescription: context.payload.review?.body,
-        pullRequestId: context.payload.review?.number,
-        pullRequestName: context.payload.review?.title,
-        pullRequestURL: context.payload.review?.html_url,
-        pullRequestState: context.payload.review?.state,
-        pullRequestMerged: false,
-      });
-
-      setOutput("status", result.status);
-    } else if (context.eventName === "issue_comment") {
+      if (context.eventName === "issue_comment") {
       /*Construct The Comment as: 
         User commented:
         hello world!
@@ -58,11 +42,13 @@ export const run = async () => {
       /*Check If It's a Pull Request With Review Requested Status
         If So, Construct The Comment as: 
         PR #50 Title is requesting a review from User1 -> git.com */
-      console.log(context);
-      const dynamicCommentText =
-        context.payload.action === "review_requested"
-          ? `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`
-          : commentText;
+
+      let dynamicCommentText = commentText;
+      if(context.eventName === "pull_request_review"){
+        dynamicCommentText = `${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
+      } else if (context.payload.action === "review_requested"){
+        dynamicCommentText =`PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`;
+      }
 
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,

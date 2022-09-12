@@ -13147,43 +13147,28 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         // Check If It's a Pull Request Comment
-        if (github.context.eventName === "pull_request_review") {
-            const dynamicCommentText = `${(_a = github.context.payload.review) === null || _a === void 0 ? void 0 : _a.user.login} commented:\n\n${(_b = github.context.payload.review) === null || _b === void 0 ? void 0 : _b.body}\n\nComment URL -> ${(_c = github.context.payload.review) === null || _c === void 0 ? void 0 : _c.html_url}`;
-            const result = yield requests_axios.post(ACTION_URL, {
-                allowedProjects,
-                blockedProjects,
-                commentText: dynamicCommentText,
-                pullRequestDescription: (_d = github.context.payload.review) === null || _d === void 0 ? void 0 : _d.body,
-                pullRequestId: (_e = github.context.payload.review) === null || _e === void 0 ? void 0 : _e.number,
-                pullRequestName: (_f = github.context.payload.review) === null || _f === void 0 ? void 0 : _f.title,
-                pullRequestURL: (_g = github.context.payload.review) === null || _g === void 0 ? void 0 : _g.html_url,
-                pullRequestState: (_h = github.context.payload.review) === null || _h === void 0 ? void 0 : _h.state,
-                pullRequestMerged: false,
-            });
-            (0,core.setOutput)("status", result.status);
-        }
-        else if (github.context.eventName === "issue_comment") {
+        if (github.context.eventName === "issue_comment") {
             /*Construct The Comment as:
               User commented:
               hello world!
               Comment URL -> git.com */
-            const dynamicCommentText = ((_j = github.context.payload.comment) === null || _j === void 0 ? void 0 : _j.user.login) === "github-actions"
-                ? `${(_k = github.context.payload.comment) === null || _k === void 0 ? void 0 : _k.user.login} commented -> ${(_l = github.context.payload.comment) === null || _l === void 0 ? void 0 : _l.html_url}`
-                : `${(_m = github.context.payload.comment) === null || _m === void 0 ? void 0 : _m.user.login} commented:\n\n${(_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.body}\n\nComment URL -> ${(_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.html_url}`;
+            const dynamicCommentText = ((_a = github.context.payload.comment) === null || _a === void 0 ? void 0 : _a.user.login) === "github-actions"
+                ? `${(_b = github.context.payload.comment) === null || _b === void 0 ? void 0 : _b.user.login} commented -> ${(_c = github.context.payload.comment) === null || _c === void 0 ? void 0 : _c.html_url}`
+                : `${(_d = github.context.payload.comment) === null || _d === void 0 ? void 0 : _d.user.login} commented:\n\n${(_e = github.context.payload.comment) === null || _e === void 0 ? void 0 : _e.body}\n\nComment URL -> ${(_f = github.context.payload.comment) === null || _f === void 0 ? void 0 : _f.html_url}`;
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
                 commentText: dynamicCommentText,
-                pullRequestDescription: (_q = github.context.payload.issue) === null || _q === void 0 ? void 0 : _q.body,
-                pullRequestId: (_r = github.context.payload.issue) === null || _r === void 0 ? void 0 : _r.number,
-                pullRequestName: (_s = github.context.payload.issue) === null || _s === void 0 ? void 0 : _s.title,
-                pullRequestURL: (_t = github.context.payload.issue) === null || _t === void 0 ? void 0 : _t.html_url,
-                pullRequestState: (_u = github.context.payload.issue) === null || _u === void 0 ? void 0 : _u.state,
+                pullRequestDescription: (_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.body,
+                pullRequestId: (_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.number,
+                pullRequestName: (_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.title,
+                pullRequestURL: (_k = github.context.payload.issue) === null || _k === void 0 ? void 0 : _k.html_url,
+                pullRequestState: (_l = github.context.payload.issue) === null || _l === void 0 ? void 0 : _l.state,
                 pullRequestMerged: false,
             });
             (0,core.setOutput)("status", result.status);
@@ -13192,20 +13177,23 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             /*Check If It's a Pull Request With Review Requested Status
               If So, Construct The Comment as:
               PR #50 Title is requesting a review from User1 -> git.com */
-            console.log(github.context);
-            const dynamicCommentText = github.context.payload.action === "review_requested"
-                ? `PR #${(_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.number} ${(_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.title} is requesting a review from ${(_x = github.context.payload.requested_reviewer) === null || _x === void 0 ? void 0 : _x.login} -> ${(_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.html_url}`
-                : commentText;
+            let dynamicCommentText = commentText;
+            if (github.context.eventName === "pull_request_review") {
+                dynamicCommentText = `${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.user.login} commented:\n\n${(_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.body}\n\nComment URL -> ${(_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url}`;
+            }
+            else if (github.context.payload.action === "review_requested") {
+                dynamicCommentText = `PR #${(_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.number} ${(_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.title} is requesting a review from ${(_s = github.context.payload.requested_reviewer) === null || _s === void 0 ? void 0 : _s.login} -> ${(_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.html_url}`;
+            }
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
                 blockedProjects,
                 commentText: dynamicCommentText,
-                pullRequestDescription: (_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.body,
-                pullRequestId: (_0 = github.context.payload.pull_request) === null || _0 === void 0 ? void 0 : _0.number,
-                pullRequestName: (_1 = github.context.payload.pull_request) === null || _1 === void 0 ? void 0 : _1.title,
-                pullRequestURL: (_2 = github.context.payload.pull_request) === null || _2 === void 0 ? void 0 : _2.html_url,
-                pullRequestState: (_3 = github.context.payload.pull_request) === null || _3 === void 0 ? void 0 : _3.state,
-                pullRequestMerged: ((_4 = github.context.payload.pull_request) === null || _4 === void 0 ? void 0 : _4.merged) || false,
+                pullRequestDescription: (_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.body,
+                pullRequestId: (_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.number,
+                pullRequestName: (_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.title,
+                pullRequestURL: (_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.html_url,
+                pullRequestState: (_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.state,
+                pullRequestMerged: ((_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.merged) || false,
             });
             (0,core.setOutput)("status", result.status);
         }
@@ -13213,7 +13201,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_5 = error.response) === null || _5 === void 0 ? void 0 : _5.data) || "Unknown error");
+            console.log(((_0 = error.response) === null || _0 === void 0 ? void 0 : _0.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
