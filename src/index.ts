@@ -15,24 +15,32 @@ export const run = async () => {
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
     // Check If It's a Pull Request Comment
-    if (
-      context.eventName === "issue_comment" ||
-      context.eventName === "pull_request_review"
-    ) {
+    if (context.eventName === "pull_request_review"){
+      const dynamicCommentText =`${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
+
+      const result = await axios.post(REQUESTS.ACTION_URL, {
+        allowedProjects,
+        blockedProjects,
+        commentText: dynamicCommentText,
+        pullRequestDescription: context.payload.review?.body,
+        pullRequestId: context.payload.review?.number,
+        pullRequestName: context.payload.review?.title,
+        pullRequestURL: context.payload.review?.html_url,
+        pullRequestState: context.payload.review?.state,
+        pullRequestMerged: false,
+      });
+
+      setOutput("status", result.status);
+    } else if (context.eventName === "issue_comment") {
       /*Construct The Comment as: 
         User commented:
         hello world!
         Comment URL -> git.com */
 
       const dynamicCommentText =
-        context.eventName === "pull_request_review"
-          ? `${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
+        context.payload.comment?.user.login === "github-actions"
+          ? `${context.payload.comment?.user.login} commented -> ${context.payload.comment?.html_url}`
           : `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
-
-      // const dynamicCommentText =
-      //   context.payload.comment?.user.login === "github-actions"
-      //     ? `${context.payload.comment?.user.login} commented -> ${context.payload.comment?.html_url}`
-      //     : `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
 
       const result = await axios.post(REQUESTS.ACTION_URL, {
         allowedProjects,
