@@ -25,9 +25,9 @@ export const run = async () => {
         Comment URL -> git.com */
 
       const dynamicCommentText =
-      context.eventName === "pull_request_review"
-      ? `${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
-      : `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+        context.eventName === "pull_request_review"
+          ? `${context.payload.review?.user.login} commented:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
+          : `${context.payload.comment?.user.login} commented:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
 
       // const dynamicCommentText =
       //   context.payload.comment?.user.login === "github-actions"
