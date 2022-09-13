@@ -34,6 +34,7 @@ export const run = async () => {
           })
           .toString();
         dynamicCommentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+        console.log(lines);
         console.log(commentBody);
       } else {
         dynamicCommentText =
