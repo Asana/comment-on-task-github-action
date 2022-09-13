@@ -28,9 +28,11 @@ export const run = async () => {
 
       if (commentBody.includes(">")) {
         const lines = commentBody.split("\n");
-        commentBody = lines.filter(function (line: string | string[]) {
-          return line.indexOf(">") !== 0;
-        }).join('');
+        commentBody = lines
+          .filter(function (line: string | string[]) {
+            return line.indexOf(">") !== 0;
+          })
+          .join("");
 
         dynamicCommentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         console.log(lines);
