@@ -13195,23 +13195,27 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
               PR #50 Title is requesting a review from User1 -> git.com */
             let dynamicCommentText = commentText;
             if (github.context.eventName === "pull_request_review") {
-                dynamicCommentText = `${(_j = github.context.payload.review) === null || _j === void 0 ? void 0 : _j.user.login} is requesting the following changes:\n\n${(_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.body}\n\nComment URL -> ${(_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.html_url}`;
+                dynamicCommentText =
+                    ((_j = github.context.payload.review) === null || _j === void 0 ? void 0 : _j.state) === "CHANGES_REQUESTED"
+                        ? `${(_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.user.login} is requesting the following changes:\n\n${(_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.body}\n\nComment URL -> ${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.html_url}`
+                        : `PR #${(_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.number} ${(_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.title} is ${(_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.state} by ${(_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login} -> ${(_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.html_url}`;
             }
             else if (github.context.payload.action === "review_requested") {
-                dynamicCommentText = `PR #${(_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.number} ${(_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.title} is requesting a review from ${(_p = github.context.payload.requested_reviewer) === null || _p === void 0 ? void 0 : _p.login} -> ${(_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.html_url}`;
+                dynamicCommentText = `PR #${(_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.number} ${(_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.title} is requesting a review from ${(_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login} -> ${(_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.html_url}`;
             }
-            const result = yield requests_axios.post(ACTION_URL, {
-                allowedProjects,
-                blockedProjects,
-                commentText: dynamicCommentText,
-                pullRequestDescription: (_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.body,
-                pullRequestId: (_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.number,
-                pullRequestName: (_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.title,
-                pullRequestURL: (_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.html_url,
-                pullRequestState: (_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.state,
-                pullRequestMerged: ((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.merged) || false,
-            });
-            (0,core.setOutput)("status", result.status);
+            console.log(dynamicCommentText);
+            // const result = await axios.post(REQUESTS.ACTION_URL, {
+            //   allowedProjects,
+            //   blockedProjects,
+            //   commentText: dynamicCommentText,
+            //   pullRequestDescription: context.payload.pull_request?.body,
+            //   pullRequestId: context.payload.pull_request?.number,
+            //   pullRequestName: context.payload.pull_request?.title,
+            //   pullRequestURL: context.payload.pull_request?.html_url,
+            //   pullRequestState: context.payload.pull_request?.state,
+            //   pullRequestMerged: context.payload.pull_request?.merged || false,
+            // });
+            // setOutput("status", result.status);
         }
     }
     catch (error) {
