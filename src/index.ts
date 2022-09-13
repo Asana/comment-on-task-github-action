@@ -31,8 +31,7 @@ export const run = async () => {
         commentBody = lines
           .filter(function (line: string | string[]) {
             return line.indexOf(">") !== 0;
-          })
-          .toString();
+          });
         dynamicCommentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         console.log(lines);
         console.log(commentBody);
