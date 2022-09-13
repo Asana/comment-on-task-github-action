@@ -28,10 +28,11 @@ export const run = async () => {
 
       if (commentBody.includes(">")) {
         const lines = commentBody.split("\n");
-        let commentBodyLines = lines
-          .filter(function (line: string | string[]) {
-            return line.indexOf(">") !== 0;
-          });
+        const commentBodyLines = lines.filter(function (
+          line: string | string[]
+        ) {
+          return line.indexOf(">") !== 0;
+        });
         commentBodyLines.shift();
         commentBody = commentBodyLines.join("");
 
