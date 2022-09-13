@@ -13163,11 +13163,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let dynamicCommentText = "";
             if (commentBody.includes(">")) {
                 const lines = commentBody.split("\n");
-                commentBody = lines
+                const commentBodyLines = lines
                     .filter(function (line) {
                     return line.indexOf(">") !== 0;
                 })
-                    .join("");
+                    .shift();
+                commentBody = commentBodyLines.join("");
                 dynamicCommentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 console.log(lines);
                 console.log(commentBody);
