@@ -13164,7 +13164,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (commentBody.includes(">")) {
                 const lines = commentBody.split("\n");
                 commentBody = lines.filter(function (line) {
-                    return line.indexOf(">") !== 0;
+                    return line.indexOf(">") !== 0 && line !== "/r";
                 });
                 dynamicCommentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 console.log(lines);
