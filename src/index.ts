@@ -34,6 +34,7 @@ export const run = async () => {
           })
           .toString();
         dynamicCommentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+        console.log(commentBody);
       } else {
         dynamicCommentText =
           user === "github-actions"
@@ -41,18 +42,19 @@ export const run = async () => {
             : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
       }
 
-      const result = await axios.post(REQUESTS.ACTION_URL, {
-        allowedProjects,
-        blockedProjects,
-        commentText: dynamicCommentText,
-        pullRequestDescription: context.payload.issue?.body,
-        pullRequestId: context.payload.issue?.number,
-        pullRequestName: context.payload.issue?.title,
-        pullRequestURL: context.payload.issue?.html_url,
-        pullRequestState: context.payload.issue?.state,
-        pullRequestMerged: false,
-      });
-      setOutput("status", result.status);
+      console.log(dynamicCommentText);
+      // const result = await axios.post(REQUESTS.ACTION_URL, {
+      //   allowedProjects,
+      //   blockedProjects,
+      //   commentText: dynamicCommentText,
+      //   pullRequestDescription: context.payload.issue?.body,
+      //   pullRequestId: context.payload.issue?.number,
+      //   pullRequestName: context.payload.issue?.title,
+      //   pullRequestURL: context.payload.issue?.html_url,
+      //   pullRequestState: context.payload.issue?.state,
+      //   pullRequestMerged: false,
+      // });
+      // setOutput("status", result.status);
     } else {
       /*Check If It's a Pull Request With Review Requested Status
         If So, Construct The Comment as: 
