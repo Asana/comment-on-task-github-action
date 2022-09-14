@@ -13196,7 +13196,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let dynamicCommentText = commentText;
             if (github.context.eventName === "pull_request_review") {
                 dynamicCommentText =
-                    ((_j = github.context.payload.review) === null || _j === void 0 ? void 0 : _j.state) === "CHANGES_REQUESTED"
+                    ((_j = github.context.payload.review) === null || _j === void 0 ? void 0 : _j.state) === "changes_requested"
                         ? `${(_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.user.login} is requesting the following changes:\n\n${(_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.body}\n\nComment URL -> ${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.html_url}`
                         : `PR #${(_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.number} ${(_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.title} is ${(_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.state} by ${(_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login} -> ${(_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.html_url}`;
             }
