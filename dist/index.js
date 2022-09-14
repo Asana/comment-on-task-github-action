@@ -13147,7 +13147,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13207,25 +13207,24 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             else if (github.context.eventName === "pull_request_review_comment") {
                 dynamicCommentText = `PR #${(_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.number} ${(_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.title} is requesting a review from ${(_0 = github.context.payload.requested_reviewer) === null || _0 === void 0 ? void 0 : _0.login} -> ${(_1 = github.context.payload.pull_request) === null || _1 === void 0 ? void 0 : _1.html_url}`;
             }
-            console.log(dynamicCommentText);
-            // const result = await axios.post(REQUESTS.ACTION_URL, {
-            //   allowedProjects,
-            //   blockedProjects,
-            //   commentText: dynamicCommentText,
-            //   pullRequestDescription: context.payload.pull_request?.body,
-            //   pullRequestId: context.payload.pull_request?.number,
-            //   pullRequestName: context.payload.pull_request?.title,
-            //   pullRequestURL: context.payload.pull_request?.html_url,
-            //   pullRequestState: context.payload.pull_request?.state,
-            //   pullRequestMerged: context.payload.pull_request?.merged || false,
-            // });
-            // setOutput("status", result.status);
+            const result = yield requests_axios.post(ACTION_URL, {
+                allowedProjects,
+                blockedProjects,
+                commentText: dynamicCommentText,
+                pullRequestDescription: (_2 = github.context.payload.pull_request) === null || _2 === void 0 ? void 0 : _2.body,
+                pullRequestId: (_3 = github.context.payload.pull_request) === null || _3 === void 0 ? void 0 : _3.number,
+                pullRequestName: (_4 = github.context.payload.pull_request) === null || _4 === void 0 ? void 0 : _4.title,
+                pullRequestURL: (_5 = github.context.payload.pull_request) === null || _5 === void 0 ? void 0 : _5.html_url,
+                pullRequestState: (_6 = github.context.payload.pull_request) === null || _6 === void 0 ? void 0 : _6.state,
+                pullRequestMerged: ((_7 = github.context.payload.pull_request) === null || _7 === void 0 ? void 0 : _7.merged) || false,
+            });
+            (0,core.setOutput)("status", result.status);
         }
     }
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            console.log(((_8 = error.response) === null || _8 === void 0 ? void 0 : _8.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
