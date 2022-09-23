@@ -62,11 +62,18 @@ export const run = async () => {
 
       let dynamicCommentText = commentText;
       if (context.eventName === "pull_request_review") {
-        dynamicCommentText =
-          context.payload.review?.state === "changes_requested" ||
-          context.payload.review?.state === "commented"
-            ? `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
-            : `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.review?.state} by ${context.payload.review?.user.login} -> ${context.payload.review?.html_url}`;
+        const state = context.payload.review?.state;
+        switch(state){
+          case "changes_requested" || "commented":
+            dynamicCommentText = `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
+            break;
+          case "approved":
+            dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.review?.state} by ${context.payload.review?.user.login}:\n\n ${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
+            break;
+          default:
+            dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.review?.state} by ${context.payload.review?.user.login} -> ${context.payload.review?.html_url}`;
+            break;
+        }
       } else if (context.payload.action === "review_requested") {
         // "mariam is requesting a review from tyler on PR #123"
         dynamicCommentText = `${context.payload.sender?.login} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${context.payload.pull_request?.number} -> ${context.payload.pull_request?.html_url}`;
