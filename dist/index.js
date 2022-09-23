@@ -8644,7 +8644,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        console.log(github.context.payload);
         // Check If It's a Pull Request Comment
         if (github.context.eventName === "issue_comment") {
             /*Construct The Comment as:
