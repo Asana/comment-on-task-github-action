@@ -71,9 +71,7 @@ export const run = async () => {
           case "approved":
             dynamicCommentText = `PR #${context.payload.pull_request?.number} ${
               context.payload.pull_request?.title
-            } is approved by ${
-              context.payload.review?.user.login
-            } ${
+            } is approved by ${context.payload.review?.user.login} ${
               context.payload.review?.body.length === 0
                 ? `-> ${context.payload.review?.html_url}`
                 : `:\n\n ${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
