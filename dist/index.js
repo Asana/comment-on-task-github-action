@@ -13147,7 +13147,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13202,21 +13202,21 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         dynamicCommentText = `${(_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.user.login} is requesting the following changes:\n\n${(_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.body}\n\nComment URL -> ${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.html_url}`;
                         break;
                     case "approved":
-                        dynamicCommentText = `PR #${(_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.number} ${(_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.title} is ${(_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.state} by ${(_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login} ${((_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.body.length) === 0
-                            ? `-> ${(_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.html_url}`
-                            : ":\n\n ${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}"}`;
+                        dynamicCommentText = `PR #${(_o = github.context.payload.pull_request) === null || _o === void 0 ? void 0 : _o.number} ${(_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.title} is approved by ${(_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.user.login} ${((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.body.length) === 0
+                            ? `-> ${(_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.html_url}`
+                            : `:\n\n ${(_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.body}\n\nComment URL -> ${(_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.html_url}`}`;
                         break;
                     default:
-                        dynamicCommentText = `PR #${(_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.number} ${(_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.title} is ${(_w = github.context.payload.review) === null || _w === void 0 ? void 0 : _w.state} by ${(_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.user.login} -> ${(_y = github.context.payload.review) === null || _y === void 0 ? void 0 : _y.html_url}`;
+                        dynamicCommentText = `PR #${(_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.number} ${(_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.title} is ${(_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.state} by ${(_y = github.context.payload.review) === null || _y === void 0 ? void 0 : _y.user.login} -> ${(_z = github.context.payload.review) === null || _z === void 0 ? void 0 : _z.html_url}`;
                         break;
                 }
             }
             else if (github.context.payload.action === "review_requested") {
                 // "mariam is requesting a review from tyler on PR #123"
-                dynamicCommentText = `${(_z = github.context.payload.sender) === null || _z === void 0 ? void 0 : _z.login} is requesting a review from ${(_0 = github.context.payload.requested_reviewer) === null || _0 === void 0 ? void 0 : _0.login} on PR #${(_1 = github.context.payload.pull_request) === null || _1 === void 0 ? void 0 : _1.number} -> ${(_2 = github.context.payload.pull_request) === null || _2 === void 0 ? void 0 : _2.html_url}`;
+                dynamicCommentText = `${(_0 = github.context.payload.sender) === null || _0 === void 0 ? void 0 : _0.login} is requesting a review from ${(_1 = github.context.payload.requested_reviewer) === null || _1 === void 0 ? void 0 : _1.login} on PR #${(_2 = github.context.payload.pull_request) === null || _2 === void 0 ? void 0 : _2.number} -> ${(_3 = github.context.payload.pull_request) === null || _3 === void 0 ? void 0 : _3.html_url}`;
             }
             else if (github.context.eventName === "pull_request_review_comment") {
-                dynamicCommentText = `PR #${(_3 = github.context.payload.pull_request) === null || _3 === void 0 ? void 0 : _3.number} ${(_4 = github.context.payload.pull_request) === null || _4 === void 0 ? void 0 : _4.title} is requesting a review from ${(_5 = github.context.payload.requested_reviewer) === null || _5 === void 0 ? void 0 : _5.login} -> ${(_6 = github.context.payload.pull_request) === null || _6 === void 0 ? void 0 : _6.html_url}`;
+                dynamicCommentText = `PR #${(_4 = github.context.payload.pull_request) === null || _4 === void 0 ? void 0 : _4.number} ${(_5 = github.context.payload.pull_request) === null || _5 === void 0 ? void 0 : _5.title} is requesting a review from ${(_6 = github.context.payload.requested_reviewer) === null || _6 === void 0 ? void 0 : _6.login} -> ${(_7 = github.context.payload.pull_request) === null || _7 === void 0 ? void 0 : _7.html_url}`;
             }
             console.log(dynamicCommentText);
             // const result = await axios.post(REQUESTS.ACTION_URL, {
@@ -13236,7 +13236,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_7 = error.response) === null || _7 === void 0 ? void 0 : _7.data) || "Unknown error");
+            console.log(((_8 = error.response) === null || _8 === void 0 ? void 0 : _8.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
