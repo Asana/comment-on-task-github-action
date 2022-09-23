@@ -14,6 +14,7 @@ export const run = async () => {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
+    console.log(context.eventName);
     // Check If It's a Pull Request Comment
     if (context.eventName === "issue_comment") {
       /*Construct The Comment as: 
