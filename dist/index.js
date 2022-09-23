@@ -13194,6 +13194,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
               If So, Construct The Comment as:
               PR #50 Title is requesting a review from User1 -> git.com */
             let dynamicCommentText = commentText;
+            console.log(github.context.payload);
             if (github.context.eventName === "pull_request_review") {
                 const state = (_j = github.context.payload.review) === null || _j === void 0 ? void 0 : _j.state;
                 switch (state) {

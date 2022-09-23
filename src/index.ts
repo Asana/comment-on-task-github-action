@@ -61,6 +61,7 @@ export const run = async () => {
         PR #50 Title is requesting a review from User1 -> git.com */
 
       let dynamicCommentText = commentText;
+      console.log(context.payload);
       if (context.eventName === "pull_request_review") {
         const state = context.payload.review?.state;
         switch (state) {
