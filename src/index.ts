@@ -72,13 +72,10 @@ export const run = async () => {
             dynamicCommentText = `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
             break;
           case "approved":
-            dynamicCommentText = `PR #${context.payload.pull_request?.number} ${
-              context.payload.pull_request?.title
-            } is approved by ${context.payload.review?.user.login} ${
-              context.payload.review?.body.length === 0
-                ? `-> ${context.payload.review?.html_url}`
-                : `:\n\n ${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
-            }`;
+            dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title
+              } is approved by ${context.payload.review?.user.login} ${context.payload.review?.body.length === 0
+                ? ``
+                : `:\n\n ${context.payload.review?.body}\n\nComment URL`} -> ${context.payload.review?.html_url}`;
             break;
           default:
             dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.review?.state} by ${context.payload.review?.user.login} -> ${context.payload.review?.html_url}`;
@@ -88,7 +85,7 @@ export const run = async () => {
         // "mariam is requesting a review from tyler on PR #123"
         dynamicCommentText = `${context.payload.sender?.login} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${context.payload.pull_request?.number} -> ${context.payload.pull_request?.html_url}`;
       } else if (context.eventName === "pull_request_review_comment") {
-        dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`;
+        dynamicCommentText = `${context.payload.comment?.user.login} is requesting the following changes:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
       }
 
       console.log(dynamicCommentText);
