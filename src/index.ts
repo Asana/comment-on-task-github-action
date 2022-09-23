@@ -1,9 +1,9 @@
-import { getInput, setFailed, setOutput } from "@actions/core";
+import { getInput, setFailed, /*setOutput*/ } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
-import axios from "./requests/axios";
+// import axios from "./requests/axios";
 import * as INPUTS from "./constants/inputs";
-import * as REQUESTS from "./constants/requests";
+// import * as REQUESTS from "./constants/requests";
 
 const commentText = getInput(INPUTS.COMMENT_TEXT);
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
@@ -42,19 +42,21 @@ export const run = async () => {
             ? `${user} commented -> ${commentUrl}`
             : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
       }
-
-      const result = await axios.post(REQUESTS.ACTION_URL, {
-        allowedProjects,
-        blockedProjects,
-        commentText: dynamicCommentText,
-        pullRequestDescription: context.payload.issue?.body,
-        pullRequestId: context.payload.issue?.number,
-        pullRequestName: context.payload.issue?.title,
-        pullRequestURL: context.payload.issue?.html_url,
-        pullRequestState: context.payload.issue?.state,
-        pullRequestMerged: false,
-      });
-      setOutput("status", result.status);
+      console.log("issue comment");
+      console.log(context.payload);
+      console.log(dynamicCommentText);
+      // const result = await axios.post(REQUESTS.ACTION_URL, {
+      //   allowedProjects,
+      //   blockedProjects,
+      //   commentText: dynamicCommentText,
+      //   pullRequestDescription: context.payload.issue?.body,
+      //   pullRequestId: context.payload.issue?.number,
+      //   pullRequestName: context.payload.issue?.title,
+      //   pullRequestURL: context.payload.issue?.html_url,
+      //   pullRequestState: context.payload.issue?.state,
+      //   pullRequestMerged: false,
+      // });
+      // setOutput("status", result.status);
     } else {
       /*Check If It's a Pull Request With Review Requested Status
         If So, Construct The Comment as: 
