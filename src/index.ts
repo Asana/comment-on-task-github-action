@@ -68,23 +68,25 @@ export const run = async () => {
             ? `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`
             : `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is ${context.payload.review?.state} by ${context.payload.review?.user.login} -> ${context.payload.review?.html_url}`;
       } else if (context.payload.action === "review_requested") {
-        dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`;
+        // "mariam is requesting a review from tyler on PR #123"
+        dynamicCommentText = `${context.payload.sender?.login} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${context.payload.pull_request?.number} -> ${context.payload.pull_request?.html_url}`;
       } else if (context.eventName === "pull_request_review_comment") {
         dynamicCommentText = `PR #${context.payload.pull_request?.number} ${context.payload.pull_request?.title} is requesting a review from ${context.payload.requested_reviewer?.login} -> ${context.payload.pull_request?.html_url}`;
       }
 
-      const result = await axios.post(REQUESTS.ACTION_URL, {
-        allowedProjects,
-        blockedProjects,
-        commentText: dynamicCommentText,
-        pullRequestDescription: context.payload.pull_request?.body,
-        pullRequestId: context.payload.pull_request?.number,
-        pullRequestName: context.payload.pull_request?.title,
-        pullRequestURL: context.payload.pull_request?.html_url,
-        pullRequestState: context.payload.pull_request?.state,
-        pullRequestMerged: context.payload.pull_request?.merged || false,
-      });
-      setOutput("status", result.status);
+      console.log(dynamicCommentText);
+      // const result = await axios.post(REQUESTS.ACTION_URL, {
+      //   allowedProjects,
+      //   blockedProjects,
+      //   commentText: dynamicCommentText,
+      //   pullRequestDescription: context.payload.pull_request?.body,
+      //   pullRequestId: context.payload.pull_request?.number,
+      //   pullRequestName: context.payload.pull_request?.title,
+      //   pullRequestURL: context.payload.pull_request?.html_url,
+      //   pullRequestState: context.payload.pull_request?.state,
+      //   pullRequestMerged: context.payload.pull_request?.merged || false,
+      // });
+      // setOutput("status", result.status);
     }
   } catch (error) {
     if (utils.isAxiosError(error)) {
