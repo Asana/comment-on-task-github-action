@@ -8640,7 +8640,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -8713,7 +8713,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 dynamicCommentText = `${(_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login} is requesting a review from ${(_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login} on PR #${(_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.number} -> ${(_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.html_url}`;
             }
             else if (github.context.eventName === "pull_request_review_comment") {
-                dynamicCommentText = `${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.user.login} is requesting the following changes:\n\n${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.body}\n\nComment URL -> ${(_0 = github.context.payload.review) === null || _0 === void 0 ? void 0 : _0.html_url}`;
+                dynamicCommentText = `${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.user.login} is requesting the following changes on line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.line}:\n\n${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.body}\n\nComment URL -> ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.html_url}`;
             }
             console.log(dynamicCommentText);
             // const result = await axios.post(REQUESTS.ACTION_URL, {
@@ -8733,7 +8733,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_1 = error.response) === null || _1 === void 0 ? void 0 : _1.data) || "Unknown error");
+            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
