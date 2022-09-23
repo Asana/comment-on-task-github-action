@@ -8640,7 +8640,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -8696,24 +8696,27 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const state = (_d = github.context.payload.review) === null || _d === void 0 ? void 0 : _d.state;
                 switch (state) {
                     case "changes_requested" || 0:
-                        dynamicCommentText = `${(_e = github.context.payload.review) === null || _e === void 0 ? void 0 : _e.user.login} is requesting the following changes:\n\n${(_f = github.context.payload.review) === null || _f === void 0 ? void 0 : _f.body}\n\nComment URL -> ${(_g = github.context.payload.review) === null || _g === void 0 ? void 0 : _g.html_url}`;
+                        if (((_e = github.context.payload.review) === null || _e === void 0 ? void 0 : _e.body.length) === 0) {
+                            return;
+                        }
+                        dynamicCommentText = `${(_f = github.context.payload.review) === null || _f === void 0 ? void 0 : _f.user.login} is requesting the following changes:\n\n${(_g = github.context.payload.review) === null || _g === void 0 ? void 0 : _g.body}\n\nComment URL -> ${(_h = github.context.payload.review) === null || _h === void 0 ? void 0 : _h.html_url}`;
                         break;
                     case "approved":
-                        dynamicCommentText = `PR #${(_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.number} ${(_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.title} is approved by ${(_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.user.login} ${((_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.body.length) === 0
+                        dynamicCommentText = `PR #${(_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.number} ${(_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.title} is approved by ${(_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.user.login} ${((_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.body.length) === 0
                             ? ``
-                            : `:\n\n ${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.body}\n\nComment URL`} -> ${(_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.html_url}`;
+                            : `:\n\n ${(_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.body}\n\nComment URL`} -> ${(_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url}`;
                         break;
                     default:
-                        dynamicCommentText = `PR #${(_p = github.context.payload.pull_request) === null || _p === void 0 ? void 0 : _p.number} ${(_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.title} is ${(_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state} by ${(_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.user.login} -> ${(_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.html_url}`;
+                        dynamicCommentText = `PR #${(_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.number} ${(_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.title} is ${(_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.state} by ${(_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login} -> ${(_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.html_url}`;
                         break;
                 }
             }
             else if (github.context.payload.action === "review_requested") {
                 // "mariam is requesting a review from tyler on PR #123"
-                dynamicCommentText = `${(_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login} is requesting a review from ${(_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login} on PR #${(_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.number} -> ${(_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.html_url}`;
+                dynamicCommentText = `${(_v = github.context.payload.sender) === null || _v === void 0 ? void 0 : _v.login} is requesting a review from ${(_w = github.context.payload.requested_reviewer) === null || _w === void 0 ? void 0 : _w.login} on PR #${(_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.number} -> ${(_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.html_url}`;
             }
             else if (github.context.eventName === "pull_request_review_comment") {
-                dynamicCommentText = `${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.user.login} is requesting the following changes on line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.line}:\n\n${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.body}\n\nComment URL -> ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.html_url}`;
+                dynamicCommentText = `${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.user.login} is requesting the following changes on line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.line}:\n\n${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.body}\n\nComment URL -> ${(_2 = github.context.payload.comment) === null || _2 === void 0 ? void 0 : _2.html_url}`;
             }
             console.log(dynamicCommentText);
             // const result = await axios.post(REQUESTS.ACTION_URL, {
@@ -8733,7 +8736,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
