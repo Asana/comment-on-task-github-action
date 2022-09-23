@@ -63,7 +63,7 @@ export const run = async () => {
       let dynamicCommentText = commentText;
       if (context.eventName === "pull_request_review") {
         const state = context.payload.review?.state;
-        switch(state){
+        switch (state) {
           case "changes_requested" || "commented":
             dynamicCommentText = `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;
             break;
