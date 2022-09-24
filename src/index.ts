@@ -1,9 +1,9 @@
-import { getInput, setFailed /*setOutput*/ } from "@actions/core";
+import { getInput, setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
-// import axios from "./requests/axios";
+import axios from "./requests/axios";
 import * as INPUTS from "./constants/inputs";
-// import * as REQUESTS from "./constants/requests";
+import * as REQUESTS from "./constants/requests";
 
 const commentText = getInput(INPUTS.COMMENT_TEXT);
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
@@ -14,13 +14,7 @@ export const run = async () => {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
-    console.log(context.eventName);
-    // Check If It's a Pull Request Comment
     if (context.eventName === "issue_comment") {
-      /*Construct The Comment as: 
-        User commented:
-        hello world!
-        Comment URL -> git.com */
       const user = context.payload.comment?.user.login;
       const commentUrl = context.payload.comment?.html_url;
 
@@ -43,28 +37,22 @@ export const run = async () => {
             ? `${user} commented -> ${commentUrl}`
             : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
       }
-      console.log("issue comment");
-      console.log(context.payload);
-      console.log(dynamicCommentText);
-      // const result = await axios.post(REQUESTS.ACTION_URL, {
-      //   allowedProjects,
-      //   blockedProjects,
-      //   commentText: dynamicCommentText,
-      //   pullRequestDescription: context.payload.issue?.body,
-      //   pullRequestId: context.payload.issue?.number,
-      //   pullRequestName: context.payload.issue?.title,
-      //   pullRequestURL: context.payload.issue?.html_url,
-      //   pullRequestState: context.payload.issue?.state,
-      //   pullRequestMerged: false,
-      // });
-      // setOutput("status", result.status);
-    } else {
-      /*Check If It's a Pull Request With Review Requested Status
-        If So, Construct The Comment as: 
-        PR #50 Title is requesting a review from User1 -> git.com */
 
+      const result = await axios.post(REQUESTS.ACTION_URL, {
+        allowedProjects,
+        blockedProjects,
+        commentText: dynamicCommentText,
+        pullRequestDescription: context.payload.issue?.body,
+        pullRequestId: context.payload.issue?.number,
+        pullRequestName: context.payload.issue?.title,
+        pullRequestURL: context.payload.issue?.html_url,
+        pullRequestState: context.payload.issue?.state,
+        pullRequestMerged: false,
+      });
+      setOutput("status", result.status);
+    } else {
       let dynamicCommentText = commentText;
-      console.log(context.payload);
+
       if (context.eventName === "pull_request_review") {
         const state = context.payload.review?.state;
         switch (state) {
@@ -94,19 +82,18 @@ export const run = async () => {
         dynamicCommentText = `${context.payload.comment?.user.login} is requesting the following changes on line ${context.payload.comment?.line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
       }
 
-      console.log(dynamicCommentText);
-      // const result = await axios.post(REQUESTS.ACTION_URL, {
-      //   allowedProjects,
-      //   blockedProjects,
-      //   commentText: dynamicCommentText,
-      //   pullRequestDescription: context.payload.pull_request?.body,
-      //   pullRequestId: context.payload.pull_request?.number,
-      //   pullRequestName: context.payload.pull_request?.title,
-      //   pullRequestURL: context.payload.pull_request?.html_url,
-      //   pullRequestState: context.payload.pull_request?.state,
-      //   pullRequestMerged: context.payload.pull_request?.merged || false,
-      // });
-      // setOutput("status", result.status);
+      const result = await axios.post(REQUESTS.ACTION_URL, {
+        allowedProjects,
+        blockedProjects,
+        commentText: dynamicCommentText,
+        pullRequestDescription: context.payload.pull_request?.body,
+        pullRequestId: context.payload.pull_request?.number,
+        pullRequestName: context.payload.pull_request?.title,
+        pullRequestURL: context.payload.pull_request?.html_url,
+        pullRequestState: context.payload.pull_request?.state,
+        pullRequestMerged: context.payload.pull_request?.merged || false,
+      });
+      setOutput("status", result.status);
     }
   } catch (error) {
     if (utils.isAxiosError(error)) {
