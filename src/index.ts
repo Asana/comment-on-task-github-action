@@ -50,6 +50,7 @@ export const run = async () => {
         pullRequestMerged: false,
       });
       setOutput("status", result.status);
+      setOutput("comment", dynamicCommentText);
     } else {
       let dynamicCommentText = commentText;
 
@@ -95,6 +96,7 @@ export const run = async () => {
         pullRequestMerged: context.payload.pull_request?.merged || false,
       });
       setOutput("status", result.status);
+      setOutput("comment", dynamicCommentText);
     }
   } catch (error) {
     if (utils.isAxiosError(error)) {

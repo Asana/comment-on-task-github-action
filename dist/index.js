@@ -13183,6 +13183,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 pullRequestMerged: false,
             });
             (0,core.setOutput)("status", result.status);
+            (0,core.setOutput)("comment", dynamicCommentText);
         }
         else {
             let dynamicCommentText = commentText;
@@ -13225,6 +13226,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 pullRequestMerged: ((_13 = github.context.payload.pull_request) === null || _13 === void 0 ? void 0 : _13.merged) || false,
             });
             (0,core.setOutput)("status", result.status);
+            (0,core.setOutput)("comment", dynamicCommentText);
         }
     }
     catch (error) {
