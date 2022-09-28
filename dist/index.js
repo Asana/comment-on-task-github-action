@@ -13189,7 +13189,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (github.context.eventName === "pull_request_review") {
                 const state = (_j = github.context.payload.review) === null || _j === void 0 ? void 0 : _j.state;
                 switch (state) {
-                    case "changes_requested" || 0:
+                    case "commented":
+                    case "changes_requested":
                         if (((_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.body.length) === 0) {
                             return;
                         }

@@ -56,7 +56,8 @@ export const run = async () => {
       if (context.eventName === "pull_request_review") {
         const state = context.payload.review?.state;
         switch (state) {
-          case "changes_requested" || "commented":
+          case "commented":
+          case "changes_requested":
             if (context.payload.review?.body.length === 0) {
               return;
             }
