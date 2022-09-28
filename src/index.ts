@@ -1,4 +1,4 @@
-import { getInput, setFailed, /*setOutput*/ } from "@actions/core";
+import { getInput, setFailed /*setOutput*/ } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
