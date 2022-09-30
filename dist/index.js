@@ -13212,6 +13212,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 dynamicCommentText = `${(_0 = github.context.payload.sender) === null || _0 === void 0 ? void 0 : _0.login} is requesting a review from ${(_1 = github.context.payload.requested_reviewer) === null || _1 === void 0 ? void 0 : _1.login} on PR #${(_2 = github.context.payload.pull_request) === null || _2 === void 0 ? void 0 : _2.number} -> ${(_3 = github.context.payload.pull_request) === null || _3 === void 0 ? void 0 : _3.html_url}`;
             }
             else if (github.context.eventName === "pull_request_review_comment") {
+                console.log(github.context.payload);
                 dynamicCommentText = `${(_4 = github.context.payload.comment) === null || _4 === void 0 ? void 0 : _4.user.login} is requesting the following changes on line ${(_5 = github.context.payload.comment) === null || _5 === void 0 ? void 0 : _5.line}:\n\n${(_6 = github.context.payload.comment) === null || _6 === void 0 ? void 0 : _6.body}\n\nComment URL -> ${(_7 = github.context.payload.comment) === null || _7 === void 0 ? void 0 : _7.html_url}`;
             }
             // const result = await axios.post(REQUESTS.ACTION_URL, {
