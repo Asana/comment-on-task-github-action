@@ -82,7 +82,7 @@ export const run = async () => {
         dynamicCommentText = `${context.payload.sender?.login} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${context.payload.pull_request?.number} -> ${context.payload.pull_request?.html_url}`;
       } else if (context.eventName === "pull_request_review_comment") {
         console.log(context.payload);
-        dynamicCommentText = `${context.payload.comment?.user.login} is requesting the following changes on line ${context.payload.comment?.line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+        dynamicCommentText = `${context.payload.comment?.user.login} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
       }
 
       // const result = await axios.post(REQUESTS.ACTION_URL, {
