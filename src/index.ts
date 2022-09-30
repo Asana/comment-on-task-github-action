@@ -59,7 +59,7 @@ export const run = async () => {
         switch (state) {
           case "commented":
           case "changes_requested":
-            if (context.payload.review?.body.length === 0) {
+            if (!context.payload.review?.body) {
               return;
             }
             dynamicCommentText = `${context.payload.review?.user.login} is requesting the following changes:\n\n${context.payload.review?.body}\n\nComment URL -> ${context.payload.review?.html_url}`;

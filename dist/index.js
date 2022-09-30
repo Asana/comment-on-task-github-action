@@ -13192,7 +13192,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 switch (state) {
                     case "commented":
                     case "changes_requested":
-                        if (((_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.body.length) === 0) {
+                        if (!((_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.body)) {
                             return;
                         }
                         dynamicCommentText = `${(_l = github.context.payload.review) === null || _l === void 0 ? void 0 : _l.user.login} is requesting the following changes:\n\n${(_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.body}\n\nComment URL -> ${(_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.html_url}`;
