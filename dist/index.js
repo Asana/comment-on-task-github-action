@@ -13147,7 +13147,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13212,28 +13212,27 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 dynamicCommentText = `${(_0 = github.context.payload.sender) === null || _0 === void 0 ? void 0 : _0.login} is requesting a review from ${(_1 = github.context.payload.requested_reviewer) === null || _1 === void 0 ? void 0 : _1.login} on PR #${(_2 = github.context.payload.pull_request) === null || _2 === void 0 ? void 0 : _2.number} -> ${(_3 = github.context.payload.pull_request) === null || _3 === void 0 ? void 0 : _3.html_url}`;
             }
             else if (github.context.eventName === "pull_request_review_comment") {
-                console.log(github.context.payload);
                 dynamicCommentText = `${(_4 = github.context.payload.comment) === null || _4 === void 0 ? void 0 : _4.user.login} is requesting the following changes on line ${(_5 = github.context.payload.comment) === null || _5 === void 0 ? void 0 : _5.original_line}:\n\n${(_6 = github.context.payload.comment) === null || _6 === void 0 ? void 0 : _6.body}\n\nComment URL -> ${(_7 = github.context.payload.comment) === null || _7 === void 0 ? void 0 : _7.html_url}`;
             }
-            // const result = await axios.post(REQUESTS.ACTION_URL, {
-            //   allowedProjects,
-            //   blockedProjects,
-            //   commentText: dynamicCommentText,
-            //   pullRequestDescription: context.payload.pull_request?.body,
-            //   pullRequestId: context.payload.pull_request?.number,
-            //   pullRequestName: context.payload.pull_request?.title,
-            //   pullRequestURL: context.payload.pull_request?.html_url,
-            //   pullRequestState: context.payload.pull_request?.state,
-            //   pullRequestMerged: context.payload.pull_request?.merged || false,
-            // });
-            // setOutput("status", result.status);
+            const result = yield requests_axios.post(ACTION_URL, {
+                allowedProjects,
+                blockedProjects,
+                commentText: dynamicCommentText,
+                pullRequestDescription: (_8 = github.context.payload.pull_request) === null || _8 === void 0 ? void 0 : _8.body,
+                pullRequestId: (_9 = github.context.payload.pull_request) === null || _9 === void 0 ? void 0 : _9.number,
+                pullRequestName: (_10 = github.context.payload.pull_request) === null || _10 === void 0 ? void 0 : _10.title,
+                pullRequestURL: (_11 = github.context.payload.pull_request) === null || _11 === void 0 ? void 0 : _11.html_url,
+                pullRequestState: (_12 = github.context.payload.pull_request) === null || _12 === void 0 ? void 0 : _12.state,
+                pullRequestMerged: ((_13 = github.context.payload.pull_request) === null || _13 === void 0 ? void 0 : _13.merged) || false,
+            });
+            (0,core.setOutput)("status", result.status);
             (0,core.setOutput)("comment", dynamicCommentText);
         }
     }
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_8 = error.response) === null || _8 === void 0 ? void 0 : _8.data) || "Unknown error");
+            console.log(((_14 = error.response) === null || _14 === void 0 ? void 0 : _14.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
