@@ -35,7 +35,7 @@ export const run = async () => {
         dynamicCommentText =
           user === "github-actions"
             ? `${user} commented -> ${commentUrl}`
-            : `@Mariam El Zaatari commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
       }
 
       const result = await axios.post(REQUESTS.ACTION_URL, {
