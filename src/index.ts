@@ -84,22 +84,18 @@ export const run = async () => {
         dynamicCommentText = `${context.payload.comment?.user.login} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
       }
 
-      console.log("Original Line");
-      console.log(context.payload.comment?.original_line);
-      console.log("Line");
-      console.log(context.payload.comment?.line);
-      // const result = await axios.post(REQUESTS.ACTION_URL, {
-      //   allowedProjects,
-      //   blockedProjects,
-      //   commentText: dynamicCommentText,
-      //   pullRequestDescription: context.payload.pull_request?.body,
-      //   pullRequestId: context.payload.pull_request?.number,
-      //   pullRequestName: context.payload.pull_request?.title,
-      //   pullRequestURL: context.payload.pull_request?.html_url,
-      //   pullRequestState: context.payload.pull_request?.state,
-      //   pullRequestMerged: context.payload.pull_request?.merged || false,
-      // });
-      // setOutput("status", result.status);
+      const result = await axios.post(REQUESTS.ACTION_URL, {
+        allowedProjects,
+        blockedProjects,
+        commentText: dynamicCommentText,
+        pullRequestDescription: context.payload.pull_request?.body,
+        pullRequestId: context.payload.pull_request?.number,
+        pullRequestName: context.payload.pull_request?.title,
+        pullRequestURL: context.payload.pull_request?.html_url,
+        pullRequestState: context.payload.pull_request?.state,
+        pullRequestMerged: context.payload.pull_request?.merged || false,
+      });
+      setOutput("status", result.status);
       setOutput("comment", dynamicCommentText);
     }
   } catch (error) {
