@@ -13169,7 +13169,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 dynamicCommentText =
                     user === "github-actions"
                         ? `${user} commented -> ${commentUrl}`
-                        : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                        : `https://app.asana.com/0/1202258098000877 commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             }
             const result = yield requests_axios.post(ACTION_URL, {
                 allowedProjects,
