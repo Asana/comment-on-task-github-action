@@ -13147,7 +13147,7 @@ const commentText = (0,core.getInput)(COMMENT_TEXT);
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13214,6 +13214,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             else if (github.context.eventName === "pull_request_review_comment") {
                 dynamicCommentText = `${(_4 = github.context.payload.comment) === null || _4 === void 0 ? void 0 : _4.user.login} is requesting the following changes on line ${(_5 = github.context.payload.comment) === null || _5 === void 0 ? void 0 : _5.original_line}:\n\n${(_6 = github.context.payload.comment) === null || _6 === void 0 ? void 0 : _6.body}\n\nComment URL -> ${(_7 = github.context.payload.comment) === null || _7 === void 0 ? void 0 : _7.html_url}`;
             }
+            console.log("Original Line");
+            console.log((_8 = github.context.payload.comment) === null || _8 === void 0 ? void 0 : _8.original_line);
+            console.log("Line");
+            console.log((_9 = github.context.payload.comment) === null || _9 === void 0 ? void 0 : _9.line);
             // const result = await axios.post(REQUESTS.ACTION_URL, {
             //   allowedProjects,
             //   blockedProjects,
@@ -13232,7 +13236,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_8 = error.response) === null || _8 === void 0 ? void 0 : _8.data) || "Unknown error");
+            console.log(((_10 = error.response) === null || _10 === void 0 ? void 0 : _10.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
