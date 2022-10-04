@@ -13,26 +13,30 @@ export const run = async () => {
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
     const pullRequestDescription =
-    context.payload.pull_request?.body || context.payload.issue?.body;
+      context.payload.pull_request?.body || context.payload.issue?.body;
     const pullRequestId =
-    context.payload.pull_request?.number || context.payload.issue?.number;
+      context.payload.pull_request?.number || context.payload.issue?.number;
     const pullRequestName =
-    context.payload.pull_request?.title || context.payload.issue?.title;
+      context.payload.pull_request?.title || context.payload.issue?.title;
     const pullRequestURL =
-    context.payload.pull_request?.html_url || context.payload.issue?.html_url;
+      context.payload.pull_request?.html_url || context.payload.issue?.html_url;
     const pullRequestState =
-    context.payload.pull_request?.state || context.payload.issue?.state;
+      context.payload.pull_request?.state || context.payload.issue?.state;
     const pullRequestMerged = context.payload.pull_request?.merged || false;
 
-    const commentUrl = context.payload.comment?.html_url || context.payload.review?.html_url || '';
-    const commentBody = context.payload.comment?.body || context.payload.review?.body || '';
-    const reviewState = context.payload.review?.state || '';
+    const commentUrl =
+      context.payload.comment?.html_url ||
+      context.payload.review?.html_url ||
+      "";
+    const commentBody =
+      context.payload.comment?.body || context.payload.review?.body || "";
+    const reviewState = context.payload.review?.state || "";
 
     let commentText = "";
     let user = "";
 
     switch (context.eventName) {
-      case "issue_comment": 
+      case "issue_comment":
         user = context.payload.comment?.user.login;
         if (commentBody.includes(">")) {
           const lines = commentBody.split("\n");
@@ -42,7 +46,9 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `${user} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
+          commentText = `${user} replied:\n\n${commentBodyLines.join(
+            ""
+          )}\n\nComment URL -> ${commentUrl}`;
         } else {
           commentText =
             user === "github-actions"
