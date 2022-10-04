@@ -40,7 +40,7 @@ export const run = async () => {
     switch (context.eventName) {
       case "issue_comment": {
         username = context.payload.comment?.user.login;
-        let userObj = users.find((user) => user.githubName === username);
+        const userObj = users.find((user) => user.githubName === username);
         if (commentBody.includes(">")) {
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
