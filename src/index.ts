@@ -4,6 +4,7 @@ import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
 import axios from "./requests/axios";
 import * as REQUESTS from "./constants/requests";
+import {users} from "./constants/users";
 
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
 const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
@@ -31,6 +32,8 @@ export const run = async () => {
     const commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const reviewState = context.payload.review?.state || "";
+    const mentionUrl = "https://app.asana.com/0/";
+    mentionUrl.concat("");
 
     let commentText = "";
     let user = "";
@@ -53,7 +56,9 @@ export const run = async () => {
           commentText =
             user === "github-actions"
               ? `${user} commented -> ${commentUrl}`
-              : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+              : `${users.find(
+                  (userObj) => userObj.githubName === user
+                )} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         }
         break;
       case "pull_request_review":

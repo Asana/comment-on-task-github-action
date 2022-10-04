@@ -13127,6 +13127,50 @@ axios_retry_default()(axiosInstance, {
 });
 /* harmony default export */ const requests_axios = (axiosInstance);
 
+;// CONCATENATED MODULE: ./src/constants/users.ts
+const users = [
+    {
+        asanaId: 1992899177766,
+        asanaName: "Nathan",
+        githubName: "tylerdigital",
+    },
+    {
+        asanaId: 11332651049782,
+        asanaName: "Natalie MacLees",
+        githubName: "NatalieMac",
+    },
+    {
+        asanaId: 1172261355686366,
+        asanaName: "Natalie Garza",
+        githubName: "gnarza",
+    },
+    {
+        asanaId: 1200161861631865,
+        asanaName: "Cynthia Hug",
+        githubName: "cynhu92",
+    },
+    {
+        asanaId: 1202258098000877,
+        asanaName: "Mariam El Zaatari",
+        githubName: "MariamElZaatari",
+    },
+    {
+        asanaId: 1202395095687177,
+        asanaName: "Amin Abdulkhalek",
+        githubName: "aminabdulkhalek",
+    },
+    {
+        asanaId: 1202852821241548,
+        asanaName: "Hamze Ammar",
+        githubName: "Hamze-Ammar",
+    },
+    {
+        asanaId: 1202852825308828,
+        asanaName: "Hsein Bitar",
+        githubName: "hsein-bitar",
+    },
+];
+
 ;// CONCATENATED MODULE: ./src/index.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -13137,6 +13181,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -13161,6 +13206,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             "";
         const commentBody = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body) || ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.body) || "";
         const reviewState = ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state) || "";
+        const mentionUrl = "https://app.asana.com/0/";
+        mentionUrl.concat("");
         let commentText = "";
         let user = "";
         switch (github.context.eventName) {
@@ -13178,7 +13225,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     commentText =
                         user === "github-actions"
                             ? `${user} commented -> ${commentUrl}`
-                            : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                            : `${users.find((userObj) => userObj.githubName === user)} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 }
                 break;
             case "pull_request_review":
