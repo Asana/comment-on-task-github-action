@@ -4,7 +4,7 @@ import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
 import axios from "./requests/axios";
 import * as REQUESTS from "./constants/requests";
-import {users} from "./constants/users";
+import { users } from "./constants/users";
 
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
 const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
