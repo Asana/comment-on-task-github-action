@@ -13150,27 +13150,29 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        let commentText = "";
-        let user = "";
         const pullRequestDescription = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.body);
         const pullRequestId = ((_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.number) || ((_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.number);
         const pullRequestName = ((_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.title) || ((_f = github.context.payload.issue) === null || _f === void 0 ? void 0 : _f.title);
         const pullRequestURL = ((_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.html_url) || ((_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.html_url);
         const pullRequestState = ((_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.state) || ((_k = github.context.payload.issue) === null || _k === void 0 ? void 0 : _k.state);
         const pullRequestMerged = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.merged) || false;
+        const commentUrl = ((_m = github.context.payload.comment) === null || _m === void 0 ? void 0 : _m.html_url) ||
+            ((_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.html_url) ||
+            "";
+        const commentBody = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body) || ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.body) || "";
+        const reviewState = ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state) || "";
+        let commentText = "";
+        let user = "";
         switch (github.context.eventName) {
-            case "issue_comment": {
-                user = (_m = github.context.payload.comment) === null || _m === void 0 ? void 0 : _m.user.login;
-                const commentUrl = (_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url;
-                let commentBody = (_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body;
+            case "issue_comment":
+                user = (_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login;
                 if (commentBody.includes(">")) {
                     const lines = commentBody.split("\n");
                     const commentBodyLines = lines.filter(function (line) {
                         return line.indexOf(">") !== 0;
                     });
                     commentBodyLines.shift();
-                    commentBody = commentBodyLines.join("");
-                    commentText = `${user} replied:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                    commentText = `${user} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
                 }
                 else {
                     commentText =
@@ -13179,32 +13181,27 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                             : `${user} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 }
                 break;
-            }
-            case "pull_request_review": {
-                user = (_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.user.login;
-                const state = (_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state;
-                const reviewBody = (_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.body;
-                const reviewUrl = (_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.html_url;
-                switch (state) {
+            case "pull_request_review":
+                user = (_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login;
+                switch (reviewState) {
                     case "commented":
                     case "changes_requested":
-                        if (!reviewBody) {
+                        if (!commentBody) {
                             return;
                         }
-                        commentText = `${user} is requesting the following changes:\n\n${reviewBody}\n\nComment URL -> ${reviewUrl}`;
+                        commentText = `${user} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                         break;
                     case "approved":
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${user} ${reviewBody.length === 0
+                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${user} ${commentBody.length === 0
                             ? ``
-                            : `:\n\n ${reviewBody}\n\nComment URL`} -> ${reviewUrl}`;
+                            : `:\n\n ${commentBody}\n\nComment URL`} -> ${commentUrl}`;
                         break;
                     default:
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is ${state} by ${user} -> ${reviewUrl}`;
+                        commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${user} -> ${commentUrl}`;
                         break;
                 }
                 break;
-            }
-            case "pull_request": {
+            case "pull_request":
                 if (github.context.payload.action === "review_requested") {
                     commentText = `${(_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login} is requesting a review from ${(_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login} on PR #${pullRequestId} -> ${pullRequestURL}`;
                 }
@@ -13212,11 +13209,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     commentText = (0,core.getInput)(COMMENT_TEXT);
                 }
                 break;
-            }
-            case "pull_request_review_comment": {
+            case "pull_request_review_comment":
                 commentText = `${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.user.login} is requesting the following changes on line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}:\n\n${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.body}\n\nComment URL -> ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.html_url}`;
                 break;
-            }
         }
         const result = yield requests_axios.post(ACTION_URL, {
             allowedProjects,
