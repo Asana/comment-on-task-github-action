@@ -33,14 +33,14 @@ export const run = async () => {
       context.payload.comment?.body || context.payload.review?.body || "";
     const reviewState = context.payload.review?.state || "";
     const mentionUrl = "https://app.asana.com/0/";
-    mentionUrl.concat("");
 
     let commentText = "";
-    let user = "";
+    let username = "";
 
     switch (context.eventName) {
-      case "issue_comment":
-        user = context.payload.comment?.user.login;
+      case "issue_comment": {
+        username = context.payload.comment?.user.login;
+        let userObj = users.find((user) => user.githubName === username);
         if (commentBody.includes(">")) {
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
@@ -49,49 +49,52 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `${user} replied:\n\n${commentBodyLines.join(
+          commentText = `${username} replied:\n\n${commentBodyLines.join(
             ""
           )}\n\nComment URL -> ${commentUrl}`;
         } else {
           commentText =
-            user === "github-actions"
-              ? `${user} commented -> ${commentUrl}`
-              : `${users.find(
-                  (userObj) => userObj.githubName === user
+            username === "github-actions"
+              ? `${username} commented -> ${commentUrl}`
+              : `${mentionUrl.concat(
+                  userObj?.asanaId!
                 )} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         }
         break;
+      }
       case "pull_request_review":
-        user = context.payload.review?.user.login;
+        username = context.payload.review?.user.login;
         switch (reviewState) {
           case "commented":
           case "changes_requested":
             if (!commentBody) {
               return;
             }
-            commentText = `${user} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            commentText = `${username} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${user} ${
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${username} ${
               commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
             } -> ${commentUrl}`;
             break;
           default:
-            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${user} -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${username} -> ${commentUrl}`;
             break;
         }
         break;
       case "pull_request":
+        username = context.payload.sender?.login;
         if (context.payload.action === "review_requested") {
-          commentText = `${context.payload.sender?.login} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${pullRequestId} -> ${pullRequestURL}`;
+          commentText = `${username} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${pullRequestId} -> ${pullRequestURL}`;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
         }
         break;
       case "pull_request_review_comment":
-        commentText = `${context.payload.comment?.user.login} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+        username = context.payload.comment?.user.login;
+        commentText = `${username} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
         break;
     }
 
