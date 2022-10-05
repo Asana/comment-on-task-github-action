@@ -107,11 +107,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -129,6 +128,18 @@ export const run = async () => {
         commentText = `${userUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
         break;
     }
+
+
+    const wordArray = commentText.split(" ");
+    for (var i= 0; i<wordArray.length; i++) {
+      const word = wordArray[i]
+      if (word[0] === '@') {
+        const mentionObj = users.find((user) => user.githubName === word.substring(1, word.length));
+        const mentionUrl = `https://app.asana.com/0/${mentionObj?.asanaId!}`;
+        wordArray[i] = mentionUrl;
+      }
+    }
+    commentText = wordArray.join(" ");
 
     const result = await axios.post(REQUESTS.ACTION_URL, {
       allowedProjects,
