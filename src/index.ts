@@ -52,10 +52,11 @@ export const run = async () => {
     const asanaTasksLinks = pullRequestDescription?.match(/\bhttps?:\/\/\S+/gi);
     const asanaTasksIds = asanaTasksLinks?.map((link) => {
       const linkArray = link.split("/");
-      if (isNaN(Number(linkArray[linkArray.length - 1]))){ // Check If Link is Attached From Github or Asana
-        return linkArray[linkArray.length - 1];
+      if (isNaN(Number(linkArray[linkArray.length - 1]))) {
+        // Check If Link is Attached From Github or Asana
+        return linkArray[linkArray.length - 2];
       }
-      return linkArray[linkArray.length - 2];
+      return linkArray[linkArray.length - 1];
     });
 
     // Call Axios To Add Collabs
