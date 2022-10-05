@@ -62,7 +62,7 @@ export const run = async () => {
     });
 
     // Call Axios To Add Collabs
-    let collabStatus = [];
+    const collabStatus = [];
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
       const asanaResult = await asanaAxios.post(url, {
@@ -72,7 +72,7 @@ export const run = async () => {
             : [userObj?.asanaId],
         },
       });
-      collabStatus.push({ "taskId": id, "status": asanaResult.status});
+      collabStatus.push({ taskId: id, status: asanaResult.status });
     }
 
     // Get Correct Dynamic Comment
@@ -108,10 +108,11 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+              commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-              } -> ${commentUrl}`;
+            } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
