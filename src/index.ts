@@ -39,7 +39,7 @@ export const run = async () => {
       context.payload.review?.user.login ||
       context.payload.sender?.login;
     const userObj = users.find((user) => user.githubName === username);
-    const mentionUrl = `https://app.asana.com/0/${userObj?.asanaId!}`;
+    const userUrl = `https://app.asana.com/0/${userObj?.asanaId!}`;
 
     const requestedReviewerName =
       context.payload.requested_reviewer?.login || "";
@@ -60,7 +60,7 @@ export const run = async () => {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
       const result2 = await asanaAxios.post(url, {
         data: {
-          followers: [userObj?.asanaId, requestedReviewerObj?.asanaId],
+          followers: requestedReviewerObj ? [userObj?.asanaId, requestedReviewerObj.asanaId] : [userObj?.asanaId],
         },
       });
       console.log("result2", result2);
@@ -78,14 +78,14 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `${mentionUrl} replied:\n\n${commentBodyLines.join(
+          commentText = `${userUrl} replied:\n\n${commentBodyLines.join(
             ""
           )}\n\nComment URL -> ${commentUrl}`;
         } else {
           commentText =
             username === "github-actions"
               ? `${username} commented -> ${commentUrl}`
-              : `${mentionUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+              : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         }
         break;
       }
@@ -96,29 +96,29 @@ export const run = async () => {
             if (!commentBody) {
               return;
             }
-            commentText = `${mentionUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${mentionUrl} ${
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
               commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
             } -> ${commentUrl}`;
             break;
           default:
-            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${mentionUrl} -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
             break;
         }
         break;
       case "pull_request":
         if (context.payload.action === "review_requested") {
-          commentText = `${mentionUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
+          commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
         }
         break;
       case "pull_request_review_comment":
-        commentText = `${mentionUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+        commentText = `${userUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
         break;
     }
 
