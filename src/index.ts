@@ -79,7 +79,7 @@ export const run = async () => {
 
     // Get Followers Ids
     const followersStatus = [];
-    let followers = [userObj?.asanaId];
+    const followers = [userObj?.asanaId];
     if (requestedReviewerObj) {
       followers.push(requestedReviewerObj.asanaId);
     } else if (mentionUserArray.length !== 0) {
