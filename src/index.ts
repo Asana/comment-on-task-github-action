@@ -33,13 +33,19 @@ export const run = async () => {
       context.payload.comment?.body || context.payload.review?.body || "";
     const reviewState = context.payload.review?.state || "";
 
-    const username = context.payload.comment?.user.login || context.payload.review?.user.login || context.payload.sender?.login;
+    const username =
+      context.payload.comment?.user.login ||
+      context.payload.review?.user.login ||
+      context.payload.sender?.login;
     const userObj = users.find((user) => user.githubName === username);
-    const mentionUrl = "https://app.asana.com/0/"+userObj?.asanaId!;
+    const mentionUrl = `https://app.asana.com/0/${userObj?.asanaId!}`;
 
-    const requestedReviewerName = context.payload.requested_reviewer?.login || '';
-    const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
-    const requestedReviewerUrl = "https://app.asana.com/0/"+requestedReviewerObj?.asanaId!;
+    const requestedReviewerName =
+      context.payload.requested_reviewer?.login || "";
+    const requestedReviewerObj = users.find(
+      (user) => user.githubName === requestedReviewerName
+    );
+    const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj?.asanaId!}`;
 
     let commentText = "";
 
