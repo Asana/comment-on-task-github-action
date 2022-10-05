@@ -77,27 +77,26 @@ export const run = async () => {
     }
     commentBody = wordArray.join(" ");
 
-    // Call Axios To Add Collabs
-    const collabStatus = [];
-    let followers = [];
-
+    // Get Followers Ids
+    const followersStatus = [];
+    let followers = [userObj?.asanaId];
     if (requestedReviewerObj) {
-      followers = [userObj?.asanaId, requestedReviewerObj.asanaId];
+      followers.push(requestedReviewerObj.asanaId);
     } else if (mentionUserArray.length !== 0) {
       for (const mentionUserObj of mentionUserArray) {
         followers.push(mentionUserObj?.asanaId);
       }
     }
-    followers.push(userObj?.asanaId);
 
+    // Call Axios To Add Followers
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
-      const asanaResult = await asanaAxios.post(url, {
+      const followersResult = await asanaAxios.post(url, {
         data: {
           followers,
         },
       });
-      collabStatus.push({ taskId: id, status: asanaResult.status });
+      followersStatus.push({ taskId: id, status: followersResult.status });
     }
 
     // Get Correct Dynamic Comment
@@ -169,7 +168,7 @@ export const run = async () => {
       pullRequestMerged,
     });
 
-    setOutput(`collabStatus`, collabStatus);
+    setOutput(`followersStatus`, followersStatus);
     setOutput("commentStatus", commentResult.status);
     setOutput("comment", commentText);
   } catch (error) {

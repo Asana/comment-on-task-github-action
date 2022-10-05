@@ -13266,26 +13266,26 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         commentBody = wordArray.join(" ");
-        // Call Axios To Add Collabs
-        const collabStatus = [];
-        let followers = [];
+        // Get Followers Ids
+        const followersStatus = [];
+        const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
         if (requestedReviewerObj) {
-            followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId, requestedReviewerObj.asanaId];
+            followers.push(requestedReviewerObj.asanaId);
         }
         else if (mentionUserArray.length !== 0) {
             for (const mentionUserObj of mentionUserArray) {
                 followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
             }
         }
-        followers.push(userObj === null || userObj === void 0 ? void 0 : userObj.asanaId);
+        // Call Axios To Add Followers
         for (const id of asanaTasksIds) {
             const url = `${id}${COLLAB_URL}`;
-            const asanaResult = yield requests_asanaAxios.post(url, {
+            const followersResult = yield requests_asanaAxios.post(url, {
                 data: {
                     followers,
                 },
             });
-            collabStatus.push({ taskId: id, status: asanaResult.status });
+            followersStatus.push({ taskId: id, status: followersResult.status });
         }
         // Get Correct Dynamic Comment
         let commentText = "";
@@ -13350,7 +13350,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestState,
             pullRequestMerged,
         });
-        (0,core.setOutput)(`collabStatus`, collabStatus);
+        (0,core.setOutput)(`followersStatus`, followersStatus);
         (0,core.setOutput)("commentStatus", commentResult.status);
         (0,core.setOutput)("comment", commentText);
     }
