@@ -131,7 +131,7 @@ export const run = async () => {
         break;
     }
 
-    const wordArray = commentText.split("[\\n\\s]");
+    const wordArray = commentText.replace("\n", " ").split(" ");
     for (let i = 0; i < wordArray.length; i++) {
       const word = wordArray[i];
       if (word[0] === "@") {
@@ -143,7 +143,7 @@ export const run = async () => {
       }
     }
     console.log("wordArray", wordArray);
-    commentText = wordArray.join(" ");
+    // commentText = wordArray.join(" ");
 
     // Post Comment To Asana
     const commentResult = await axios.post(REQUESTS.ACTION_URL, {
