@@ -30,7 +30,7 @@ export const run = async () => {
       context.payload.comment?.html_url ||
       context.payload.review?.html_url ||
       "";
-    const commentBody =
+    let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const reviewState = context.payload.review?.state || "";
 
@@ -88,7 +88,7 @@ export const run = async () => {
       }
     }
     console.log("wordArray", wordArray);
-    // commentBody = wordArray.join(" ");
+    commentBody = wordArray.join(" ");
 
     // Get Correct Dynamic Comment
     let commentText = "";

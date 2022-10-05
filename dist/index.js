@@ -13233,7 +13233,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const commentUrl = ((_m = github.context.payload.comment) === null || _m === void 0 ? void 0 : _m.html_url) ||
             ((_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.html_url) ||
             "";
-        const commentBody = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body) || ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.body) || "";
+        let commentBody = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body) || ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.body) || "";
         const reviewState = ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state) || "";
         const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
             ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
@@ -13277,7 +13277,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         console.log("wordArray", wordArray);
-        // commentBody = wordArray.join(" ");
+        commentBody = wordArray.join(" ");
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (github.context.eventName) {
