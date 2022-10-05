@@ -13317,7 +13317,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentText = `${userUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.body}\n\nComment URL -> ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.html_url}`;
                 break;
         }
-        const wordArray = commentText.replace("\n", " ").split(" ");
+        const wordArray = commentText.replace("/\n/g", " ").split(" ");
         for (let i = 0; i < wordArray.length; i++) {
             const word = wordArray[i];
             if (word[0] === "@") {

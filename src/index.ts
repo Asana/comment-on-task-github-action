@@ -131,7 +131,7 @@ export const run = async () => {
         break;
     }
 
-    const wordArray = commentText.replace("\n", " ").split(" ");
+    const wordArray = commentText.replace("/\n/g", " ").split(" ");
     for (let i = 0; i < wordArray.length; i++) {
       const word = wordArray[i];
       if (word[0] === "@") {
