@@ -13220,7 +13220,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13266,6 +13266,18 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             });
             collabStatus.push({ taskId: id, status: asanaResult.status });
         }
+        // Add Mentions in Comment Body
+        const wordArray = commentBody.split(" ");
+        for (let i = 0; i < wordArray.length; i++) {
+            const word = wordArray[i];
+            if (word[0] === "@") {
+                const mentionObj = users.find((user) => user.githubName === word.substring(1, word.length));
+                const mentionUrl = `https://app.asana.com/0/${mentionObj === null || mentionObj === void 0 ? void 0 : mentionObj.asanaId}`;
+                wordArray[i] = mentionUrl;
+            }
+        }
+        console.log("wordArray", wordArray);
+        // commentBody = wordArray.join(" ");
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (github.context.eventName) {
@@ -13314,20 +13326,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment":
-                commentText = `${userUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.body}\n\nComment URL -> ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.html_url}`;
+                commentText = `${userUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
         }
-        const wordArray = commentText.replace("/\n/g", " ").split(" ");
-        for (let i = 0; i < wordArray.length; i++) {
-            const word = wordArray[i];
-            if (word[0] === "@") {
-                const mentionObj = users.find((user) => user.githubName === word.substring(1, word.length));
-                const mentionUrl = `https://app.asana.com/0/${mentionObj === null || mentionObj === void 0 ? void 0 : mentionObj.asanaId}`;
-                wordArray[i] = mentionUrl;
-            }
-        }
-        console.log("wordArray", wordArray);
-        // commentText = wordArray.join(" ");
         // Post Comment To Asana
         const commentResult = yield requests_axios.post(ACTION_URL, {
             allowedProjects,
@@ -13347,7 +13348,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_z = error.response) === null || _z === void 0 ? void 0 : _z.data) || "Unknown error");
+            console.log(((_x = error.response) === null || _x === void 0 ? void 0 : _x.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

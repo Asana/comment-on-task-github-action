@@ -75,6 +75,21 @@ export const run = async () => {
       collabStatus.push({ taskId: id, status: asanaResult.status });
     }
 
+    // Add Mentions in Comment Body
+    const wordArray = commentBody.split(" ");
+    for (let i = 0; i < wordArray.length; i++) {
+      const word = wordArray[i];
+      if (word[0] === "@") {
+        const mentionObj = users.find(
+          (user) => user.githubName === word.substring(1, word.length)
+        );
+        const mentionUrl = `https://app.asana.com/0/${mentionObj?.asanaId!}`;
+        wordArray[i] = mentionUrl;
+      }
+    }
+    console.log("wordArray", wordArray);
+    // commentBody = wordArray.join(" ");
+
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (context.eventName) {
@@ -127,23 +142,9 @@ export const run = async () => {
         }
         break;
       case "pull_request_review_comment":
-        commentText = `${userUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+        commentText = `${userUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         break;
     }
-
-    const wordArray = commentText.replace("/\n/g", " ").split(" ");
-    for (let i = 0; i < wordArray.length; i++) {
-      const word = wordArray[i];
-      if (word[0] === "@") {
-        const mentionObj = users.find(
-          (user) => user.githubName === word.substring(1, word.length)
-        );
-        const mentionUrl = `https://app.asana.com/0/${mentionObj?.asanaId!}`;
-        wordArray[i] = mentionUrl;
-      }
-    }
-    console.log("wordArray", wordArray);
-    // commentText = wordArray.join(" ");
 
     // Post Comment To Asana
     const commentResult = await axios.post(REQUESTS.ACTION_URL, {
