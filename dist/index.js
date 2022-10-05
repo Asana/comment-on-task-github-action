@@ -13254,7 +13254,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const url = `${id}${COLLAB_URL}`;
             const result2 = yield requests_asanaAxios.post(url, {
                 data: {
-                    followers: ["1202258098000877"],
+                    followers: [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId, requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId],
                 },
             });
             console.log("result2", result2);
