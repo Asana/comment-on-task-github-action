@@ -13244,7 +13244,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId}`;
         // Get Task IDs From URLs
-        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\S+/gi);
+        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
         const asanaTasksIds = asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
             const linkArray = link.split("/");
             if (isNaN(Number(linkArray[linkArray.length - 1]))) {
