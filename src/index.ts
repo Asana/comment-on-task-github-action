@@ -63,7 +63,7 @@ export const run = async () => {
 
     // Add Mentions in Comment Body
     const wordArray = commentBody.split(" ");
-    let mentionUserArray = [];
+    const mentionUserArray = [];
     for (let i = 0; i < wordArray.length; i++) {
       const word = wordArray[i];
       if (word[0] === "@") {
@@ -81,9 +81,9 @@ export const run = async () => {
     const collabStatus = [];
     let followers = [];
 
-    if (requestedReviewerObj){
+    if (requestedReviewerObj) {
       followers = [userObj?.asanaId, requestedReviewerObj.asanaId];
-    } else if (mentionUserArray.length !== 0){
+    } else if (mentionUserArray.length !== 0) {
       for (const mentionUserObj of mentionUserArray) {
         followers.push(mentionUserObj?.asanaId);
       }
@@ -133,10 +133,11 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+              commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-              } -> ${commentUrl}`;
+            } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
