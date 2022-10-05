@@ -58,9 +58,11 @@ export const run = async () => {
     // Call Axios To Add Collabs
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
-      const result2 = await asanaAxios.post(url,{data: {
-        followers: ["1202258098000877"],
-      }});
+      const result2 = await asanaAxios.post(url, {
+        data: {
+          followers: ["1202258098000877"],
+        },
+      });
       console.log("result2", result2);
     }
 
