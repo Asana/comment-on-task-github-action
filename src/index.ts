@@ -60,7 +60,9 @@ export const run = async () => {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
       const result2 = await asanaAxios.post(url, {
         data: {
-          followers: requestedReviewerObj ? [userObj?.asanaId, requestedReviewerObj.asanaId] : [userObj?.asanaId],
+          followers: requestedReviewerObj
+            ? [userObj?.asanaId, requestedReviewerObj.asanaId]
+            : [userObj?.asanaId],
         },
       });
       console.log("result2", result2);
