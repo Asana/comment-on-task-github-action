@@ -13191,7 +13191,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13206,61 +13206,62 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             "";
         const commentBody = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body) || ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.body) || "";
         const reviewState = ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state) || "";
-        const mentionUrl = "https://app.asana.com/0/";
+        const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
+            ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
+            ((_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login);
+        const userObj = users.find((user) => user.githubName === username);
+        const mentionUrl = `https://app.asana.com/0/${userObj === null || userObj === void 0 ? void 0 : userObj.asanaId}`;
+        const requestedReviewerName = ((_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login) || "";
+        const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
+        const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId}`;
         let commentText = "";
-        let username = "";
         switch (github.context.eventName) {
             case "issue_comment": {
-                username = (_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login;
-                const userObj = users.find((user) => user.githubName === username);
                 if (commentBody.includes(">")) {
                     const lines = commentBody.split("\n");
                     const commentBodyLines = lines.filter(function (line) {
                         return line.indexOf(">") !== 0;
                     });
                     commentBodyLines.shift();
-                    commentText = `${username} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
+                    commentText = `${mentionUrl} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
                 }
                 else {
                     commentText =
                         username === "github-actions"
                             ? `${username} commented -> ${commentUrl}`
-                            : `${mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaId)} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                            : `${mentionUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 }
                 break;
             }
             case "pull_request_review":
-                username = (_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login;
                 switch (reviewState) {
                     case "commented":
                     case "changes_requested":
                         if (!commentBody) {
                             return;
                         }
-                        commentText = `${username} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                        commentText = `${mentionUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                         break;
                     case "approved":
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${username} ${commentBody.length === 0
+                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${mentionUrl} ${commentBody.length === 0
                             ? ``
                             : `:\n\n ${commentBody}\n\nComment URL`} -> ${commentUrl}`;
                         break;
                     default:
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${username} -> ${commentUrl}`;
+                        commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${mentionUrl} -> ${commentUrl}`;
                         break;
                 }
                 break;
             case "pull_request":
-                username = (_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login;
                 if (github.context.payload.action === "review_requested") {
-                    commentText = `${username} is requesting a review from ${(_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login} on PR #${pullRequestId} -> ${pullRequestURL}`;
+                    commentText = `${mentionUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
                 }
                 else {
                     commentText = (0,core.getInput)(COMMENT_TEXT);
                 }
                 break;
             case "pull_request_review_comment":
-                username = (_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.user.login;
-                commentText = `${username} is requesting the following changes on line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}:\n\n${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.body}\n\nComment URL -> ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.html_url}`;
+                commentText = `${mentionUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.body}\n\nComment URL -> ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.html_url}`;
                 break;
         }
         const result = yield requests_axios.post(ACTION_URL, {
@@ -13280,7 +13281,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_0 = error.response) === null || _0 === void 0 ? void 0 : _0.data) || "Unknown error");
+            console.log(((_z = error.response) === null || _z === void 0 ? void 0 : _z.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

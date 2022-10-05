@@ -32,15 +32,19 @@ export const run = async () => {
     const commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const reviewState = context.payload.review?.state || "";
-    const mentionUrl = "https://app.asana.com/0/";
+
+    const username = context.payload.comment?.user.login || context.payload.review?.user.login || context.payload.sender?.login;
+    const userObj = users.find((user) => user.githubName === username);
+    const mentionUrl = "https://app.asana.com/0/"+userObj?.asanaId!;
+
+    const requestedReviewerName = context.payload.requested_reviewer?.login || '';
+    const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
+    const requestedReviewerUrl = "https://app.asana.com/0/"+requestedReviewerObj?.asanaId!;
 
     let commentText = "";
-    let username = "";
 
     switch (context.eventName) {
       case "issue_comment": {
-        username = context.payload.comment?.user.login;
-        const userObj = users.find((user) => user.githubName === username);
         if (commentBody.includes(">")) {
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
@@ -49,52 +53,47 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `${username} replied:\n\n${commentBodyLines.join(
+          commentText = `${mentionUrl} replied:\n\n${commentBodyLines.join(
             ""
           )}\n\nComment URL -> ${commentUrl}`;
         } else {
           commentText =
             username === "github-actions"
               ? `${username} commented -> ${commentUrl}`
-              : `${mentionUrl.concat(
-                  userObj?.asanaId!
-                )} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+              : `${mentionUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         }
         break;
       }
       case "pull_request_review":
-        username = context.payload.review?.user.login;
         switch (reviewState) {
           case "commented":
           case "changes_requested":
             if (!commentBody) {
               return;
             }
-            commentText = `${username} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            commentText = `${mentionUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${username} ${
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${mentionUrl} ${
               commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
             } -> ${commentUrl}`;
             break;
           default:
-            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${username} -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${mentionUrl} -> ${commentUrl}`;
             break;
         }
         break;
       case "pull_request":
-        username = context.payload.sender?.login;
         if (context.payload.action === "review_requested") {
-          commentText = `${username} is requesting a review from ${context.payload.requested_reviewer?.login} on PR #${pullRequestId} -> ${pullRequestURL}`;
+          commentText = `${mentionUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
         }
         break;
       case "pull_request_review_comment":
-        username = context.payload.comment?.user.login;
-        commentText = `${username} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
+        commentText = `${mentionUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${context.payload.comment?.body}\n\nComment URL -> ${context.payload.comment?.html_url}`;
         break;
     }
 
