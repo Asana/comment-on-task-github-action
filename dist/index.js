@@ -13101,6 +13101,8 @@ const BASE_URL = "https://github.integrations.asana.plus/custom/v1";
 const ACTION_URL = "actions/comment";
 const RETRIES = 3;
 const RETRY_DELAY = 1000;
+const ASANA_URL = "https://app.asana.com/api/1.0/tasks/";
+const COLLAB_URL = "/addFollowers";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
@@ -13126,6 +13128,31 @@ axios_retry_default()(axiosInstance, {
     },
 });
 /* harmony default export */ const requests_axios = (axiosInstance);
+
+;// CONCATENATED MODULE: ./src/requests/asanaAxios.ts
+
+
+
+
+
+const asanaAxios = axios_default().create({
+    baseURL: ASANA_URL,
+    headers: {
+        Authorization: `Bearer ${(0,core.getInput)(ASANA_SECRET)}`,
+    },
+});
+axios_retry_default()(asanaAxios, {
+    retries: RETRIES,
+    retryDelay: (retryCount) => retryCount * RETRY_DELAY,
+    retryCondition: (error) => {
+        var _a;
+        const status = (_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status;
+        if (!status)
+            return true;
+        return String(status).startsWith("50");
+    },
+});
+/* harmony default export */ const requests_asanaAxios = (asanaAxios);
 
 ;// CONCATENATED MODULE: ./src/constants/users.ts
 const users = [
@@ -13188,6 +13215,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -13214,6 +13242,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const requestedReviewerName = ((_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId}`;
+        // Get Task IDs From URLs
+        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\S+/gi);
+        const asanaTasksIds = asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
+            const linkArray = link.split("/");
+            return linkArray[linkArray.length - 2];
+        });
+        // Call Axios To Add Collabs
+        for (const id of asanaTasksIds) {
+            const url = `${id}${COLLAB_URL}`;
+            const result2 = yield requests_asanaAxios.post(url, {
+                followers: ["1202258098000877"],
+            });
+            console.log("result2", result2);
+        }
         let commentText = "";
         switch (github.context.eventName) {
             case "issue_comment": {
@@ -13277,7 +13319,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         (0,core.setOutput)("status", result.status);
         (0,core.setOutput)("comment", commentText);
-        (0,core.setOutput)("asanaTasks", pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\S+/gi));
+        (0,core.setOutput)("asanaTasks", asanaTasksLinks);
     }
     catch (error) {
         if (isAxiosError(error)) {
