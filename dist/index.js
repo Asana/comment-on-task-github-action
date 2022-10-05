@@ -13087,6 +13087,7 @@ const isAxiosError = (e) => e.isAxiosError;
 ;// CONCATENATED MODULE: ./src/constants/inputs.ts
 const COMMENT_TEXT = "comment-text";
 const ASANA_SECRET = "asana-secret";
+const ASANA_PAT = "asana-pat";
 const ALLOWED_PROJECTS = "allowed-projects";
 const BLOCKED_PROJECTS = "blocked-projects";
 
@@ -13138,7 +13139,7 @@ axios_retry_default()(axiosInstance, {
 const asanaAxios = axios_default().create({
     baseURL: ASANA_URL,
     headers: {
-        Authorization: `Bearer ${(0,core.getInput)(ASANA_SECRET)}`,
+        Authorization: `Bearer ${(0,core.getInput)(ASANA_PAT)}`,
     },
 });
 axios_retry_default()(asanaAxios, {
