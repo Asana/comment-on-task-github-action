@@ -13253,7 +13253,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const id of asanaTasksIds) {
             const url = `${id}${COLLAB_URL}`;
             const result2 = yield requests_asanaAxios.post(url, {
-                followers: ["1202258098000877"],
+                data: {
+                    followers: ["1202258098000877"],
+                },
             });
             console.log("result2", result2);
         }
