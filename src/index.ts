@@ -49,7 +49,9 @@ export const run = async () => {
     const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj?.asanaId!}`;
 
     // Get Task IDs From URLs
-    const asanaTasksLinks = pullRequestDescription?.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
+    const asanaTasksLinks = pullRequestDescription?.match(
+      /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
+    );
     const asanaTasksIds = asanaTasksLinks?.map((link) => {
       const linkArray = link.split("/");
       if (isNaN(Number(linkArray[linkArray.length - 1]))) {
