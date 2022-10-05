@@ -13277,6 +13277,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         (0,core.setOutput)("status", result.status);
         (0,core.setOutput)("comment", commentText);
+        (0,core.setOutput)("asanaTasks", pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\S+/gi));
     }
     catch (error) {
         if (isAxiosError(error)) {
