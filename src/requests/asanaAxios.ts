@@ -1,13 +1,13 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
 import { getInput } from "@actions/core";
-import { ASANA_SECRET } from "../constants/inputs";
+import { ASANA_PAT } from "../constants/inputs";
 import * as REQUESTS from "../constants/requests";
 
 const asanaAxios = axios.create({
   baseURL: REQUESTS.ASANA_URL,
   headers: {
-    Authorization: `Bearer ${getInput(ASANA_SECRET)}`,
+    Authorization: `Bearer ${getInput(ASANA_PAT)}`,
   },
 });
 
