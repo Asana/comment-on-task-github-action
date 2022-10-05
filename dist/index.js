@@ -13253,31 +13253,40 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             return linkArray[linkArray.length - 1];
         });
+        // Add Mentions in Comment Body
+        const wordArray = commentBody.split(" ");
+        const mentionUserArray = [];
+        for (let i = 0; i < wordArray.length; i++) {
+            const word = wordArray[i];
+            if (word[0] === "@") {
+                const mentionUserObj = users.find((user) => user.githubName === word.substring(1, word.length));
+                const mentionUserUrl = `https://app.asana.com/0/${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId}`;
+                wordArray[i] = mentionUserUrl;
+                mentionUserArray.push(mentionUserObj);
+            }
+        }
+        commentBody = wordArray.join(" ");
         // Call Axios To Add Collabs
         const collabStatus = [];
+        let followers = [];
+        if (requestedReviewerObj) {
+            followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId, requestedReviewerObj.asanaId];
+        }
+        else if (mentionUserArray.length !== 0) {
+            for (const mentionUserObj of mentionUserArray) {
+                followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
+            }
+        }
+        followers.push(userObj === null || userObj === void 0 ? void 0 : userObj.asanaId);
         for (const id of asanaTasksIds) {
             const url = `${id}${COLLAB_URL}`;
             const asanaResult = yield requests_asanaAxios.post(url, {
                 data: {
-                    followers: requestedReviewerObj
-                        ? [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId, requestedReviewerObj.asanaId]
-                        : [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId],
+                    followers,
                 },
             });
             collabStatus.push({ taskId: id, status: asanaResult.status });
         }
-        // Add Mentions in Comment Body
-        const wordArray = commentBody.split(" ");
-        for (let i = 0; i < wordArray.length; i++) {
-            const word = wordArray[i];
-            if (word[0] === "@") {
-                const mentionObj = users.find((user) => user.githubName === word.substring(1, word.length));
-                const mentionUrl = `https://app.asana.com/0/${mentionObj === null || mentionObj === void 0 ? void 0 : mentionObj.asanaId}`;
-                wordArray[i] = mentionUrl;
-            }
-        }
-        console.log("wordArray", wordArray);
-        commentBody = wordArray.join(" ");
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (github.context.eventName) {

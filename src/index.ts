@@ -61,34 +61,44 @@ export const run = async () => {
       return linkArray[linkArray.length - 1];
     });
 
+    // Add Mentions in Comment Body
+    const wordArray = commentBody.split(" ");
+    let mentionUserArray = [];
+    for (let i = 0; i < wordArray.length; i++) {
+      const word = wordArray[i];
+      if (word[0] === "@") {
+        const mentionUserObj = users.find(
+          (user) => user.githubName === word.substring(1, word.length)
+        );
+        const mentionUserUrl = `https://app.asana.com/0/${mentionUserObj?.asanaId!}`;
+        wordArray[i] = mentionUserUrl;
+        mentionUserArray.push(mentionUserObj);
+      }
+    }
+    commentBody = wordArray.join(" ");
+
     // Call Axios To Add Collabs
     const collabStatus = [];
+    let followers = [];
+
+    if (requestedReviewerObj){
+      followers = [userObj?.asanaId, requestedReviewerObj.asanaId];
+    } else if (mentionUserArray.length !== 0){
+      for (const mentionUserObj of mentionUserArray) {
+        followers.push(mentionUserObj?.asanaId);
+      }
+    }
+    followers.push(userObj?.asanaId);
+
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
       const asanaResult = await asanaAxios.post(url, {
         data: {
-          followers: requestedReviewerObj
-            ? [userObj?.asanaId, requestedReviewerObj.asanaId]
-            : [userObj?.asanaId],
+          followers,
         },
       });
       collabStatus.push({ taskId: id, status: asanaResult.status });
     }
-
-    // Add Mentions in Comment Body
-    const wordArray = commentBody.split(" ");
-    for (let i = 0; i < wordArray.length; i++) {
-      const word = wordArray[i];
-      if (word[0] === "@") {
-        const mentionObj = users.find(
-          (user) => user.githubName === word.substring(1, word.length)
-        );
-        const mentionUrl = `https://app.asana.com/0/${mentionObj?.asanaId!}`;
-        wordArray[i] = mentionUrl;
-      }
-    }
-    console.log("wordArray", wordArray);
-    commentBody = wordArray.join(" ");
 
     // Get Correct Dynamic Comment
     let commentText = "";
@@ -123,11 +133,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
