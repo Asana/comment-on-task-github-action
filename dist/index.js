@@ -13324,6 +13324,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 wordArray[i] = mentionUrl;
             }
         }
+        console.log(wordArray);
         commentText = wordArray.join(" ");
         const result = yield requests_axios.post(ACTION_URL, {
             allowedProjects,

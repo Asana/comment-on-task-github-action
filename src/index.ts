@@ -141,6 +141,7 @@ export const run = async () => {
         wordArray[i] = mentionUrl;
       }
     }
+    console.log(wordArray);
     commentText = wordArray.join(" ");
 
     const result = await axios.post(REQUESTS.ACTION_URL, {
