@@ -131,7 +131,7 @@ export const run = async () => {
         break;
     }
 
-    const wordArray = commentText.split(" ");
+    const wordArray = commentText.split("[\\n\\s]");
     for (let i = 0; i < wordArray.length; i++) {
       const word = wordArray[i];
       if (word[0] === "@") {
@@ -161,7 +161,6 @@ export const run = async () => {
     setOutput(`collabStatus`, collabStatus);
     setOutput("commentStatus", commentResult.status);
     setOutput("comment", commentText);
-    setOutput("asanaTasks", asanaTasksLinks);
   } catch (error) {
     if (utils.isAxiosError(error)) {
       console.log(error.response);
