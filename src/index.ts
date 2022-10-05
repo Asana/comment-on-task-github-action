@@ -3,6 +3,7 @@ import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
 import axios from "./requests/axios";
+import asanaAxios from "./requests/asanaAxios";
 import * as REQUESTS from "./constants/requests";
 import { users } from "./constants/users";
 
@@ -46,6 +47,22 @@ export const run = async () => {
       (user) => user.githubName === requestedReviewerName
     );
     const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj?.asanaId!}`;
+
+    // Get Task IDs From URLs
+    const asanaTasksLinks = pullRequestDescription?.match(/\bhttps?:\/\/\S+/gi);
+    const asanaTasksIds = asanaTasksLinks?.map((link) => {
+      const linkArray = link.split("/");
+      return linkArray[linkArray.length - 2];
+    });
+
+    // Call Axios To Add Collabs
+    for (const id of asanaTasksIds!) {
+      const url = `${id}${REQUESTS.COLLAB_URL}`;
+      const result2 = await asanaAxios.post(url, {
+        followers: ["1202258098000877"],
+      });
+      console.log("result2", result2);
+    }
 
     let commentText = "";
 
@@ -116,10 +133,7 @@ export const run = async () => {
     });
     setOutput("status", result.status);
     setOutput("comment", commentText);
-    setOutput(
-      "asanaTasks",
-      pullRequestDescription?.match(/\bhttps?:\/\/\S+/gi)
-    );
+    setOutput("asanaTasks", asanaTasksLinks);
   } catch (error) {
     if (utils.isAxiosError(error)) {
       console.log(error.response);
