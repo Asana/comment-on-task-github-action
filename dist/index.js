@@ -13265,6 +13265,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 mentionUserArray.push(mentionUserObj);
             }
         }
+        console.log(wordArray);
         commentBody = wordArray.join(" ");
         // Get Followers Ids
         const followersStatus = [];

@@ -75,6 +75,7 @@ export const run = async () => {
         mentionUserArray.push(mentionUserObj);
       }
     }
+    console.log(wordArray);
     commentBody = wordArray.join(" ");
 
     // Get Followers Ids
