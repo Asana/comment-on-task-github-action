@@ -116,7 +116,10 @@ export const run = async () => {
     });
     setOutput("status", result.status);
     setOutput("comment", commentText);
-    setOutput("asanaTasks", pullRequestDescription?.match(/\bhttps?:\/\/\S+/gi));
+    setOutput(
+      "asanaTasks",
+      pullRequestDescription?.match(/\bhttps?:\/\/\S+/gi)
+    );
   } catch (error) {
     if (utils.isAxiosError(error)) {
       console.log(error.response);
