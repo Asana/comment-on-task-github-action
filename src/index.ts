@@ -62,20 +62,21 @@ export const run = async () => {
     });
 
     // Call Axios To Add Collabs
+    let collabStatus = [];
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
-      const result2 = await asanaAxios.post(url, {
+      const asanaResult = await asanaAxios.post(url, {
         data: {
           followers: requestedReviewerObj
             ? [userObj?.asanaId, requestedReviewerObj.asanaId]
             : [userObj?.asanaId],
         },
       });
-      console.log("result2", result2);
+      collabStatus.push({ "taskId": id, "status": asanaResult.status});
     }
 
+    // Get Correct Dynamic Comment
     let commentText = "";
-
     switch (context.eventName) {
       case "issue_comment": {
         if (commentBody.includes(">")) {
@@ -107,11 +108,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -141,10 +141,11 @@ export const run = async () => {
         wordArray[i] = mentionUrl;
       }
     }
-    console.log(wordArray);
+    console.log("wordArray", wordArray);
     commentText = wordArray.join(" ");
 
-    const result = await axios.post(REQUESTS.ACTION_URL, {
+    // Post Comment To Asana
+    const commentResult = await axios.post(REQUESTS.ACTION_URL, {
       allowedProjects,
       blockedProjects,
       commentText,
@@ -155,7 +156,9 @@ export const run = async () => {
       pullRequestState,
       pullRequestMerged,
     });
-    setOutput("status", result.status);
+
+    setOutput(`collabStatus`, collabStatus);
+    setOutput("commentStatus", commentResult.status);
     setOutput("comment", commentText);
     setOutput("asanaTasks", asanaTasksLinks);
   } catch (error) {

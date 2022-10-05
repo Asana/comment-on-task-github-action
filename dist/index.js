@@ -13254,17 +13254,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             return linkArray[linkArray.length - 1];
         });
         // Call Axios To Add Collabs
+        const collabStatus = [];
         for (const id of asanaTasksIds) {
             const url = `${id}${COLLAB_URL}`;
-            const result2 = yield requests_asanaAxios.post(url, {
+            const asanaResult = yield requests_asanaAxios.post(url, {
                 data: {
                     followers: requestedReviewerObj
                         ? [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId, requestedReviewerObj.asanaId]
                         : [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId],
                 },
             });
-            console.log("result2", result2);
+            collabStatus.push({ taskId: id, status: asanaResult.status });
         }
+        // Get Correct Dynamic Comment
         let commentText = "";
         switch (github.context.eventName) {
             case "issue_comment": {
@@ -13324,9 +13326,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 wordArray[i] = mentionUrl;
             }
         }
-        console.log(wordArray);
+        console.log("wordArray", wordArray);
         commentText = wordArray.join(" ");
-        const result = yield requests_axios.post(ACTION_URL, {
+        // Post Comment To Asana
+        const commentResult = yield requests_axios.post(ACTION_URL, {
             allowedProjects,
             blockedProjects,
             commentText,
@@ -13337,7 +13340,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestState,
             pullRequestMerged,
         });
-        (0,core.setOutput)("status", result.status);
+        (0,core.setOutput)(`collabStatus`, collabStatus);
+        (0,core.setOutput)("commentStatus", commentResult.status);
         (0,core.setOutput)("comment", commentText);
         (0,core.setOutput)("asanaTasks", asanaTasksLinks);
     }
