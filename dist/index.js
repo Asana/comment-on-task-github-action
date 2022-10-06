@@ -13243,16 +13243,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const requestedReviewerName = ((_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId}`;
-        // Get Task IDs From URLs
-        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
-        const asanaTasksIds = asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
-            const linkArray = link.split("/");
-            if (isNaN(Number(linkArray[linkArray.length - 1]))) {
-                // Check If Link is Attached From Github or Asana
-                return linkArray[linkArray.length - 2];
-            }
-            return linkArray[linkArray.length - 1];
-        });
         // Add Mentions in Comment Body
         const wordArray = commentBody.split(" ");
         const mentionUserArray = [];
@@ -13266,6 +13256,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         commentBody = wordArray.join(" ");
+        // Get Task IDs From URLs
+        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
+        const asanaTasksIds = asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
+            const linkArray = link.split("/");
+            if (isNaN(Number(linkArray[linkArray.length - 1]))) {
+                // Check If Link is Attached From Github or Asana
+                return linkArray[linkArray.length - 2];
+            }
+            return linkArray[linkArray.length - 1];
+        });
         // Get Followers Ids
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
@@ -13277,7 +13277,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
             }
         }
-        // Call Axios To Add Followers
+        // Call Axios To Add Followers To the Tasks
         for (const id of asanaTasksIds) {
             const url = `${id}${COLLAB_URL}`;
             const followersResult = yield requests_asanaAxios.post(url, {

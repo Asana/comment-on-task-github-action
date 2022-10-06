@@ -1,6 +1,6 @@
 export const users = [
   {
-    asanaId: "1992899177766", // https://app.asana.com/0/user_gid
+    asanaId: "1992899177766",
     asanaName: "Nathan",
     githubName: "tylerdigital",
   },
