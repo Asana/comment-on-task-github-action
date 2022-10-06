@@ -13222,6 +13222,7 @@ const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
     try {
+        console.log(github.context.payload);
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         const pullRequestDescription = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.body);
