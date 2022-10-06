@@ -61,10 +61,9 @@ export const run = async () => {
     }
 
     // Get Mentioned Users In Comment
-    const commentBody =
+    let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const mentions = commentBody.match(/@\S+/gi); // @user1 @user2
-    console.log("mentions", mentions);
     for (const mention of mentions) {
       // Add to Followers
       const mentionUserObj = users.find(
@@ -73,7 +72,7 @@ export const run = async () => {
       followers.push(mentionUserObj?.asanaId);
       // Add To Comment
       const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaId!);
-      commentBody.replace(mention, mentionUserUrl);
+      commentBody = commentBody.replace(mention, mentionUserUrl);
     }
 
     // Get Task IDs From PR Description
@@ -90,7 +89,6 @@ export const run = async () => {
     });
 
     // Call Asana Axios To Add Followers To the Tasks
-    console.log("followers", followers);
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.FOLLOWER_URL}`;
       const followersResult = await asanaAxios.post(url, {
