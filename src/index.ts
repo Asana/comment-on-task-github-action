@@ -64,6 +64,7 @@ export const run = async () => {
     const commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const mentions = commentBody.match(/@\S+/gi); // @user1 @user2
+    console.log('mentions', mentions);
     for (const mention of mentions) {
       // Add to Followers
       const mentionUserObj = users.find(
@@ -89,6 +90,7 @@ export const run = async () => {
     });
 
     // Call Asana Axios To Add Followers To the Tasks
+    console.log('followers', followers);
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.FOLLOWER_URL}`;
       const followersResult = await asanaAxios.post(url, {
