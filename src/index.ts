@@ -86,7 +86,7 @@ export const run = async () => {
         return linkArray[linkArray.length - 2];
       }
       return linkArray[linkArray.length - 1];
-    });
+    }) || [];
 
     // Call Asana Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
