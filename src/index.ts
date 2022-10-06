@@ -63,7 +63,7 @@ export const run = async () => {
     // Get Mentioned Users In Comment
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
-    const mentions = commentBody.match(/@\S+/gi); // @user1 @user2
+    const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
     for (const mention of mentions) {
       // Add to Followers
       const mentionUserObj = users.find(

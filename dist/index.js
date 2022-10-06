@@ -13255,7 +13255,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Mentioned Users In Comment
         let commentBody = ((_u = github.context.payload.comment) === null || _u === void 0 ? void 0 : _u.body) || ((_v = github.context.payload.review) === null || _v === void 0 ? void 0 : _v.body) || "";
-        const mentions = commentBody.match(/@\S+/gi); // @user1 @user2
+        const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
         for (const mention of mentions) {
             // Add to Followers
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
