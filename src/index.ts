@@ -2,7 +2,7 @@ import { getInput, setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
-// import axios from "./requests/axios";
+import axios from "./requests/axios";
 import asanaAxios from "./requests/asanaAxios";
 import * as REQUESTS from "./constants/requests";
 import { users } from "./constants/users";
@@ -22,9 +22,9 @@ export const run = async () => {
       context.payload.pull_request?.title || context.payload.issue?.title;
     const pullRequestURL =
       context.payload.pull_request?.html_url || context.payload.issue?.html_url;
-    // const pullRequestState =
-    //   context.payload.pull_request?.state || context.payload.issue?.state;
-    // const pullRequestMerged = context.payload.pull_request?.merged || false;
+    const pullRequestState =
+      context.payload.pull_request?.state || context.payload.issue?.state;
+    const pullRequestMerged = context.payload.pull_request?.merged || false;
 
     const commentUrl =
       context.payload.comment?.html_url ||
@@ -75,7 +75,6 @@ export const run = async () => {
         mentionUserArray.push(mentionUserObj);
       }
     }
-    console.log(wordArray);
     commentBody = wordArray.join(" ");
 
     // Get Followers Ids
@@ -157,20 +156,20 @@ export const run = async () => {
     }
 
     // Post Comment To Asana
-    // const commentResult = await axios.post(REQUESTS.ACTION_URL, {
-    //   allowedProjects,
-    //   blockedProjects,
-    //   commentText,
-    //   pullRequestDescription,
-    //   pullRequestId,
-    //   pullRequestName,
-    //   pullRequestURL,
-    //   pullRequestState,
-    //   pullRequestMerged,
-    // });
+    const commentResult = await axios.post(REQUESTS.ACTION_URL, {
+      allowedProjects,
+      blockedProjects,
+      commentText,
+      pullRequestDescription,
+      pullRequestId,
+      pullRequestName,
+      pullRequestURL,
+      pullRequestState,
+      pullRequestMerged,
+    });
 
     setOutput(`followersStatus`, followersStatus);
-    // setOutput("commentStatus", commentResult.status);
+    setOutput("commentStatus", commentResult.status);
     setOutput("comment", commentText);
   } catch (error) {
     if (utils.isAxiosError(error)) {

@@ -13105,6 +13105,31 @@ const RETRY_DELAY = 1000;
 const ASANA_URL = "https://app.asana.com/api/1.0/tasks/";
 const COLLAB_URL = "/addFollowers";
 
+;// CONCATENATED MODULE: ./src/requests/axios.ts
+
+
+
+
+
+const axiosInstance = axios_default().create({
+    baseURL: BASE_URL,
+    headers: {
+        Authorization: `Bearer ${(0,core.getInput)(ASANA_SECRET)}`,
+    },
+});
+axios_retry_default()(axiosInstance, {
+    retries: RETRIES,
+    retryDelay: (retryCount) => retryCount * RETRY_DELAY,
+    retryCondition: (error) => {
+        var _a;
+        const status = (_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status;
+        if (!status)
+            return true;
+        return String(status).startsWith("50");
+    },
+});
+/* harmony default export */ const requests_axios = (axiosInstance);
+
 ;// CONCATENATED MODULE: ./src/requests/asanaAxios.ts
 
 
@@ -13188,14 +13213,14 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-// import axios from "./requests/axios";
+
 
 
 
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
     try {
         validateTrigger(github.context.eventName);
         validateProjectLists(allowedProjects, blockedProjects);
@@ -13203,20 +13228,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const pullRequestId = ((_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.number) || ((_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.number);
         const pullRequestName = ((_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.title) || ((_f = github.context.payload.issue) === null || _f === void 0 ? void 0 : _f.title);
         const pullRequestURL = ((_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.html_url) || ((_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.html_url);
-        // const pullRequestState =
-        //   context.payload.pull_request?.state || context.payload.issue?.state;
-        // const pullRequestMerged = context.payload.pull_request?.merged || false;
-        const commentUrl = ((_j = github.context.payload.comment) === null || _j === void 0 ? void 0 : _j.html_url) ||
-            ((_k = github.context.payload.review) === null || _k === void 0 ? void 0 : _k.html_url) ||
+        const pullRequestState = ((_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.state) || ((_k = github.context.payload.issue) === null || _k === void 0 ? void 0 : _k.state);
+        const pullRequestMerged = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.merged) || false;
+        const commentUrl = ((_m = github.context.payload.comment) === null || _m === void 0 ? void 0 : _m.html_url) ||
+            ((_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.html_url) ||
             "";
-        let commentBody = ((_l = github.context.payload.comment) === null || _l === void 0 ? void 0 : _l.body) || ((_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.body) || "";
-        const reviewState = ((_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.state) || "";
-        const username = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.user.login) ||
-            ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.user.login) ||
-            ((_r = github.context.payload.sender) === null || _r === void 0 ? void 0 : _r.login);
+        let commentBody = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.body) || ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.body) || "";
+        const reviewState = ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.state) || "";
+        const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
+            ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
+            ((_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = `https://app.asana.com/0/${userObj === null || userObj === void 0 ? void 0 : userObj.asanaId}`;
-        const requestedReviewerName = ((_s = github.context.payload.requested_reviewer) === null || _s === void 0 ? void 0 : _s.login) || "";
+        const requestedReviewerName = ((_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId}`;
         // Get Task IDs From URLs
@@ -13241,7 +13265,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 mentionUserArray.push(mentionUserObj);
             }
         }
-        console.log(wordArray);
         commentBody = wordArray.join(" ");
         // Get Followers Ids
         const followersStatus = [];
@@ -13312,29 +13335,29 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment":
-                commentText = `${userUrl} is requesting the following changes on line ${(_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                commentText = `${userUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
         }
         // Post Comment To Asana
-        // const commentResult = await axios.post(REQUESTS.ACTION_URL, {
-        //   allowedProjects,
-        //   blockedProjects,
-        //   commentText,
-        //   pullRequestDescription,
-        //   pullRequestId,
-        //   pullRequestName,
-        //   pullRequestURL,
-        //   pullRequestState,
-        //   pullRequestMerged,
-        // });
+        const commentResult = yield requests_axios.post(ACTION_URL, {
+            allowedProjects,
+            blockedProjects,
+            commentText,
+            pullRequestDescription,
+            pullRequestId,
+            pullRequestName,
+            pullRequestURL,
+            pullRequestState,
+            pullRequestMerged,
+        });
         (0,core.setOutput)(`followersStatus`, followersStatus);
-        // setOutput("commentStatus", commentResult.status);
+        (0,core.setOutput)("commentStatus", commentResult.status);
         (0,core.setOutput)("comment", commentText);
     }
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_u = error.response) === null || _u === void 0 ? void 0 : _u.data) || "Unknown error");
+            console.log(((_x = error.response) === null || _x === void 0 ? void 0 : _x.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
