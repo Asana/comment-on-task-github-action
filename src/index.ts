@@ -49,19 +49,21 @@ export const run = async () => {
     const requestedReviewerObj = users.find(
       (user) => user.githubName === requestedReviewerName
     );
-    const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj?.asanaId!);
+    const requestedReviewerUrl = mentionUrl.concat(
+      requestedReviewerObj?.asanaId!
+    );
 
     // Add Users to Followers
-    let followersStatus = [];
-    let followers = [userObj?.asanaId];
+    const followersStatus = [];
+    const followers = [userObj?.asanaId];
     if (requestedReviewerObj) {
       followers.push(requestedReviewerObj.asanaId);
     }
 
     // Get Mentioned Users In Comment
-    let commentBody =
-    context.payload.comment?.body || context.payload.review?.body || "";
-    const mentions = commentBody.match(/@\S+/ig); // @user1 @user2
+    const commentBody =
+      context.payload.comment?.body || context.payload.review?.body || "";
+    const mentions = commentBody.match(/@\S+/gi); // @user1 @user2
     for (const mention of mentions) {
       // Add to Followers
       const mentionUserObj = users.find(
@@ -130,10 +132,11 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+              commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-              } -> ${commentUrl}`;
+            } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
