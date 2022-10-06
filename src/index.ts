@@ -48,19 +48,6 @@ export const run = async () => {
     );
     const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj?.asanaId!}`;
 
-    // Get Task IDs From URLs
-    const asanaTasksLinks = pullRequestDescription?.match(
-      /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
-    );
-    const asanaTasksIds = asanaTasksLinks?.map((link) => {
-      const linkArray = link.split("/");
-      if (isNaN(Number(linkArray[linkArray.length - 1]))) {
-        // Check If Link is Attached From Github or Asana
-        return linkArray[linkArray.length - 2];
-      }
-      return linkArray[linkArray.length - 1];
-    });
-
     // Add Mentions in Comment Body
     const wordArray = commentBody.split(" ");
     const mentionUserArray = [];
@@ -77,6 +64,19 @@ export const run = async () => {
     }
     commentBody = wordArray.join(" ");
 
+    // Get Task IDs From URLs
+    const asanaTasksLinks = pullRequestDescription?.match(
+      /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
+    );
+    const asanaTasksIds = asanaTasksLinks?.map((link) => {
+      const linkArray = link.split("/");
+      if (isNaN(Number(linkArray[linkArray.length - 1]))) {
+        // Check If Link is Attached From Github or Asana
+        return linkArray[linkArray.length - 2];
+      }
+      return linkArray[linkArray.length - 1];
+    });
+
     // Get Followers Ids
     const followersStatus = [];
     const followers = [userObj?.asanaId];
@@ -88,7 +88,7 @@ export const run = async () => {
       }
     }
 
-    // Call Axios To Add Followers
+    // Call Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.COLLAB_URL}`;
       const followersResult = await asanaAxios.post(url, {
