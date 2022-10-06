@@ -79,14 +79,15 @@ export const run = async () => {
     const asanaTasksLinks = pullRequestDescription?.match(
       /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
     );
-    const asanaTasksIds = asanaTasksLinks?.map((link) => {
-      const linkArray = link.split("/");
-      if (isNaN(Number(linkArray[linkArray.length - 1]))) {
-        // Check If Link is Attached From Github or Asana
-        return linkArray[linkArray.length - 2];
-      }
-      return linkArray[linkArray.length - 1];
-    }) || [];
+    const asanaTasksIds =
+      asanaTasksLinks?.map((link) => {
+        const linkArray = link.split("/");
+        if (isNaN(Number(linkArray[linkArray.length - 1]))) {
+          // Check If Link is Attached From Github or Asana
+          return linkArray[linkArray.length - 2];
+        }
+        return linkArray[linkArray.length - 1];
+      }) || [];
 
     // Call Asana Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
