@@ -12,8 +12,12 @@ const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
 
 export const run = async () => {
   try {
+    // Validate Inputs
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
+
+    // Store Constant Values
+    const mentionUrl = "https://app.asana.com/0/";
     const pullRequestDescription =
       context.payload.pull_request?.body || context.payload.issue?.body;
     const pullRequestId =
@@ -25,46 +29,51 @@ export const run = async () => {
     const pullRequestState =
       context.payload.pull_request?.state || context.payload.issue?.state;
     const pullRequestMerged = context.payload.pull_request?.merged || false;
-
+    const reviewState = context.payload.review?.state || "";
     const commentUrl =
       context.payload.comment?.html_url ||
       context.payload.review?.html_url ||
       "";
-    let commentBody =
-      context.payload.comment?.body || context.payload.review?.body || "";
-    const reviewState = context.payload.review?.state || "";
 
+    // Store User That Triggered Job
     const username =
       context.payload.comment?.user.login ||
       context.payload.review?.user.login ||
       context.payload.sender?.login;
     const userObj = users.find((user) => user.githubName === username);
-    const userUrl = `https://app.asana.com/0/${userObj?.asanaId!}`;
+    const userUrl = mentionUrl.concat(userObj?.asanaId!);
 
+    // Store Requested Reviewer User
     const requestedReviewerName =
       context.payload.requested_reviewer?.login || "";
     const requestedReviewerObj = users.find(
       (user) => user.githubName === requestedReviewerName
     );
-    const requestedReviewerUrl = `https://app.asana.com/0/${requestedReviewerObj?.asanaId!}`;
+    const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj?.asanaId!);
 
-    // Add Mentions in Comment Body
-    const wordArray = commentBody.split(" ");
-    const mentionUserArray = [];
-    for (let i = 0; i < wordArray.length; i++) {
-      const word = wordArray[i];
-      if (word[0] === "@") {
-        const mentionUserObj = users.find(
-          (user) => user.githubName === word.substring(1, word.length)
-        );
-        const mentionUserUrl = `https://app.asana.com/0/${mentionUserObj?.asanaId!}`;
-        wordArray[i] = mentionUserUrl;
-        mentionUserArray.push(mentionUserObj);
-      }
+    // Add Users to Followers
+    let followersStatus = [];
+    let followers = [userObj?.asanaId];
+    if (requestedReviewerObj) {
+      followers.push(requestedReviewerObj.asanaId);
     }
-    commentBody = wordArray.join(" ");
 
-    // Get Task IDs From URLs
+    // Get Mentioned Users In Comment
+    let commentBody =
+    context.payload.comment?.body || context.payload.review?.body || "";
+    const mentions = commentBody.match(/@\S+/ig); // @user1 @user2
+    for (const mention of mentions) {
+      // Add to Followers
+      const mentionUserObj = users.find(
+        (user) => user.githubName === mention.substring(1, mention.length)
+      );
+      followers.push(mentionUserObj?.asanaId);
+      // Add To Comment
+      const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaId!);
+      commentBody.replace(mention, mentionUserUrl);
+    }
+
+    // Get Task IDs From PR Description
     const asanaTasksLinks = pullRequestDescription?.match(
       /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
     );
@@ -77,18 +86,7 @@ export const run = async () => {
       return linkArray[linkArray.length - 1];
     });
 
-    // Get Followers Ids
-    const followersStatus = [];
-    const followers = [userObj?.asanaId];
-    if (requestedReviewerObj) {
-      followers.push(requestedReviewerObj.asanaId);
-    } else if (mentionUserArray.length !== 0) {
-      for (const mentionUserObj of mentionUserArray) {
-        followers.push(mentionUserObj?.asanaId);
-      }
-    }
-
-    // Call Axios To Add Followers To the Tasks
+    // Call Asana Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
       const url = `${id}${REQUESTS.FOLLOWER_URL}`;
       const followersResult = await asanaAxios.post(url, {
@@ -132,11 +130,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
