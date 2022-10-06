@@ -90,7 +90,7 @@ export const run = async () => {
 
     // Call Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
-      const url = `${id}${REQUESTS.COLLAB_URL}`;
+      const url = `${id}${REQUESTS.FOLLOWER_URL}`;
       const followersResult = await asanaAxios.post(url, {
         data: {
           followers,

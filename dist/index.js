@@ -13103,7 +13103,7 @@ const ACTION_URL = "actions/comment";
 const RETRIES = 3;
 const RETRY_DELAY = 1000;
 const ASANA_URL = "https://app.asana.com/api/1.0/tasks/";
-const COLLAB_URL = "/addFollowers";
+const FOLLOWER_URL = "/addFollowers";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
@@ -13279,7 +13279,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Call Axios To Add Followers To the Tasks
         for (const id of asanaTasksIds) {
-            const url = `${id}${COLLAB_URL}`;
+            const url = `${id}${FOLLOWER_URL}`;
             const followersResult = yield requests_asanaAxios.post(url, {
                 data: {
                     followers,
