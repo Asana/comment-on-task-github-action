@@ -13104,6 +13104,7 @@ const RETRIES = 3;
 const RETRY_DELAY = 1000;
 const ASANA_URL = "https://app.asana.com/api/1.0/tasks/";
 const FOLLOWER_URL = "/addFollowers";
+const SUBTASKS_URL = "/subtasks";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
@@ -13347,6 +13348,29 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestState,
             pullRequestMerged,
         });
+        // Check If PR Closed and Merged
+        let approvalSubtasks = [];
+        if (github.context.eventName === "pull_request" &&
+            github.context.payload.action === "closed") {
+            // Get Approval Subtasks
+            for (const id of asanaTasksIds) {
+                const url = `${id}${SUBTASKS_URL}`;
+                const subtasks = yield requests_asanaAxios.get(url);
+                approvalSubtasks = subtasks.data.find((subtask) => subtask.resource_subtype === "approval");
+            }
+            // Get Incomplete Approval Subtasks
+            const incompApprovalSubtasks = [];
+            for (const subtask of approvalSubtasks) {
+                const subtaskData = yield requests_asanaAxios.get(`${subtask.gid}`);
+                if (!subtaskData.data.completed) {
+                    incompApprovalSubtasks.push(subtask);
+                }
+            }
+            // Delete Incomplete Approval Taks
+            for (const subtask of incompApprovalSubtasks) {
+                yield requests_asanaAxios.delete(`${subtask.gid}`);
+            }
+        }
         (0,core.setOutput)(`followersStatus`, followersStatus);
         (0,core.setOutput)("commentStatus", commentResult.status);
         (0,core.setOutput)("comment", commentText);
