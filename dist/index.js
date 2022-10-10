@@ -13357,7 +13357,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const url = `${id}${SUBTASKS_URL}`;
                 const subtasks = yield requests_asanaAxios.get(url);
                 console.log(subtasks.data);
-                approvalSubtasks = subtasks.data.find((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
+                approvalSubtasks = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
             }
             // // Get Incomplete Approval Subtasks
             // const incompApprovalSubtasks: any = [];
