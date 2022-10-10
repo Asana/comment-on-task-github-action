@@ -13358,16 +13358,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const subtasks = yield requests_asanaAxios.get(url);
                 approvalSubtasks = subtasks.data.find((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
             }
-            // Get Incomplete Approval Subtasks
-            const incompApprovalSubtasks = [];
-            for (const subtask of approvalSubtasks) {
-                const subtaskData = yield requests_asanaAxios.get(`${subtask.gid}`);
-                if (!subtaskData.data.completed) {
-                    incompApprovalSubtasks.push(subtask);
-                }
-            }
+            // // Get Incomplete Approval Subtasks
+            // const incompApprovalSubtasks: any = [];
+            // for (const subtask of approvalSubtasks) {
+            //   const subtaskData = await asanaAxios.get(`${subtask.gid}`);
+            //   if (!subtaskData.data.completed) {
+            //     incompApprovalSubtasks.push(subtask);
+            //   }
+            // }
             // Delete Incomplete Approval Taks
-            for (const subtask of incompApprovalSubtasks) {
+            for (const subtask of approvalSubtasks) {
                 yield requests_asanaAxios.delete(`${subtask.gid}`);
             }
         }
