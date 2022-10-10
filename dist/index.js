@@ -13221,7 +13221,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
     try {
         // Validate Inputs
         validateTrigger(github.context.eventName);
@@ -13351,12 +13351,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
         if (github.context.eventName === "pull_request" &&
-            github.context.payload.action === "closed") {
+            github.context.payload.action === "closed" &&
+            ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.merged)) {
             // Get Approval Subtasks
             for (const id of asanaTasksIds) {
                 const url = `${id}${SUBTASKS_URL}`;
                 const subtasks = yield requests_asanaAxios.get(url);
-                console.log(subtasks.data.data);
                 approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
             }
             // Delete Incomplete Approval Taks
@@ -13371,7 +13371,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_x = error.response) === null || _x === void 0 ? void 0 : _x.data) || "Unknown error");
+            console.log(((_y = error.response) === null || _y === void 0 ? void 0 : _y.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

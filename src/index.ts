@@ -173,13 +173,12 @@ export const run = async () => {
     let approvalSubtasks: any = [];
     if (
       context.eventName === "pull_request" &&
-      context.payload.action === "closed"
+      context.payload.action === "closed" && context.payload.pull_request?.merged
     ) {
       // Get Approval Subtasks
       for (const id of asanaTasksIds!) {
         const url = `${id}${REQUESTS.SUBTASKS_URL}`;
         const subtasks = await asanaAxios.get(url);
-        console.log(subtasks.data.data);
         approvalSubtasks = subtasks.data.data.filter(
           (subtask: any) =>
             subtask.resource_subtype === "approval" && !subtask.completed
