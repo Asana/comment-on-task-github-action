@@ -173,7 +173,8 @@ export const run = async () => {
     let approvalSubtasks: any = [];
     if (
       context.eventName === "pull_request" &&
-      context.payload.action === "closed" && context.payload.pull_request?.merged
+      context.payload.action === "closed" &&
+      context.payload.pull_request?.merged
     ) {
       // Get Approval Subtasks
       for (const id of asanaTasksIds!) {
