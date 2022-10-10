@@ -169,6 +169,36 @@ export const run = async () => {
       pullRequestMerged,
     });
 
+    // Check If PR Closed and Merged
+    let approvalSubtasks: any = [];
+    if (
+      context.eventName === "pull_request" &&
+      context.payload.action === "closed"
+    ) {
+      // Get Approval Subtasks
+      for (const id of asanaTasksIds!) {
+        const url = `${id}${REQUESTS.SUBTASKS_URL}`;
+        const subtasks = await asanaAxios.get(url);
+        approvalSubtasks = subtasks.data.find(
+          (subtask: any) => subtask.resource_subtype === "approval"
+        );
+      }
+
+      // Get Incomplete Approval Subtasks
+      const incompApprovalSubtasks: any = [];
+      for (const subtask of approvalSubtasks) {
+        const subtaskData = await asanaAxios.get(`${subtask.gid}`);
+        if (!subtaskData.data.completed) {
+          incompApprovalSubtasks.push(subtask);
+        }
+      }
+
+      // Delete Incomplete Approval Taks
+      for (const subtask of incompApprovalSubtasks) {
+        await asanaAxios.delete(`${subtask.gid}`);
+      }
+    }
+
     setOutput(`followersStatus`, followersStatus);
     setOutput("commentStatus", commentResult.status);
     setOutput("comment", commentText);

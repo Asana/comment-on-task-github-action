@@ -13104,7 +13104,7 @@ const RETRIES = 3;
 const RETRY_DELAY = 1000;
 const ASANA_URL = "https://app.asana.com/api/1.0/tasks/";
 const FOLLOWER_URL = "/addFollowers";
-const SUBTASKS_URL = "/subtasks";
+const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
