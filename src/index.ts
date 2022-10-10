@@ -179,21 +179,12 @@ export const run = async () => {
       for (const id of asanaTasksIds!) {
         const url = `${id}${REQUESTS.SUBTASKS_URL}`;
         const subtasks = await asanaAxios.get(url);
-        console.log(subtasks.data);
+        console.log(subtasks.data.data);
         approvalSubtasks = subtasks.data.data.find(
           (subtask: any) =>
-            subtask.resource_subtype === "approval" && !subtask.completed
+            (subtask.resource_subtype === "approval" && !subtask.completed)
         );
       }
-
-      // // Get Incomplete Approval Subtasks
-      // const incompApprovalSubtasks: any = [];
-      // for (const subtask of approvalSubtasks) {
-      //   const subtaskData = await asanaAxios.get(`${subtask.gid}`);
-      //   if (!subtaskData.data.completed) {
-      //     incompApprovalSubtasks.push(subtask);
-      //   }
-      // }
 
       // Delete Incomplete Approval Taks
       for (const subtask of approvalSubtasks) {
