@@ -182,7 +182,7 @@ export const run = async () => {
         console.log(subtasks.data.data);
         approvalSubtasks = subtasks.data.data.find(
           (subtask: any) =>
-            (subtask.resource_subtype === "approval" && !subtask.completed)
+            subtask.resource_subtype === "approval" && !subtask.completed
         );
       }
 
