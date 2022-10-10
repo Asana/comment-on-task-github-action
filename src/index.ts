@@ -179,6 +179,7 @@ export const run = async () => {
       for (const id of asanaTasksIds!) {
         const url = `${id}${REQUESTS.SUBTASKS_URL}`;
         const subtasks = await asanaAxios.get(url);
+        console.log(subtasks.data);
         approvalSubtasks = subtasks.data.find(
           (subtask: any) =>
             subtask.resource_subtype === "approval" && !subtask.completed
