@@ -160,11 +160,8 @@ export const run = async () => {
       case "pull_request_review_comment": {
         const path = context.payload.comment?.path;
         const files = path.split("/");
-        commentText = `${userUrl} is requesting the following changes on ${
-          files[files.length - 1]
-        } (Line ${
-          context.payload.comment?.original_line
-        }):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+        const fileName = files[files.length - 1];
+        commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         break;
       }
     }

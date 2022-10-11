@@ -13340,7 +13340,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             case "pull_request_review_comment": {
                 const path = (_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.path;
                 const files = path.split("/");
-                commentText = `${userUrl} is requesting the following changes on ${files[files.length - 1]} (Line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                const fileName = files[files.length - 1];
+                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
             }
         }
