@@ -13230,6 +13230,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateProjectLists(allowedProjects, blockedProjects);
         console.log("context.eventName", eventName);
         console.log("context.payload.action", action);
+        console.log("context.payload", github.context.payload);
         // Store Constant Values
         const mentionUrl = "https://app.asana.com/0/";
         const pullRequestDescription = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.body);
