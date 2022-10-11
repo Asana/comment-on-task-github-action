@@ -13221,7 +13221,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13337,10 +13337,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     commentText = (0,core.getInput)(COMMENT_TEXT);
                 }
                 break;
-            case "pull_request_review_comment":
-                console.log("context.payload", github.context.payload);
-                commentText = `${userUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            case "pull_request_review_comment": {
+                const path = (_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.path;
+                const files = path.split("/");
+                commentText = `${userUrl} is requesting the following changes on ${files[files.length - 1]} (Line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
+            }
         }
         // Post Comment To Asana
         const commentResult = yield requests_axios.post(ACTION_URL, {
@@ -13358,7 +13360,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let approvalSubtasks = [];
         const prClosedMerged = eventName === "pull_request" &&
             action === "closed" &&
-            ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.merged);
+            ((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.merged);
         const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
         if (prClosedMerged || prReviewChangesRequested) {
@@ -13380,7 +13382,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_y = error.response) === null || _y === void 0 ? void 0 : _y.data) || "Unknown error");
+            console.log(((_z = error.response) === null || _z === void 0 ? void 0 : _z.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

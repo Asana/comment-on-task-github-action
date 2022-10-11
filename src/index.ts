@@ -157,10 +157,16 @@ export const run = async () => {
           commentText = getInput(INPUTS.COMMENT_TEXT);
         }
         break;
-      case "pull_request_review_comment":
-        console.log("context.payload", context.payload);
-        commentText = `${userUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+      case "pull_request_review_comment": {
+        const path = context.payload.comment?.path;
+        const files = path.split("/");
+        commentText = `${userUrl} is requesting the following changes on ${
+          files[files.length - 1]
+        } (Line ${
+          context.payload.comment?.original_line
+        }):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         break;
+      }
     }
 
     // Post Comment To Asana
