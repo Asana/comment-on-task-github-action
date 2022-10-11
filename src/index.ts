@@ -20,7 +20,7 @@ export const run = async () => {
 
     console.log("context.eventName", eventName);
     console.log("context.payload.action", action);
-    
+
     // Store Constant Values
     const mentionUrl = "https://app.asana.com/0/";
     const pullRequestDescription =
