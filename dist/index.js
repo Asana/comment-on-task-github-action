@@ -13350,9 +13350,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
-        if (github.context.eventName === "pull_request" &&
+        const prClosedMerged = github.context.eventName === "pull_request" &&
             github.context.payload.action === "closed" &&
-            ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.merged)) {
+            ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.merged);
+        const prReviewChangesRequested = github.context.eventName === "pull_request_review" &&
+            reviewState === "changes_requested";
+        if (prClosedMerged || prReviewChangesRequested) {
             // Get Approval Subtasks
             for (const id of asanaTasksIds) {
                 const url = `${id}${SUBTASKS_URL}`;

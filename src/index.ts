@@ -170,12 +170,11 @@ export const run = async () => {
     });
 
     // Check If PR Closed and Merged
-    let approvalSubtasks: any = [];
-    if (
-      context.eventName === "pull_request" &&
-      context.payload.action === "closed" &&
-      context.payload.pull_request?.merged
-    ) {
+    let approvalSubtasks: any = []; 
+    const prClosedMerged = context.eventName === "pull_request" && context.payload.action === "closed" && context.payload.pull_request?.merged;
+    const prReviewChangesRequested = context.eventName === "pull_request_review" && reviewState === "changes_requested";
+    
+    if ( prClosedMerged || prReviewChangesRequested) {
       // Get Approval Subtasks
       for (const id of asanaTasksIds!) {
         const url = `${id}${REQUESTS.SUBTASKS_URL}`;
