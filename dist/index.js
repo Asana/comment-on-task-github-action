@@ -13333,6 +13333,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment":
+                console.log("context.payload", github.context.payload);
                 commentText = `${userUrl} is requesting the following changes on line ${(_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
         }
