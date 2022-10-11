@@ -124,6 +124,7 @@ export const run = async () => {
         break;
       }
       case "pull_request_review":
+        console.log('context.payload.', context.payload.action === "review_requested")
         switch (reviewState) {
           case "commented":
           case "changes_requested":
@@ -152,7 +153,7 @@ export const run = async () => {
         }
         break;
       case "pull_request_review_comment":
-        console.log('context.payload', context.payload);
+        console.log("context.payload", context.payload);
         commentText = `${userUrl} is requesting the following changes on line ${context.payload.comment?.original_line}:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         break;
     }

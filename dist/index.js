@@ -13306,6 +13306,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             }
             case "pull_request_review":
+                console.log("context.payload.", github.context.payload.action === "review_requested");
                 switch (reviewState) {
                     case "commented":
                     case "changes_requested":
