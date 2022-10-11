@@ -13223,11 +13223,13 @@ const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y;
     try {
-        console.log("context.eventName", github.context.eventName);
-        console.log("context.payload.action", github.context.payload.action);
         // Validate Inputs
-        validateTrigger(github.context.eventName);
+        const eventName = github.context.eventName;
+        const action = github.context.payload.action;
+        validateTrigger(eventName);
         validateProjectLists(allowedProjects, blockedProjects);
+        console.log("context.eventName", eventName);
+        console.log("context.payload.action", action);
         // Store Constant Values
         const mentionUrl = "https://app.asana.com/0/";
         const pullRequestDescription = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.body);
@@ -13289,7 +13291,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Correct Dynamic Comment
         let commentText = "";
-        switch (github.context.eventName) {
+        switch (eventName) {
             case "issue_comment": {
                 if (commentBody.includes(">")) {
                     const lines = commentBody.split("\n");
@@ -13308,11 +13310,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             }
             case "pull_request_review":
-                console.log("context.payload.action", github.context.payload.action === "review_requested");
                 switch (reviewState) {
                     case "commented":
                     case "changes_requested":
-                        if (!commentBody) {
+                        if (!commentBody || action === "edited") {
                             return;
                         }
                         commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
@@ -13328,7 +13329,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request":
-                if (github.context.payload.action === "review_requested") {
+                if (action === "review_requested") {
                     commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
                 }
                 else {
@@ -13354,10 +13355,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
-        const prClosedMerged = github.context.eventName === "pull_request" &&
-            github.context.payload.action === "closed" &&
+        const prClosedMerged = eventName === "pull_request" &&
+            action === "closed" &&
             ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.merged);
-        const prReviewChangesRequested = github.context.eventName === "pull_request_review" &&
+        const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
         if (prClosedMerged || prReviewChangesRequested) {
             // Get Approval Subtasks

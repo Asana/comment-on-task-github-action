@@ -12,12 +12,15 @@ const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
 
 export const run = async () => {
   try {
-    console.log("context.eventName", context.eventName);
-    console.log("context.payload.action", context.payload.action);
     // Validate Inputs
-    utils.validateTrigger(context.eventName);
+    const eventName = context.eventName;
+    const action = context.payload.action;
+    utils.validateTrigger(eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
+    console.log("context.eventName", eventName);
+    console.log("context.payload.action", action);
+    
     // Store Constant Values
     const mentionUrl = "https://app.asana.com/0/";
     const pullRequestDescription =
@@ -104,7 +107,7 @@ export const run = async () => {
 
     // Get Correct Dynamic Comment
     let commentText = "";
-    switch (context.eventName) {
+    switch (eventName) {
       case "issue_comment": {
         if (commentBody.includes(">")) {
           const lines = commentBody.split("\n");
@@ -126,14 +129,10 @@ export const run = async () => {
         break;
       }
       case "pull_request_review":
-        console.log(
-          "context.payload.action",
-          context.payload.action === "review_requested"
-        );
         switch (reviewState) {
           case "commented":
           case "changes_requested":
-            if (!commentBody) {
+            if (!commentBody || action === "edited") {
               return;
             }
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
@@ -151,7 +150,7 @@ export const run = async () => {
         }
         break;
       case "pull_request":
-        if (context.payload.action === "review_requested") {
+        if (action === "review_requested") {
           commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
@@ -179,11 +178,11 @@ export const run = async () => {
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
     const prClosedMerged =
-      context.eventName === "pull_request" &&
-      context.payload.action === "closed" &&
+      eventName === "pull_request" &&
+      action === "closed" &&
       context.payload.pull_request?.merged;
     const prReviewChangesRequested =
-      context.eventName === "pull_request_review" &&
+      eventName === "pull_request_review" &&
       reviewState === "changes_requested";
 
     if (prClosedMerged || prReviewChangesRequested) {
