@@ -12,6 +12,8 @@ const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
 
 export const run = async () => {
   try {
+    console.log('context.eventName', context.eventName)
+    console.log('context.payload.action', context.payload.action)
     // Validate Inputs
     utils.validateTrigger(context.eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
@@ -124,7 +126,10 @@ export const run = async () => {
         break;
       }
       case "pull_request_review":
-        console.log('context.payload.', context.payload.action === "review_requested")
+        console.log(
+          "context.payload.action",
+          context.payload.action === "review_requested"
+        );
         switch (reviewState) {
           case "commented":
           case "changes_requested":
