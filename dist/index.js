@@ -13102,9 +13102,12 @@ const BASE_URL = "https://github.integrations.asana.plus/custom/v1";
 const ACTION_URL = "actions/comment";
 const RETRIES = 3;
 const RETRY_DELAY = 1000;
-const ASANA_URL = "https://app.asana.com/api/1.0/tasks/";
-const FOLLOWER_URL = "/addFollowers";
+const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
+const TASKS_URL = "/tasks/";
+const SECTIONS_URL = "/sections/";
 const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype";
+const ADD_FOLLOWERS_URL = "/addFollowers";
+const ADD_TASK_URL = "/addTask";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
@@ -13138,7 +13141,7 @@ axios_retry_default()(axiosInstance, {
 
 
 const asanaAxios = axios_default().create({
-    baseURL: ASANA_URL,
+    baseURL: BASE_ASANA_URL,
     headers: {
         Authorization: `Bearer ${(0,core.getInput)(ASANA_PAT)}`,
     },
@@ -13287,7 +13290,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         })) || [];
         // Call Asana Axios To Add Followers To the Tasks
         for (const id of asanaTasksIds) {
-            const url = `${id}${FOLLOWER_URL}`;
+            const url = `${TASKS_URL}${id}${ADD_FOLLOWERS_URL}`;
             const followersResult = yield requests_asanaAxios.post(url, {
                 data: {
                     followers,
@@ -13362,6 +13365,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestState,
             pullRequestMerged,
         });
+        // Check if PR has Merge Conflicts
+        const prMergeConflicts = eventName === "issue_comment" && username === "otto-bot-git";
+        if (prMergeConflicts) {
+            // Move Asana Task To Next Section
+            for (const task of asanaTasksIds) {
+                const url = `${SECTIONS_URL}351348922863102${ADD_TASK_URL}`;
+                yield requests_asanaAxios.post(url, {
+                    data: {
+                        task,
+                    },
+                });
+            }
+        }
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
         const prClosedMerged = eventName === "pull_request" &&
@@ -13372,13 +13388,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prClosedMerged || prReviewChangesRequested) {
             // Get Approval Subtasks
             for (const id of asanaTasksIds) {
-                const url = `${id}${SUBTASKS_URL}`;
+                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
                 const subtasks = yield requests_asanaAxios.get(url);
                 approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
             }
             // Delete Incomplete Approval Taks
             for (const subtask of approvalSubtasks) {
-                yield requests_asanaAxios.delete(`${subtask.gid}`);
+                yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
             }
         }
         (0,core.setOutput)(`followersStatus`, followersStatus);
