@@ -13333,6 +13333,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (action === "review_requested") {
                     commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
                 }
+                else if (action === "labeled") {
+                    commentText = `This pull request has conflicts, please resolve those before we can evaluate the pull request.`;
+                }
                 else {
                     commentText = (0,core.getInput)(COMMENT_TEXT);
                 }
