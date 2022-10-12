@@ -180,19 +180,19 @@ export const run = async () => {
     });
 
     // Check if PR has Merge Conflicts
-    const prMergeConflicts =
-      eventName === "issue_comment" && username === "otto-bot-git";
-    if (prMergeConflicts) {
-      // Move Asana Task To Next Section
-      for (const task of asanaTasksIds!) {
-        const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
-        await asanaAxios.post(url, {
-          data: {
-            task,
-          },
-        });
-      }
-    }
+    // const prMergeConflicts =
+    //   eventName === "issue_comment" && username === "otto-bot-git";
+    // if (prMergeConflicts) {
+    //   // Move Asana Task To Next Section
+    //   for (const task of asanaTasksIds!) {
+    //     const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
+    //     await asanaAxios.post(url, {
+    //       data: {
+    //         task,
+    //       },
+    //     });
+    //   }
+    // }
 
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];

@@ -13366,18 +13366,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestMerged,
         });
         // Check if PR has Merge Conflicts
-        const prMergeConflicts = eventName === "issue_comment" && username === "otto-bot-git";
-        if (prMergeConflicts) {
-            // Move Asana Task To Next Section
-            for (const task of asanaTasksIds) {
-                const url = `${SECTIONS_URL}351348922863102${ADD_TASK_URL}`;
-                yield requests_asanaAxios.post(url, {
-                    data: {
-                        task,
-                    },
-                });
-            }
-        }
+        // const prMergeConflicts =
+        //   eventName === "issue_comment" && username === "otto-bot-git";
+        // if (prMergeConflicts) {
+        //   // Move Asana Task To Next Section
+        //   for (const task of asanaTasksIds!) {
+        //     const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
+        //     await asanaAxios.post(url, {
+        //       data: {
+        //         task,
+        //       },
+        //     });
+        //   }
+        // }
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
         const prClosedMerged = eventName === "pull_request" &&
