@@ -13309,8 +13309,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 else {
                     commentText =
-                        username === "github-actions"
-                            ? `${username} commented -> ${commentUrl}`
+                        username === "otto-bot-git"
+                            ? `${commentBody}\n\nComment URL -> ${commentUrl}`
                             : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 }
                 break;

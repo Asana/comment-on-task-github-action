@@ -123,8 +123,8 @@ export const run = async () => {
           )}\n\nComment URL -> ${commentUrl}`;
         } else {
           commentText =
-            username === "github-actions"
-              ? `${username} commented -> ${commentUrl}`
+            username === "otto-bot-git"
+              ? `${commentBody}\n\nComment URL -> ${commentUrl}`
               : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
         }
         break;
