@@ -13198,6 +13198,11 @@ const users = [
         asanaName: "Hsein Bitar",
         githubName: "hsein-bitar",
     },
+    {
+        asanaId: "1202470337039007",
+        asanaName: "Otto Bot",
+        githubName: "otto-bot-git",
+    },
 ];
 
 ;// CONCATENATED MODULE: ./src/index.ts
