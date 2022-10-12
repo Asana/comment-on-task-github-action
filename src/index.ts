@@ -153,8 +153,6 @@ export const run = async () => {
       case "pull_request":
         if (action === "review_requested") {
           commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
-        } else if (action === "labeled") {
-          commentText = `This pull request has conflicts, please resolve those before we can evaluate the pull request.`;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
         }
