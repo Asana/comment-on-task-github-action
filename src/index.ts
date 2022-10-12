@@ -97,7 +97,7 @@ export const run = async () => {
 
     // Call Asana Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
-      const url = `${id}${REQUESTS.FOLLOWER_URL}`;
+      const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
       const followersResult = await asanaAxios.post(url, {
         data: {
           followers,
@@ -179,6 +179,21 @@ export const run = async () => {
       pullRequestMerged,
     });
 
+    // Check if PR has Merge Conflicts
+    const prMergeConflicts =
+      eventName === "issue_comment" && username === "otto-bot-git";
+    if (prMergeConflicts) {
+      // Move Asana Task To Next Section
+      for (const task of asanaTasksIds!) {
+        const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
+        await asanaAxios.post(url, {
+          data: {
+            task,
+          },
+        });
+      }
+    }
+
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
     const prClosedMerged =
@@ -192,7 +207,7 @@ export const run = async () => {
     if (prClosedMerged || prReviewChangesRequested) {
       // Get Approval Subtasks
       for (const id of asanaTasksIds!) {
-        const url = `${id}${REQUESTS.SUBTASKS_URL}`;
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
         const subtasks = await asanaAxios.get(url);
         approvalSubtasks = subtasks.data.data.filter(
           (subtask: any) =>
@@ -202,7 +217,7 @@ export const run = async () => {
 
       // Delete Incomplete Approval Taks
       for (const subtask of approvalSubtasks) {
-        await asanaAxios.delete(`${subtask.gid}`);
+        await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
       }
     }
 
