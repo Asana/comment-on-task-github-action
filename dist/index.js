@@ -13367,7 +13367,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         // Check if PR has Merge Conflicts
         // const prMergeConflicts =
-        //   eventName === "issue_comment" && username === "otto-bot-git";
+        //   eventName === "issue_comment" && username === "otto-bot-git" && !contains(commentBody, "Conflicts have been resolved");
         // if (prMergeConflicts) {
         //   // Move Asana Task To Next Section
         //   for (const task of asanaTasksIds!) {
