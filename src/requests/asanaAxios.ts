@@ -5,7 +5,7 @@ import { ASANA_PAT } from "../constants/inputs";
 import * as REQUESTS from "../constants/requests";
 
 const asanaAxios = axios.create({
-  baseURL: REQUESTS.ASANA_URL,
+  baseURL: REQUESTS.BASE_ASANA_URL,
   headers: {
     Authorization: `Bearer ${getInput(ASANA_PAT)}`,
   },
