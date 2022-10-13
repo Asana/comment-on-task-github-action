@@ -13400,7 +13400,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const subtasks = yield requests_asanaAxios.get(url);
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
-                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId));
+                    subtask.assignee.gid === `${requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId}`);
                 console.log("requestedReviewerObj?.asanaId", requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId);
                 console.log("subtasks", subtasks.data.data);
                 console.log("approvalSubtask", approvalSubtask);

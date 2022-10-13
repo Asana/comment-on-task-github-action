@@ -220,7 +220,7 @@ export const run = async () => {
           (subtask: any) =>
             subtask.resource_subtype === "approval" &&
             !subtask.completed &&
-            subtask.assignee.gid === requestedReviewerObj?.asanaId
+            subtask.assignee.gid === `${requestedReviewerObj?.asanaId}`
         );
 
         console.log(
