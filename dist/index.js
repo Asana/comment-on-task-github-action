@@ -13105,7 +13105,7 @@ const RETRY_DELAY = 1000;
 const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
 const TASKS_URL = "/tasks/";
 const SECTIONS_URL = "/sections/";
-const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype";
+const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee";
 const ADD_FOLLOWERS_URL = "/addFollowers";
 const ADD_TASK_URL = "/addTask";
 
@@ -13366,19 +13366,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestMerged,
         });
         // Check if PR has Merge Conflicts
-        // const prMergeConflicts =
-        //   eventName === "issue_comment" && username === "otto-bot-git" && !contains(commentBody, "Conflicts have been resolved");
-        // if (prMergeConflicts) {
-        //   // Move Asana Task To Next Section
-        //   for (const task of asanaTasksIds!) {
-        //     const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
-        //     await asanaAxios.post(url, {
-        //       data: {
-        //         task,
-        //       },
-        //     });
-        //   }
-        // }
+        const prMergeConflicts = eventName === "issue_comment" &&
+            username === "otto-bot-git" &&
+            !commentBody.includes("Conflicts have been resolved");
+        if (prMergeConflicts) {
+            // Move Asana Task To Next Section
+            for (const task of asanaTasksIds) {
+                const url = `${SECTIONS_URL}351348922863102${ADD_TASK_URL}`;
+                yield requests_asanaAxios.post(url, {
+                    data: {
+                        task,
+                    },
+                });
+            }
+        }
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
         const prClosedMerged = eventName === "pull_request" &&

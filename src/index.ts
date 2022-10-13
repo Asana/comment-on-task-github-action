@@ -139,11 +139,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
-                ? ``
-                : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+              ? ``
+              : `:\n\n ${commentBody}\n\nComment URL`
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -180,19 +179,19 @@ export const run = async () => {
     });
 
     // Check if PR has Merge Conflicts
-    // const prMergeConflicts =
-    //   eventName === "issue_comment" && username === "otto-bot-git" && !contains(commentBody, "Conflicts have been resolved");
-    // if (prMergeConflicts) {
-    //   // Move Asana Task To Next Section
-    //   for (const task of asanaTasksIds!) {
-    //     const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
-    //     await asanaAxios.post(url, {
-    //       data: {
-    //         task,
-    //       },
-    //     });
-    //   }
-    // }
+    const prMergeConflicts =
+      eventName === "issue_comment" && username === "otto-bot-git" && !commentBody.includes("Conflicts have been resolved");
+    if (prMergeConflicts) {
+      // Move Asana Task To Next Section
+      for (const task of asanaTasksIds!) {
+        const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
+        await asanaAxios.post(url, {
+          data: {
+            task,
+          },
+        });
+      }
+    }
 
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
