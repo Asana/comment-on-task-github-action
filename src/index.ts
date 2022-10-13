@@ -236,7 +236,7 @@ export const run = async () => {
             completed: false,
             due_on: tomorrow.toISOString().substring(0, 10),
             resource_subtype: "approval",
-            name: "Review"
+            name: "Review",
           },
         });
       }
