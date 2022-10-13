@@ -13229,7 +13229,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13380,11 +13380,41 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 });
             }
         }
+        // Check if Requesting Review
+        const prReadyForReview = eventName === "pull_request" &&
+            !((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.draft) &&
+            (action === "review_requested" || action === "ready_for_review");
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        if (prReadyForReview) {
+            for (const id of asanaTasksIds) {
+                // Get Approval Subtasks
+                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+                const subtasks = yield requests_asanaAxios.get(url);
+                const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+                    !subtask.completed &&
+                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId));
+                // If Request Reviewer already has incomplete subtask
+                if (approvalSubtask) {
+                    continue;
+                }
+                // Create Approval Subtasks For Requested Reviewer
+                yield requests_asanaAxios.post(url, {
+                    data: {
+                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId,
+                        approval_status: "pending",
+                        completed: false,
+                        due_on: tomorrow.toISOString().substring(0, 10),
+                        resource_subtype: "approval",
+                    },
+                });
+            }
+        }
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
         const prClosedMerged = eventName === "pull_request" &&
             action === "closed" &&
-            ((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.merged);
+            ((_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.merged);
         const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
         if (prClosedMerged || prReviewChangesRequested) {
@@ -13406,7 +13436,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_z = error.response) === null || _z === void 0 ? void 0 : _z.data) || "Unknown error");
+            console.log(((_0 = error.response) === null || _0 === void 0 ? void 0 : _0.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

@@ -13,7 +13,8 @@
     "import/no-namespace": "off",
     "i18n-text/no-en": "off",
     "filenames/match-regex": "off",
-    "sort-imports": "off"
+    "sort-imports": "off",
+    "camelcase": [1, {"properties": "never"}]
   },
   "env": {
     "node": true,
