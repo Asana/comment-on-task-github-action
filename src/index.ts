@@ -195,6 +195,43 @@ export const run = async () => {
         });
       }
     }
+    // Check if Requesting Review
+    const prReadyForReview =
+      eventName === "pull_request" &&
+      !context.payload.pull_request?.draft &&
+      (action === "review_requested" || action === "ready_for_review");
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (prReadyForReview) {
+      for (const id of asanaTasksIds!) {
+        // Get Approval Subtasks
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
+        const subtasks = await asanaAxios.get(url);
+        const approvalSubtask = subtasks.data.data.find(
+          (subtask: any) =>
+            subtask.resource_subtype === "approval" &&
+            !subtask.completed &&
+            subtask.assignee.gid === requestedReviewerObj?.asanaId
+        );
+
+        // If Request Reviewer already has incomplete subtask
+        if (approvalSubtask) {
+          continue;
+        }
+
+        // Create Approval Subtasks For Requested Reviewer
+        await asanaAxios.post(url, {
+          data: {
+            assignee: requestedReviewerObj?.asanaId,
+            approval_status: "pending",
+            completed: false,
+            due_on: tomorrow.toISOString().substring(0, 10),
+            resource_subtype: "approval",
+          },
+        });
+      }
+    }
 
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
