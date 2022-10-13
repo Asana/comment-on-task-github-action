@@ -223,7 +223,7 @@ export const run = async () => {
             subtask.assignee.gid === requestedReviewerObj?.asanaId
         );
 
-        console.log("subtasks", subtasks);
+        console.log("subtasks", subtasks.data.data);
         console.log("approvalSubtask", approvalSubtask);
         // If Request Reviewer already has incomplete subtask
         if (approvalSubtask) {
