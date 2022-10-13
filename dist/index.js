@@ -13260,20 +13260,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
             ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
             "";
-        // Store Owner Of Repo
-        const ownerName = github.context.payload.head.repo.owner.login ||
-            ((_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.head.repo.owner.login) ||
-            "";
-        const ownerObj = users.find((owner) => owner.githubName === ownerName);
-        // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
         // Store User That Triggered Job
-        const username = ((_r = github.context.payload.comment) === null || _r === void 0 ? void 0 : _r.user.login) ||
-            ((_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.user.login) ||
-            ((_t = github.context.payload.sender) === null || _t === void 0 ? void 0 : _t.login);
+        const username = ((_q = github.context.payload.comment) === null || _q === void 0 ? void 0 : _q.user.login) ||
+            ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login) ||
+            ((_s = github.context.payload.sender) === null || _s === void 0 ? void 0 : _s.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         // Store Requested Reviewer User
-        const requestedReviewerName = ((_u = github.context.payload.requested_reviewer) === null || _u === void 0 ? void 0 : _u.login) || "";
+        const requestedReviewerName = ((_t = github.context.payload.requested_reviewer) === null || _t === void 0 ? void 0 : _t.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId);
         // Add Users to Followers
@@ -13283,7 +13277,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             followers.push(requestedReviewerObj.asanaId);
         }
         // Get Mentioned Users In Comment
-        let commentBody = ((_v = github.context.payload.comment) === null || _v === void 0 ? void 0 : _v.body) || ((_w = github.context.payload.review) === null || _w === void 0 ? void 0 : _w.body) || "";
+        let commentBody = ((_u = github.context.payload.comment) === null || _u === void 0 ? void 0 : _u.body) || ((_v = github.context.payload.review) === null || _v === void 0 ? void 0 : _v.body) || "";
         const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
         for (const mention of mentions) {
             // Add to Followers
@@ -13361,10 +13355,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.path;
+                const path = (_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
             }
         }
@@ -13397,10 +13391,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if Requesting Review
         const prReviewRequested = eventName === "pull_request" &&
-            !((_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.draft) &&
+            !((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.draft) &&
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" && action === "ready_for_review";
         if (prReadyForReview) {
+            // Store Owner Of Repo
+            const ownerName = (_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.head.repo.owner.login;
+            const ownerObj = users.find((owner) => owner.githubName === ownerName);
+            // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
             console.log("ownerObj", ownerObj);
         }
         const tomorrow = new Date();

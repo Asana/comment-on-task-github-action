@@ -41,14 +41,6 @@ export const run = async () => {
       context.payload.review?.html_url ||
       "";
 
-    // Store Owner Of Repo
-    const ownerName =
-      context.payload.head.repo.owner.login ||
-      context.payload.pull_request?.head.repo.owner.login ||
-      "";
-    const ownerObj = users.find((owner) => owner.githubName === ownerName);
-    // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
-
     // Store User That Triggered Job
     const username =
       context.payload.comment?.user.login ||
@@ -147,11 +139,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -212,6 +203,12 @@ export const run = async () => {
       eventName === "pull_request" && action === "ready_for_review";
 
     if (prReadyForReview) {
+      // Store Owner Of Repo
+      const ownerName =
+        context.payload.pull_request?.head.repo.owner.login;
+      const ownerObj = users.find((owner) => owner.githubName === ownerName);
+      // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
+      
       console.log("ownerObj", ownerObj);
     }
 
