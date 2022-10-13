@@ -55,7 +55,7 @@ export const run = async () => {
       context.payload.review?.user.login ||
       context.payload.sender?.login;
     const userObj = users.find((user) => user.githubName === username);
-    const userUrl = mentionUrl.concat(userObj?.asanaId!);
+    const userUrl = mentionUrl.concat(userObj?.asanaUrlId!);
 
     // Store Requested Reviewer User
     const requestedReviewerName =
@@ -64,7 +64,7 @@ export const run = async () => {
       (user) => user.githubName === requestedReviewerName
     );
     const requestedReviewerUrl = mentionUrl.concat(
-      requestedReviewerObj?.asanaId!
+      requestedReviewerObj?.asanaUrlId!
     );
 
     // Add Users to Followers
@@ -85,7 +85,7 @@ export const run = async () => {
       );
       followers.push(mentionUserObj?.asanaId);
       // Add To Comment
-      const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaId!);
+      const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaUrlId!);
       commentBody = commentBody.replace(mention, mentionUserUrl);
     }
 
@@ -223,12 +223,6 @@ export const run = async () => {
             subtask.assignee.gid === requestedReviewerObj?.asanaId
         );
 
-        console.log(
-          "requestedReviewerObj?.asanaId",
-          requestedReviewerObj?.asanaId
-        );
-        console.log("subtasks", subtasks.data.data);
-        console.log("approvalSubtask", approvalSubtask);
         // If Request Reviewer already has incomplete subtask
         if (approvalSubtask) {
           continue;

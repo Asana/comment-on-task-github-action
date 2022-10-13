@@ -13279,9 +13279,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId);
         // Add Users to Followers
         const followersStatus = [];
-        const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId];
+        const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
         if (requestedReviewerObj) {
-            followers.push(requestedReviewerObj.asanaUrlId);
+            followers.push(requestedReviewerObj.asanaId);
         }
         // Get Mentioned Users In Comment
         let commentBody = ((_u = github.context.payload.comment) === null || _u === void 0 ? void 0 : _u.body) || ((_v = github.context.payload.review) === null || _v === void 0 ? void 0 : _v.body) || "";
@@ -13289,7 +13289,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const mention of mentions) {
             // Add to Followers
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
-            followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
+            followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
             // Add To Comment
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             commentBody = commentBody.replace(mention, mentionUserUrl);
@@ -13409,10 +13409,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const subtasks = yield requests_asanaAxios.get(url);
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
-                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId));
-                console.log("requestedReviewerObj?.asanaUrlId", requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId);
-                console.log("subtasks", subtasks.data.data);
-                console.log("approvalSubtask", approvalSubtask);
+                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId));
                 // If Request Reviewer already has incomplete subtask
                 if (approvalSubtask) {
                     continue;
@@ -13420,7 +13417,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Create Approval Subtasks For Requested Reviewer
                 yield requests_asanaAxios.post(url, {
                     data: {
-                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId,
+                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId,
                         approval_status: "pending",
                         completed: false,
                         due_on: tomorrow.toISOString().substring(0, 10),
