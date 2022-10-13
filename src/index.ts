@@ -205,11 +205,14 @@ export const run = async () => {
 
     if (prReadyForReview) {
       // Store Owner Of Repo
-      const ownerName = context.payload.pull_request?.head.repo.owner.login;
-      const ownerObj = users.find((owner) => owner.githubName === ownerName);
+      // const ownerName = context.payload.pull_request?.head.repo.owner.login;
+      // const ownerObj = users.find((owner) => owner.githubName === ownerName);
       // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
 
-      console.log("ownerObj", ownerObj);
+      console.log(
+        "context.payload.pull_request?.head.repo",
+        context.payload.pull_request?.head.repo
+      );
     }
 
     const tomorrow = new Date();

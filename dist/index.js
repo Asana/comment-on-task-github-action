@@ -13396,10 +13396,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prReadyForReview = eventName === "pull_request" && action === "ready_for_review";
         if (prReadyForReview) {
             // Store Owner Of Repo
-            const ownerName = (_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.head.repo.owner.login;
-            const ownerObj = users.find((owner) => owner.githubName === ownerName);
+            // const ownerName = context.payload.pull_request?.head.repo.owner.login;
+            // const ownerObj = users.find((owner) => owner.githubName === ownerName);
             // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
-            console.log("ownerObj", ownerObj);
+            console.log("context.payload.pull_request?.head.repo", (_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.head.repo);
         }
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
