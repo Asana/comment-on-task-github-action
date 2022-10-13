@@ -42,12 +42,12 @@ export const run = async () => {
       "";
 
     // Store Owner Of Repo
-    // const owner =
-    //   context.payload.head.repo.owner.login ||
-    //   context.payload.pull_request?.head.repo.owner.login ||
-    //   context.payload.repository?.owner.login;
-    // const userObj = users.find((user) => user.githubName === owner);
-    // const userUrl = mentionUrl.concat(userObj?.asanaId!);
+    const ownerName =
+      context.payload.head.repo.owner.login ||
+      context.payload.pull_request?.head.repo.owner.login ||
+      "";
+    const ownerObj = users.find((owner) => owner.githubName === ownerName);
+    // const ownerUrl = mentionUrl.concat(ownerObj?.asanaUrlId!);
 
     // Store User That Triggered Job
     const username =
@@ -204,14 +204,21 @@ export const run = async () => {
       }
     }
     // Check if Requesting Review
-    const prReadyForReview =
+    const prReviewRequested =
       eventName === "pull_request" &&
       !context.payload.pull_request?.draft &&
       action === "review_requested";
+    const prReadyForReview =
+      eventName === "pull_request" && action === "ready_for_review";
+
+    if (prReadyForReview) {
+      console.log("ownerObj", ownerObj);
+    }
+
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    if (prReadyForReview) {
+    if (prReviewRequested) {
       for (const id of asanaTasksIds!) {
         // Get Approval Subtasks
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
