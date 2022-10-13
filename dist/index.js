@@ -13163,46 +13163,55 @@ axios_retry_default()(asanaAxios, {
 const users = [
     {
         asanaId: "1992810427453",
+        asanaUrlId: "1992899177766",
         asanaName: "Nathan",
         githubName: "tylerdigital",
     },
     {
         asanaId: "11332651049773",
+        asanaUrlId: "11332651049782",
         asanaName: "Natalie MacLees",
         githubName: "NatalieMac",
     },
     {
         asanaId: "1172261355139211",
+        asanaUrlId: "1172261355686366",
         asanaName: "Natalie Garza",
         githubName: "gnarza",
     },
     {
         asanaId: "1200161861602258",
+        asanaUrlId: "1200161861631865",
         asanaName: "Cynthia Hug",
         githubName: "cynhu92",
     },
     {
         asanaId: "1202256129588512",
+        asanaUrlId: "1202258098000877",
         asanaName: "Mariam El Zaatari",
         githubName: "MariamElZaatari",
     },
     {
         asanaId: "1202393076412167",
+        asanaUrlId: "1202395095687177",
         asanaName: "Amin Abdulkhalek",
         githubName: "aminabdulkhalek",
     },
     {
         asanaId: "1202852151625813",
+        asanaUrlId: "1202852821241548",
         asanaName: "Hamze Ammar",
         githubName: "Hamze-Ammar",
     },
     {
         asanaId: "1202852209355924",
+        asanaUrlId: "1202852825308828",
         asanaName: "Hsein Bitar",
         githubName: "hsein-bitar",
     },
     {
         asanaId: "1202470392325800",
+        asanaUrlId: "1202470337039007",
         asanaName: "Otto Bot",
         githubName: "otto-bot-git",
     },
@@ -13263,16 +13272,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login) ||
             ((_s = github.context.payload.sender) === null || _s === void 0 ? void 0 : _s.login);
         const userObj = users.find((user) => user.githubName === username);
-        const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaId);
+        const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         // Store Requested Reviewer User
         const requestedReviewerName = ((_t = github.context.payload.requested_reviewer) === null || _t === void 0 ? void 0 : _t.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
-        const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId);
+        const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId);
         // Add Users to Followers
         const followersStatus = [];
-        const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
+        const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId];
         if (requestedReviewerObj) {
-            followers.push(requestedReviewerObj.asanaId);
+            followers.push(requestedReviewerObj.asanaUrlId);
         }
         // Get Mentioned Users In Comment
         let commentBody = ((_u = github.context.payload.comment) === null || _u === void 0 ? void 0 : _u.body) || ((_v = github.context.payload.review) === null || _v === void 0 ? void 0 : _v.body) || "";
@@ -13280,9 +13289,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const mention of mentions) {
             // Add to Followers
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
-            followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
+            followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             // Add To Comment
-            const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
+            const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             commentBody = commentBody.replace(mention, mentionUserUrl);
         }
         // Get Task IDs From PR Description
@@ -13400,8 +13409,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const subtasks = yield requests_asanaAxios.get(url);
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
-                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId));
-                console.log("requestedReviewerObj?.asanaId", requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId);
+                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId));
+                console.log("requestedReviewerObj?.asanaUrlId", requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId);
                 console.log("subtasks", subtasks.data.data);
                 console.log("approvalSubtask", approvalSubtask);
                 // If Request Reviewer already has incomplete subtask
@@ -13411,7 +13420,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Create Approval Subtasks For Requested Reviewer
                 yield requests_asanaAxios.post(url, {
                     data: {
-                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId,
+                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId,
                         approval_status: "pending",
                         completed: false,
                         due_on: tomorrow.toISOString().substring(0, 10),
