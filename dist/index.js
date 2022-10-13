@@ -13401,6 +13401,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
                     subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId));
+                console.log("subtasks", subtasks);
+                console.log("approvalSubtask", approvalSubtask);
                 // If Request Reviewer already has incomplete subtask
                 if (approvalSubtask) {
                     continue;
