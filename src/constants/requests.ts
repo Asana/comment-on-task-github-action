@@ -5,6 +5,7 @@ export const RETRY_DELAY = 1000;
 export const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
 export const TASKS_URL = "/tasks/";
 export const SECTIONS_URL = "/sections/";
-export const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype";
+export const SUBTASKS_URL =
+  "/subtasks?opt_fields=completed,resource_subtype,assignee";
 export const ADD_FOLLOWERS_URL = "/addFollowers";
 export const ADD_TASK_URL = "/addTask";
