@@ -41,6 +41,14 @@ export const run = async () => {
       context.payload.review?.html_url ||
       "";
 
+    // Store Owner Of Repo
+    // const owner =
+    //   context.payload.head.repo.owner.login ||
+    //   context.payload.pull_request?.head.repo.owner.login ||
+    //   context.payload.repository?.owner.login;
+    // const userObj = users.find((user) => user.githubName === owner);
+    // const userUrl = mentionUrl.concat(userObj?.asanaId!);
+
     // Store User That Triggered Job
     const username =
       context.payload.comment?.user.login ||
@@ -139,11 +147,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -199,7 +206,7 @@ export const run = async () => {
     const prReadyForReview =
       eventName === "pull_request" &&
       !context.payload.pull_request?.draft &&
-      (action === "review_requested" || action === "ready_for_review");
+      (action === "review_requested");
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -223,7 +230,7 @@ export const run = async () => {
         // Create Approval Subtasks For Requested Reviewer
         await asanaAxios.post(url, {
           data: {
-            assignee: requestedReviewerObj?.asanaId,
+            assignee: action === requestedReviewerObj?.asanaId,
             approval_status: "pending",
             completed: false,
             due_on: tomorrow.toISOString().substring(0, 10),

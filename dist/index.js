@@ -13251,6 +13251,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
             ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
             "";
+        // Store Owner Of Repo
+        // const owner =
+        //   context.payload.head.repo.owner.login ||
+        //   context.payload.pull_request?.head.repo.owner.login ||
+        //   context.payload.repository?.owner.login;
+        // const userObj = users.find((user) => user.githubName === owner);
+        // const userUrl = mentionUrl.concat(userObj?.asanaId!);
         // Store User That Triggered Job
         const username = ((_q = github.context.payload.comment) === null || _q === void 0 ? void 0 : _q.user.login) ||
             ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login) ||
@@ -13383,7 +13390,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check if Requesting Review
         const prReadyForReview = eventName === "pull_request" &&
             !((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.draft) &&
-            (action === "review_requested" || action === "ready_for_review");
+            action === "review_requested";
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         if (prReadyForReview) {
@@ -13401,7 +13408,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Create Approval Subtasks For Requested Reviewer
                 yield requests_asanaAxios.post(url, {
                     data: {
-                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId,
+                        assignee: action === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId),
                         approval_status: "pending",
                         completed: false,
                         due_on: tomorrow.toISOString().substring(0, 10),
