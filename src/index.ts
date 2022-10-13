@@ -147,10 +147,11 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+              commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-              } -> ${commentUrl}`;
+            } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -206,7 +207,7 @@ export const run = async () => {
     const prReadyForReview =
       eventName === "pull_request" &&
       !context.payload.pull_request?.draft &&
-      (action === "review_requested");
+      action === "review_requested";
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
