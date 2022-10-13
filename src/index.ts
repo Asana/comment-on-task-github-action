@@ -231,7 +231,7 @@ export const run = async () => {
         // Create Approval Subtasks For Requested Reviewer
         await asanaAxios.post(url, {
           data: {
-            assignee: action === requestedReviewerObj?.asanaId,
+            assignee: requestedReviewerObj?.asanaId,
             approval_status: "pending",
             completed: false,
             due_on: tomorrow.toISOString().substring(0, 10),

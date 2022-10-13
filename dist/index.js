@@ -13408,7 +13408,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Create Approval Subtasks For Requested Reviewer
                 yield requests_asanaAxios.post(url, {
                     data: {
-                        assignee: action === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId),
+                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId,
                         approval_status: "pending",
                         completed: false,
                         due_on: tomorrow.toISOString().substring(0, 10),
