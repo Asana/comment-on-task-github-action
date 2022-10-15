@@ -71,7 +71,10 @@ export const run = async () => {
     const requestedReviewerObj = users.find(
       (user) => user.githubName === requestedReviewerName
     );
-    const requestedReviewers = requestedReviewerObj || context.payload.pull_request?.requested_reviewers || [];
+    const requestedReviewers =
+      requestedReviewerObj ||
+      context.payload.pull_request?.requested_reviewers ||
+      [];
 
     // Add User to Followers
     const followersStatus = [];
@@ -147,7 +150,7 @@ export const run = async () => {
     }
 
     // Check if PR Ready For Review
-    if ((prReviewRequested || prReadyForReview)) {
+    if (prReviewRequested || prReadyForReview) {
       if (Array.isArray(requestedReviewers)) {
         for (const reviewer of requestedReviewers) {
           const reviewerObj = users.find(
@@ -213,10 +216,11 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
-              ? ``
-              : `:\n\n ${commentBody}\n\nComment URL`
-              } -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+              commentBody.length === 0
+                ? ``
+                : `:\n\n ${commentBody}\n\nComment URL`
+            } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -269,7 +273,10 @@ export const run = async () => {
   }
 };
 
-export const addApprovalTask = async (asanaTasksIds: Array<String>, requestedReviewer: any) => {
+export const addApprovalTask = async (
+  asanaTasksIds: Array<String>,
+  requestedReviewer: any
+) => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -301,5 +308,5 @@ export const addApprovalTask = async (asanaTasksIds: Array<String>, requestedRev
       },
     });
   }
-}
+};
 run();
