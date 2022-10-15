@@ -272,7 +272,7 @@ export const run = async () => {
         }
         break;
       case "pull_request":
-        if (action === "review_requested") {
+        if (action === "review_requested" || action === "opened" || action === "ready_for_review") {
           return;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
