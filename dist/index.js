@@ -13376,9 +13376,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Check If PR Closed and Merged
-        setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
-            let approvalSubtasks = [];
-            if (prClosedMerged || prReviewChangesRequested) {
+        let approvalSubtasks = [];
+        if (prClosedMerged || prReviewChangesRequested) {
+            setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
                 // Get Approval Subtasks
                 for (const id of asanaTasksIds) {
                     const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
@@ -13389,8 +13389,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 for (const subtask of approvalSubtasks) {
                     yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
                 }
-            }
-        }), 60000);
+            }), 60000);
+        }
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (eventName) {
