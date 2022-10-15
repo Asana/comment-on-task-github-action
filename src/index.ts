@@ -76,6 +76,7 @@ export const run = async () => {
       requestedReviewerObj ||
       context.payload.pull_request?.requested_reviewers ||
       [];
+    console.log('requestedReviewers', requestedReviewers);
 
     // Add User to Followers
     const followersStatus = [];

@@ -13285,6 +13285,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const requestedReviewers = requestedReviewerObj ||
             ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.requested_reviewers) ||
             [];
+        console.log("requestedReviewers", requestedReviewers);
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
