@@ -13269,7 +13269,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Store Requested Reviewer User
         const requestedReviewerName = ((_t = github.context.payload.requested_reviewer) === null || _t === void 0 ? void 0 : _t.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
-        const requestedReviewerUrl = mentionUrl.concat(requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaUrlId);
         // Add Users to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
@@ -13348,7 +13347,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             case "pull_request":
                 if (action === "review_requested") {
-                    commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
+                    return;
                 }
                 else {
                     commentText = (0,core.getInput)(COMMENT_TEXT);

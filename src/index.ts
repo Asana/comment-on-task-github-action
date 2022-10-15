@@ -55,9 +55,6 @@ export const run = async () => {
     const requestedReviewerObj = users.find(
       (user) => user.githubName === requestedReviewerName
     );
-    const requestedReviewerUrl = mentionUrl.concat(
-      requestedReviewerObj?.asanaUrlId!
-    );
 
     // Add Users to Followers
     const followersStatus = [];
@@ -152,7 +149,7 @@ export const run = async () => {
         break;
       case "pull_request":
         if (action === "review_requested") {
-          commentText = `${userUrl} is requesting a review from ${requestedReviewerUrl} on PR #${pullRequestId} -> ${pullRequestURL}`;
+          return;
         } else {
           commentText = getInput(INPUTS.COMMENT_TEXT);
         }
