@@ -13366,6 +13366,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
                     subtask.assignee.gid === (userObj === null || userObj === void 0 ? void 0 : userObj.asanaId));
+                console.log("subtasks.data.data", subtasks.data.data);
+                console.log("approvalSubtask", approvalSubtask);
                 // Update Approval Subtask Of User
                 yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                     data: {

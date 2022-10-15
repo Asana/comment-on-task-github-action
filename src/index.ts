@@ -179,6 +179,8 @@ export const run = async () => {
             subtask.assignee.gid === userObj?.asanaId
         );
 
+        console.log('subtasks.data.data', subtasks.data.data)
+        console.log('approvalSubtask', approvalSubtask)
         // Update Approval Subtask Of User
         await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
           data: {
