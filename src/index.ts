@@ -55,7 +55,8 @@ export const run = async () => {
       action === "review_requested";
     const prReadyForReview =
       eventName === "pull_request" &&
-      (action === "ready_for_review" || (action === "opened" && !context.payload.pull_request?.draft));
+      (action === "ready_for_review" ||
+        (action === "opened" && !context.payload.pull_request?.draft));
 
     // Store User That Triggered Job
     const username =
