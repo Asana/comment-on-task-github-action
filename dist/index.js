@@ -13273,6 +13273,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prReadyForReview = eventName === "pull_request" &&
             (action === "ready_for_review" ||
                 (action === "opened" && !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft)));
+        const prReviewSubmitted = eventName === "pull_request" && action === "submitted";
         // Store User That Triggered Job
         const username = ((_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.user.login) ||
             ((_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.user.login) ||
@@ -13355,6 +13356,22 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             else {
                 addApprovalTask(asanaTasksIds, requestedReviewers);
+            }
+        }
+        if (prReviewSubmitted) {
+            for (const id of asanaTasksIds) {
+                // Get Approval Subtasks
+                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+                const subtasks = yield requests_asanaAxios.get(url);
+                const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+                    !subtask.completed &&
+                    subtask.assignee.gid === (userObj === null || userObj === void 0 ? void 0 : userObj.asanaId));
+                // Update Approval Subtask Of User
+                yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
+                    data: {
+                        approval_status: reviewState,
+                    },
+                });
             }
         }
         // Check If PR Closed and Merged

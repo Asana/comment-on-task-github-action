@@ -57,6 +57,7 @@ export const run = async () => {
       eventName === "pull_request" &&
       (action === "ready_for_review" ||
         (action === "opened" && !context.payload.pull_request?.draft));
+    const prReviewSubmitted = eventName === "pull_request" && action === "submitted";
 
     // Store User That Triggered Job
     const username =
@@ -76,7 +77,7 @@ export const run = async () => {
       requestedReviewerObj ||
       context.payload.pull_request?.requested_reviewers ||
       [];
-    console.log('requestedReviewers', requestedReviewers);
+    console.log("requestedReviewers", requestedReviewers);
 
     // Add User to Followers
     const followersStatus = [];
@@ -165,9 +166,29 @@ export const run = async () => {
       }
     }
 
+    if (prReviewSubmitted) {
+      for (const id of asanaTasksIds!) {
+        // Get Approval Subtasks
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
+        const subtasks = await asanaAxios.get(url);
+        const approvalSubtask = subtasks.data.data.find(
+          (subtask: any) =>
+            subtask.resource_subtype === "approval" &&
+            !subtask.completed &&
+            subtask.assignee.gid === userObj?.asanaId
+        );
+
+        // Update Approval Subtask Of User
+        await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
+          data: {
+            approval_status: reviewState,
+          },
+        });
+      }
+    }
+
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
-
     if (prClosedMerged || prReviewChangesRequested) {
       // Get Approval Subtasks
       for (const id of asanaTasksIds!) {
@@ -218,11 +239,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
-                ? ``
-                : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+              ? ``
+              : `:\n\n ${commentBody}\n\nComment URL`
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
