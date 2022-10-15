@@ -13306,73 +13306,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             });
             followersStatus.push({ taskId: id, status: followersResult.status });
         }
-        // Get Correct Dynamic Comment
-        let commentText = "";
-        switch (eventName) {
-            case "issue_comment": {
-                if (commentBody.includes(">")) {
-                    const lines = commentBody.split("\n");
-                    const commentBodyLines = lines.filter(function (line) {
-                        return line.indexOf(">") !== 0;
-                    });
-                    commentBodyLines.shift();
-                    commentText = `${userUrl} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
-                }
-                else {
-                    commentText =
-                        username === "otto-bot-git"
-                            ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-                            : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
-                }
-                break;
-            }
-            case "pull_request_review":
-                switch (reviewState) {
-                    case "commented":
-                    case "changes_requested":
-                        if (!commentBody || action === "edited") {
-                            return;
-                        }
-                        commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
-                        break;
-                    case "approved":
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
-                            ? ``
-                            : `:\n\n ${commentBody}\n\nComment URL`} -> ${commentUrl}`;
-                        break;
-                    default:
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
-                        break;
-                }
-                break;
-            case "pull_request":
-                if (action === "review_requested") {
-                    return;
-                }
-                else {
-                    commentText = (0,core.getInput)(COMMENT_TEXT);
-                }
-                break;
-            case "pull_request_review_comment": {
-                const path = (_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.path;
-                const files = path.split("/");
-                const fileName = files[files.length - 1];
-                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
-                break;
-            }
-        }
-        // Post Comment To Asana
-        const commentResult = yield requests_axios.post(ACTION_URL, {
-            allowedProjects,
-            blockedProjects,
-            commentText,
-            pullRequestDescription,
-            pullRequestId,
-            pullRequestName,
-            pullRequestURL,
-            pullRequestState,
-            pullRequestMerged,
-        });
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
             username === "otto-bot-git" &&
@@ -13390,11 +13323,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if Requesting Review
         const prReviewRequested = eventName === "pull_request" &&
-            !((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.draft) &&
+            !((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.draft) &&
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" &&
             (action === "ready_for_review" || action === "opened");
-        const requestedReviewers = ((_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.requested_reviewers) || [];
+        const requestedReviewers = ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.requested_reviewers) || [];
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         if (prReadyForReview) {
@@ -13454,7 +13387,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let approvalSubtasks = [];
         const prClosedMerged = eventName === "pull_request" &&
             action === "closed" &&
-            ((_0 = github.context.payload.pull_request) === null || _0 === void 0 ? void 0 : _0.merged);
+            ((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.merged);
         const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
         if (prClosedMerged || prReviewChangesRequested) {
@@ -13469,6 +13402,73 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
             }
         }
+        // Get Correct Dynamic Comment
+        let commentText = "";
+        switch (eventName) {
+            case "issue_comment": {
+                if (commentBody.includes(">")) {
+                    const lines = commentBody.split("\n");
+                    const commentBodyLines = lines.filter(function (line) {
+                        return line.indexOf(">") !== 0;
+                    });
+                    commentBodyLines.shift();
+                    commentText = `${userUrl} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
+                }
+                else {
+                    commentText =
+                        username === "otto-bot-git"
+                            ? `${commentBody}\n\nComment URL -> ${commentUrl}`
+                            : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                }
+                break;
+            }
+            case "pull_request_review":
+                switch (reviewState) {
+                    case "commented":
+                    case "changes_requested":
+                        if (!commentBody || action === "edited") {
+                            return;
+                        }
+                        commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                        break;
+                    case "approved":
+                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+                            ? ``
+                            : `:\n\n ${commentBody}\n\nComment URL`} -> ${commentUrl}`;
+                        break;
+                    default:
+                        commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
+                        break;
+                }
+                break;
+            case "pull_request":
+                if (action === "review_requested") {
+                    return;
+                }
+                else {
+                    commentText = (0,core.getInput)(COMMENT_TEXT);
+                }
+                break;
+            case "pull_request_review_comment": {
+                const path = (_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.path;
+                const files = path.split("/");
+                const fileName = files[files.length - 1];
+                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                break;
+            }
+        }
+        // Post Comment To Asana
+        const commentResult = yield requests_axios.post(ACTION_URL, {
+            allowedProjects,
+            blockedProjects,
+            commentText,
+            pullRequestDescription,
+            pullRequestId,
+            pullRequestName,
+            pullRequestURL,
+            pullRequestState,
+            pullRequestMerged,
+        });
         (0,core.setOutput)(`followersStatus`, followersStatus);
         (0,core.setOutput)("commentStatus", commentResult.status);
         (0,core.setOutput)("comment", commentText);
