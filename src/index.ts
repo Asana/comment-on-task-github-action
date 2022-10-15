@@ -202,14 +202,18 @@ export const run = async () => {
       !context.payload.pull_request?.draft &&
       action === "review_requested";
     const prReadyForReview =
-      eventName === "pull_request" && (action === "ready_for_review" || action === "opened");    
-    const requestedReviewers = context.payload.pull_request?.requested_reviewers || [];
+      eventName === "pull_request" &&
+      (action === "ready_for_review" || action === "opened");
+    const requestedReviewers =
+      context.payload.pull_request?.requested_reviewers || [];
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    if(prReadyForReview){
+
+    if (prReadyForReview) {
       for (const reviewer of requestedReviewers) {
-        let reviewerObj = users.find((user) => user.githubName === reviewer.login);
+        const reviewerObj = users.find(
+          (user) => user.githubName === reviewer.login
+        );
         for (const id of asanaTasksIds!) {
           // Get Approval Subtasks
           const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
@@ -220,12 +224,12 @@ export const run = async () => {
               !subtask.completed &&
               subtask.assignee.gid === reviewerObj?.asanaId
           );
-  
+
           // If Request Reviewer already has incomplete subtask
           if (approvalSubtask) {
             continue;
           }
-  
+
           // Create Approval Subtasks For Requested Reviewer
           await asanaAxios.post(url, {
             data: {
