@@ -13273,7 +13273,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prReadyForReview = eventName === "pull_request" &&
             (action === "ready_for_review" ||
                 (action === "opened" && !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft)));
-        const prReviewSubmitted = eventName === "pull_request" && action === "submitted";
+        const prReviewSubmitted = eventName === "pull_request_review" && action === "submitted";
         // Store User That Triggered Job
         const username = ((_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.user.login) ||
             ((_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.user.login) ||
@@ -13286,7 +13286,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const requestedReviewers = requestedReviewerObj ||
             ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.requested_reviewers) ||
             [];
-        console.log("requestedReviewers", requestedReviewers);
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];

@@ -58,7 +58,7 @@ export const run = async () => {
       (action === "ready_for_review" ||
         (action === "opened" && !context.payload.pull_request?.draft));
     const prReviewSubmitted =
-      eventName === "pull_request" && action === "submitted";
+      eventName === "pull_request_review" && action === "submitted";
 
     // Store User That Triggered Job
     const username =
@@ -78,7 +78,6 @@ export const run = async () => {
       requestedReviewerObj ||
       context.payload.pull_request?.requested_reviewers ||
       [];
-    console.log("requestedReviewers", requestedReviewers);
 
     // Add User to Followers
     const followersStatus = [];
@@ -179,8 +178,8 @@ export const run = async () => {
             subtask.assignee.gid === userObj?.asanaId
         );
 
-        console.log('subtasks.data.data', subtasks.data.data)
-        console.log('approvalSubtask', approvalSubtask)
+        console.log("subtasks.data.data", subtasks.data.data);
+        console.log("approvalSubtask", approvalSubtask);
         // Update Approval Subtask Of User
         await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
           data: {
