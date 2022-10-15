@@ -192,7 +192,7 @@ export const run = async () => {
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
     if (prClosedMerged || prReviewChangesRequested) {
-        setTimeout(async () => {
+      setTimeout(async () => {
         // Get Approval Subtasks
         for (const id of asanaTasksIds!) {
           const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
@@ -208,7 +208,7 @@ export const run = async () => {
           await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
         }
       }, 60000);
-    };
+    }
 
     // Get Correct Dynamic Comment
     let commentText = "";
