@@ -13418,10 +13418,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                         break;
                     case "approved":
-                        commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
-                            ? ``
-                            : `:\n\n ${commentBody}\n\nComment URL`} -> ${commentUrl}`;
-                        break;
+                        // commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+                        //   commentBody.length === 0
+                        //     ? ``
+                        //     : `:\n\n ${commentBody}\n\nComment URL`
+                        // } -> ${commentUrl}`;
+                        return;
                     default:
                         commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
                         break;
