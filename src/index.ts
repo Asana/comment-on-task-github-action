@@ -195,26 +195,51 @@ export const run = async () => {
         });
       }
     }
+
     // Check if Requesting Review
     const prReviewRequested =
       eventName === "pull_request" &&
       !context.payload.pull_request?.draft &&
       action === "review_requested";
     const prReadyForReview =
-      eventName === "pull_request" && action === "ready_for_review";
-
-    if (prReadyForReview) {
-      // Store Owner Of Repo
-
-
-      console.log(
-        "context.payload.pull_request?.requested_reviewers",
-        context.payload.pull_request?.requested_reviewers
-      );
-    }
-
+      eventName === "pull_request" && (action === "ready_for_review" || action === "opened");    
+    const requestedReviewers = context.payload.pull_request?.requested_reviewers || [];
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    if(prReadyForReview){
+      for (const reviewer of requestedReviewers) {
+        let reviewerObj = users.find((user) => user.githubName === reviewer.login);
+        for (const id of asanaTasksIds!) {
+          // Get Approval Subtasks
+          const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
+          const subtasks = await asanaAxios.get(url);
+          const approvalSubtask = subtasks.data.data.find(
+            (subtask: any) =>
+              subtask.resource_subtype === "approval" &&
+              !subtask.completed &&
+              subtask.assignee.gid === reviewerObj?.asanaId
+          );
+  
+          // If Request Reviewer already has incomplete subtask
+          if (approvalSubtask) {
+            continue;
+          }
+  
+          // Create Approval Subtasks For Requested Reviewer
+          await asanaAxios.post(url, {
+            data: {
+              assignee: reviewerObj?.asanaId,
+              approval_status: "pending",
+              completed: false,
+              due_on: tomorrow.toISOString().substring(0, 10),
+              resource_subtype: "approval",
+              name: "Review",
+            },
+          });
+        }
+      }
+    }
 
     if (prReviewRequested) {
       for (const id of asanaTasksIds!) {

@@ -13393,13 +13393,39 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prReviewRequested = eventName === "pull_request" &&
             !((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.draft) &&
             action === "review_requested";
-        const prReadyForReview = eventName === "pull_request" && action === "ready_for_review";
-        if (prReadyForReview) {
-            // Store Owner Of Repo
-            console.log("context.payload.pull_request?.requested_reviewers", (_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.requested_reviewers);
-        }
+        const prReadyForReview = eventName === "pull_request" &&
+            (action === "ready_for_review" || action === "opened");
+        const requestedReviewers = ((_z = github.context.payload.pull_request) === null || _z === void 0 ? void 0 : _z.requested_reviewers) || [];
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
+        if (prReadyForReview) {
+            for (const reviewer of requestedReviewers) {
+                const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+                for (const id of asanaTasksIds) {
+                    // Get Approval Subtasks
+                    const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+                    const subtasks = yield requests_asanaAxios.get(url);
+                    const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+                        !subtask.completed &&
+                        subtask.assignee.gid === (reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId));
+                    // If Request Reviewer already has incomplete subtask
+                    if (approvalSubtask) {
+                        continue;
+                    }
+                    // Create Approval Subtasks For Requested Reviewer
+                    yield requests_asanaAxios.post(url, {
+                        data: {
+                            assignee: reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId,
+                            approval_status: "pending",
+                            completed: false,
+                            due_on: tomorrow.toISOString().substring(0, 10),
+                            resource_subtype: "approval",
+                            name: "Review",
+                        },
+                    });
+                }
+            }
+        }
         if (prReviewRequested) {
             for (const id of asanaTasksIds) {
                 // Get Approval Subtasks
