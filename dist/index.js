@@ -13239,7 +13239,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13271,18 +13271,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             !((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.draft) &&
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" &&
-            (action === "ready_for_review" || action === "opened");
+            (action === "ready_for_review" ||
+                (action === "opened" && !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft)));
         // Store User That Triggered Job
-        const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
-            ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
-            ((_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login);
+        const username = ((_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.user.login) ||
+            ((_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.user.login) ||
+            ((_v = github.context.payload.sender) === null || _v === void 0 ? void 0 : _v.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         // Store Requested Reviewers
-        const requestedReviewerName = ((_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login) || "";
+        const requestedReviewerName = ((_w = github.context.payload.requested_reviewer) === null || _w === void 0 ? void 0 : _w.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewers = requestedReviewerObj ||
-            ((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.requested_reviewers) ||
+            ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.requested_reviewers) ||
             [];
         // Add User to Followers
         const followersStatus = [];
@@ -13298,7 +13299,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             followers.push(requestedReviewers.asanaId);
         }
         // Get Mentioned Users In Comment
-        let commentBody = ((_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.body) || ((_y = github.context.payload.review) === null || _y === void 0 ? void 0 : _y.body) || "";
+        let commentBody = ((_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.body) || ((_z = github.context.payload.review) === null || _z === void 0 ? void 0 : _z.body) || "";
         const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
         for (const mention of mentions) {
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
@@ -13419,10 +13420,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.path;
+                const path = (_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
             }
         }
@@ -13445,7 +13446,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_1 = error.response) === null || _1 === void 0 ? void 0 : _1.data) || "Unknown error");
+            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
