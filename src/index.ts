@@ -179,7 +179,7 @@ export const run = async () => {
         );
 
         // Update Approval Subtask Of User
-        if(approvalSubtask){
+        if (approvalSubtask) {
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
             data: {
               approval_status: reviewState,
