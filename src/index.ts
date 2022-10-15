@@ -41,6 +41,22 @@ export const run = async () => {
       context.payload.review?.html_url ||
       "";
 
+    // Store Conditions
+    const prClosedMerged =
+      eventName === "pull_request" &&
+      action === "closed" &&
+      context.payload.pull_request?.merged;
+    const prReviewChangesRequested =
+      eventName === "pull_request_review" &&
+      reviewState === "changes_requested";
+    const prReviewRequested =
+      eventName === "pull_request" &&
+      !context.payload.pull_request?.draft &&
+      action === "review_requested";
+    const prReadyForReview =
+      eventName === "pull_request" &&
+      (action === "ready_for_review" || action === "opened");
+
     // Store User That Triggered Job
     const username =
       context.payload.comment?.user.login ||
@@ -49,18 +65,28 @@ export const run = async () => {
     const userObj = users.find((user) => user.githubName === username);
     const userUrl = mentionUrl.concat(userObj?.asanaUrlId!);
 
-    // Store Requested Reviewer User
+    // Store Requested Reviewers
     const requestedReviewerName =
       context.payload.requested_reviewer?.login || "";
     const requestedReviewerObj = users.find(
       (user) => user.githubName === requestedReviewerName
     );
+    const requestedReviewers = requestedReviewerObj || context.payload.pull_request?.requested_reviewers || [];
 
-    // Add Users to Followers
+    // Add User to Followers
     const followersStatus = [];
     const followers = [userObj?.asanaId];
-    if (requestedReviewerObj) {
-      followers.push(requestedReviewerObj.asanaId);
+
+    // Add Requested Reviewers to Followers
+    if (Array.isArray(requestedReviewers)) {
+      for (const reviewer of requestedReviewers) {
+        const reviewerObj = users.find(
+          (user) => user.githubName === reviewer.login
+        );
+        followers.push(reviewerObj?.asanaId);
+      }
+    } else {
+      followers.push(requestedReviewers.asanaId);
     }
 
     // Get Mentioned Users In Comment
@@ -68,10 +94,10 @@ export const run = async () => {
       context.payload.comment?.body || context.payload.review?.body || "";
     const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
     for (const mention of mentions) {
-      // Add to Followers
       const mentionUserObj = users.find(
         (user) => user.githubName === mention.substring(1, mention.length)
       );
+      // Add to Followers
       followers.push(mentionUserObj?.asanaId);
       // Add To Comment
       const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaUrlId!);
@@ -120,95 +146,22 @@ export const run = async () => {
       }
     }
 
-    // Check if Requesting Review
-    const prReviewRequested =
-      eventName === "pull_request" &&
-      !context.payload.pull_request?.draft &&
-      action === "review_requested";
-    const prReadyForReview =
-      eventName === "pull_request" &&
-      (action === "ready_for_review" || action === "opened");
-    const requestedReviewers =
-      context.payload.pull_request?.requested_reviewers || [];
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    if (prReadyForReview) {
-      for (const reviewer of requestedReviewers) {
-        const reviewerObj = users.find(
-          (user) => user.githubName === reviewer.login
-        );
-        for (const id of asanaTasksIds!) {
-          // Get Approval Subtasks
-          const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
-          const subtasks = await asanaAxios.get(url);
-          const approvalSubtask = subtasks.data.data.find(
-            (subtask: any) =>
-              subtask.resource_subtype === "approval" &&
-              !subtask.completed &&
-              subtask.assignee.gid === reviewerObj?.asanaId
+    // Check if PR Ready For Review
+    if ((prReviewRequested || prReadyForReview)) {
+      if (Array.isArray(requestedReviewers)) {
+        for (const reviewer of requestedReviewers) {
+          const reviewerObj = users.find(
+            (user) => user.githubName === reviewer.login
           );
-
-          // If Request Reviewer already has incomplete subtask
-          if (approvalSubtask) {
-            continue;
-          }
-
-          // Create Approval Subtasks For Requested Reviewer
-          await asanaAxios.post(url, {
-            data: {
-              assignee: reviewerObj?.asanaId,
-              approval_status: "pending",
-              completed: false,
-              due_on: tomorrow.toISOString().substring(0, 10),
-              resource_subtype: "approval",
-              name: "Review",
-            },
-          });
+          addApprovalTask(asanaTasksIds, reviewerObj);
         }
-      }
-    }
-
-    if (prReviewRequested) {
-      for (const id of asanaTasksIds!) {
-        // Get Approval Subtasks
-        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
-        const subtasks = await asanaAxios.get(url);
-        const approvalSubtask = subtasks.data.data.find(
-          (subtask: any) =>
-            subtask.resource_subtype === "approval" &&
-            !subtask.completed &&
-            subtask.assignee.gid === requestedReviewerObj?.asanaId
-        );
-
-        // If Request Reviewer already has incomplete subtask
-        if (approvalSubtask) {
-          continue;
-        }
-
-        // Create Approval Subtasks For Requested Reviewer
-        await asanaAxios.post(url, {
-          data: {
-            assignee: requestedReviewerObj?.asanaId,
-            approval_status: "pending",
-            completed: false,
-            due_on: tomorrow.toISOString().substring(0, 10),
-            resource_subtype: "approval",
-            name: "Review",
-          },
-        });
+      } else {
+        addApprovalTask(asanaTasksIds, requestedReviewers);
       }
     }
 
     // Check If PR Closed and Merged
     let approvalSubtasks: any = [];
-    const prClosedMerged =
-      eventName === "pull_request" &&
-      action === "closed" &&
-      context.payload.pull_request?.merged;
-    const prReviewChangesRequested =
-      eventName === "pull_request_review" &&
-      reviewState === "changes_requested";
 
     if (prClosedMerged || prReviewChangesRequested) {
       // Get Approval Subtasks
@@ -260,11 +213,10 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
-              commentBody.length === 0
-                ? ``
-                : `:\n\n ${commentBody}\n\nComment URL`
-            } -> ${commentUrl}`;
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+              ? ``
+              : `:\n\n ${commentBody}\n\nComment URL`
+              } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
@@ -317,4 +269,37 @@ export const run = async () => {
   }
 };
 
+export const addApprovalTask = async (asanaTasksIds: Array<String>, requestedReviewer: any) => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  for (const id of asanaTasksIds!) {
+    // Get Approval Subtasks
+    const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
+    const subtasks = await asanaAxios.get(url);
+    const approvalSubtask = subtasks.data.data.find(
+      (subtask: any) =>
+        subtask.resource_subtype === "approval" &&
+        !subtask.completed &&
+        subtask.assignee.gid === requestedReviewer?.asanaId
+    );
+
+    // If Request Reviewer already has incomplete subtask
+    if (approvalSubtask) {
+      continue;
+    }
+
+    // Create Approval Subtasks For Requested Reviewer
+    await asanaAxios.post(url, {
+      data: {
+        assignee: requestedReviewer?.asanaId,
+        approval_status: "pending",
+        completed: false,
+        due_on: tomorrow.toISOString().substring(0, 10),
+        resource_subtype: "approval",
+        name: "Review",
+      },
+    });
+  }
+}
 run();

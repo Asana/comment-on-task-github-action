@@ -13045,6 +13045,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
+  "addApprovalTask": () => (/* binding */ addApprovalTask),
   "run": () => (/* binding */ run)
 });
 
@@ -13260,27 +13261,48 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
             ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
             "";
+        // Store Conditions
+        const prClosedMerged = eventName === "pull_request" &&
+            action === "closed" &&
+            ((_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.merged);
+        const prReviewChangesRequested = eventName === "pull_request_review" &&
+            reviewState === "changes_requested";
+        const prReviewRequested = eventName === "pull_request" &&
+            !((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.draft) &&
+            action === "review_requested";
+        const prReadyForReview = eventName === "pull_request" &&
+            (action === "ready_for_review" || action === "opened");
         // Store User That Triggered Job
-        const username = ((_q = github.context.payload.comment) === null || _q === void 0 ? void 0 : _q.user.login) ||
-            ((_r = github.context.payload.review) === null || _r === void 0 ? void 0 : _r.user.login) ||
-            ((_s = github.context.payload.sender) === null || _s === void 0 ? void 0 : _s.login);
+        const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
+            ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
+            ((_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
-        // Store Requested Reviewer User
-        const requestedReviewerName = ((_t = github.context.payload.requested_reviewer) === null || _t === void 0 ? void 0 : _t.login) || "";
+        // Store Requested Reviewers
+        const requestedReviewerName = ((_v = github.context.payload.requested_reviewer) === null || _v === void 0 ? void 0 : _v.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
-        // Add Users to Followers
+        const requestedReviewers = requestedReviewerObj ||
+            ((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.requested_reviewers) ||
+            [];
+        // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
-        if (requestedReviewerObj) {
-            followers.push(requestedReviewerObj.asanaId);
+        // Add Requested Reviewers to Followers
+        if (Array.isArray(requestedReviewers)) {
+            for (const reviewer of requestedReviewers) {
+                const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+                followers.push(reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId);
+            }
+        }
+        else {
+            followers.push(requestedReviewers.asanaId);
         }
         // Get Mentioned Users In Comment
-        let commentBody = ((_u = github.context.payload.comment) === null || _u === void 0 ? void 0 : _u.body) || ((_v = github.context.payload.review) === null || _v === void 0 ? void 0 : _v.body) || "";
+        let commentBody = ((_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.body) || ((_y = github.context.payload.review) === null || _y === void 0 ? void 0 : _y.body) || "";
         const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
         for (const mention of mentions) {
-            // Add to Followers
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
+            // Add to Followers
             followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
             // Add To Comment
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
@@ -13321,75 +13343,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 });
             }
         }
-        // Check if Requesting Review
-        const prReviewRequested = eventName === "pull_request" &&
-            !((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.draft) &&
-            action === "review_requested";
-        const prReadyForReview = eventName === "pull_request" &&
-            (action === "ready_for_review" || action === "opened");
-        const requestedReviewers = ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.requested_reviewers) || [];
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        if (prReadyForReview) {
-            for (const reviewer of requestedReviewers) {
-                const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-                for (const id of asanaTasksIds) {
-                    // Get Approval Subtasks
-                    const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
-                    const subtasks = yield requests_asanaAxios.get(url);
-                    const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
-                        !subtask.completed &&
-                        subtask.assignee.gid === (reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId));
-                    // If Request Reviewer already has incomplete subtask
-                    if (approvalSubtask) {
-                        continue;
-                    }
-                    // Create Approval Subtasks For Requested Reviewer
-                    yield requests_asanaAxios.post(url, {
-                        data: {
-                            assignee: reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId,
-                            approval_status: "pending",
-                            completed: false,
-                            due_on: tomorrow.toISOString().substring(0, 10),
-                            resource_subtype: "approval",
-                            name: "Review",
-                        },
-                    });
+        // Check if PR Ready For Review
+        if (prReviewRequested || prReadyForReview) {
+            if (Array.isArray(requestedReviewers)) {
+                for (const reviewer of requestedReviewers) {
+                    const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+                    addApprovalTask(asanaTasksIds, reviewerObj);
                 }
             }
-        }
-        if (prReviewRequested) {
-            for (const id of asanaTasksIds) {
-                // Get Approval Subtasks
-                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
-                const subtasks = yield requests_asanaAxios.get(url);
-                const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
-                    !subtask.completed &&
-                    subtask.assignee.gid === (requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId));
-                // If Request Reviewer already has incomplete subtask
-                if (approvalSubtask) {
-                    continue;
-                }
-                // Create Approval Subtasks For Requested Reviewer
-                yield requests_asanaAxios.post(url, {
-                    data: {
-                        assignee: requestedReviewerObj === null || requestedReviewerObj === void 0 ? void 0 : requestedReviewerObj.asanaId,
-                        approval_status: "pending",
-                        completed: false,
-                        due_on: tomorrow.toISOString().substring(0, 10),
-                        resource_subtype: "approval",
-                        name: "Review",
-                    },
-                });
+            else {
+                addApprovalTask(asanaTasksIds, requestedReviewers);
             }
         }
         // Check If PR Closed and Merged
         let approvalSubtasks = [];
-        const prClosedMerged = eventName === "pull_request" &&
-            action === "closed" &&
-            ((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.merged);
-        const prReviewChangesRequested = eventName === "pull_request_review" &&
-            reviewState === "changes_requested";
         if (prClosedMerged || prReviewChangesRequested) {
             // Get Approval Subtasks
             for (const id of asanaTasksIds) {
@@ -13484,6 +13451,33 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setFailed)(error.message);
         else
             (0,core.setFailed)("Unknown error");
+    }
+});
+const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, void 0, void 0, function* () {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    for (const id of asanaTasksIds) {
+        // Get Approval Subtasks
+        const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+        const subtasks = yield requests_asanaAxios.get(url);
+        const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+            !subtask.completed &&
+            subtask.assignee.gid === (requestedReviewer === null || requestedReviewer === void 0 ? void 0 : requestedReviewer.asanaId));
+        // If Request Reviewer already has incomplete subtask
+        if (approvalSubtask) {
+            continue;
+        }
+        // Create Approval Subtasks For Requested Reviewer
+        yield requests_asanaAxios.post(url, {
+            data: {
+                assignee: requestedReviewer === null || requestedReviewer === void 0 ? void 0 : requestedReviewer.asanaId,
+                approval_status: "pending",
+                completed: false,
+                due_on: tomorrow.toISOString().substring(0, 10),
+                resource_subtype: "approval",
+                name: "Review",
+            },
+        });
     }
 });
 run();
