@@ -13376,19 +13376,21 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Check If PR Closed and Merged
-        let approvalSubtasks = [];
-        if (prClosedMerged || prReviewChangesRequested) {
-            // Get Approval Subtasks
-            for (const id of asanaTasksIds) {
-                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
-                const subtasks = yield requests_asanaAxios.get(url);
-                approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
+        setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+            let approvalSubtasks = [];
+            if (prClosedMerged || prReviewChangesRequested) {
+                // Get Approval Subtasks
+                for (const id of asanaTasksIds) {
+                    const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+                    const subtasks = yield requests_asanaAxios.get(url);
+                    approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
+                }
+                // Delete Incomplete Approval Taks
+                for (const subtask of approvalSubtasks) {
+                    yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
+                }
             }
-            // Delete Incomplete Approval Taks
-            for (const subtask of approvalSubtasks) {
-                yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
-            }
-        }
+        }), 60000);
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (eventName) {
