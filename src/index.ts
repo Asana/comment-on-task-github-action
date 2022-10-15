@@ -190,7 +190,7 @@ export const run = async () => {
     }
 
     // Check If PR Closed and Merged
-    setTimeout(async () => { 
+    setTimeout(async () => {
       let approvalSubtasks: any = [];
       if (prClosedMerged || prReviewChangesRequested) {
         // Get Approval Subtasks
@@ -202,7 +202,7 @@ export const run = async () => {
               subtask.resource_subtype === "approval" && !subtask.completed
           );
         }
-  
+
         // Delete Incomplete Approval Taks
         for (const subtask of approvalSubtasks) {
           await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
