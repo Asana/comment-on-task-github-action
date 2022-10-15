@@ -226,7 +226,7 @@ export const run = async () => {
         await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
       }
     }
-    
+
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (eventName) {
@@ -260,10 +260,11 @@ export const run = async () => {
             commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
-            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${commentBody.length === 0
+            commentText = `PR #${pullRequestId} ${pullRequestName} is approved by ${userUrl} ${
+              commentBody.length === 0
                 ? ``
                 : `:\n\n ${commentBody}\n\nComment URL`
-              } -> ${commentUrl}`;
+            } -> ${commentUrl}`;
             break;
           default:
             commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
