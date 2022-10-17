@@ -13272,7 +13272,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" &&
             (action === "ready_for_review" ||
-                (action === "opened" && !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft)));
+                ((action === "opened" || action === "edited") &&
+                    !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft)));
         const prReviewSubmitted = eventName === "pull_request_review" && action === "submitted";
         // Store User That Triggered Job
         const username = ((_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.user.login) ||
@@ -13430,7 +13431,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             case "pull_request":
                 if (action === "review_requested" ||
                     action === "opened" ||
-                    action === "ready_for_review") {
+                    action === "ready_for_review" ||
+                    action === "edited") {
                     return;
                 }
                 else {
