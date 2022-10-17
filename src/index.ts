@@ -56,7 +56,8 @@ export const run = async () => {
     const prReadyForReview =
       eventName === "pull_request" &&
       (action === "ready_for_review" ||
-        ((action === "opened" || action === "edited") && !context.payload.pull_request?.draft));
+        ((action === "opened" || action === "edited") &&
+          !context.payload.pull_request?.draft));
     const prReviewSubmitted =
       eventName === "pull_request_review" && action === "submitted";
 
