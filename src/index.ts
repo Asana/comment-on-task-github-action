@@ -219,11 +219,11 @@ export const run = async () => {
 
     if (prApproved) {
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
-      const reviews: any[] = await githubAxios.get(githubUrl);
+      const reviews = await githubAxios.get(githubUrl);
       console.log("reviews", reviews);
 
       // Check If All Reviews Approved
-      for (const review of reviews) {
+      for (const review of reviews.data) {
         if (review.state !== "approved") {
           return;
         }

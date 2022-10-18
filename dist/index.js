@@ -13432,7 +13432,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const reviews = yield requests_githubAxios.get(githubUrl);
             console.log("reviews", reviews);
             // Check If All Reviews Approved
-            for (const review of reviews) {
+            for (const review of reviews.data) {
                 if (review.state !== "approved") {
                     return;
                 }
