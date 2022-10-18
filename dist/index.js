@@ -13431,12 +13431,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
             const reviews = yield requests_githubAxios.get(githubUrl);
             console.log("reviews", reviews);
-            // // Check If All Reviews Approved
-            // for (const review of reviews) {
-            //   if(review.state !== "approved"){
-            //     return;
-            //   }
-            // }
+            // Check If All Reviews Approved
+            for (const review of reviews) {
+                if (review.state !== "approved") {
+                    return;
+                }
+            }
             // Move Asana Task To Approved Section
             for (const task of asanaTasksIds) {
                 const url = `${SECTIONS_URL}1202529262059895${ADD_TASK_URL}`;
@@ -13477,7 +13477,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                         break;
                     case "approved":
-                        return;
+                        if (!github.context.payload.review.body) {
+                            return;
+                        }
+                        commentText = `${userUrl} approved:\n\n${github.context.payload.review.body}\n\nComment URL -> ${commentUrl}`;
+                        break;
                     default:
                         commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
                         break;
