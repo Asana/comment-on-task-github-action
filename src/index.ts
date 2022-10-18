@@ -6,6 +6,7 @@ import axios from "./requests/axios";
 import asanaAxios from "./requests/asanaAxios";
 import * as REQUESTS from "./constants/requests";
 import { users } from "./constants/users";
+import githubAxios from "./requests/githubAxios";
 
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
 const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
@@ -24,6 +25,7 @@ export const run = async () => {
 
     // Store Constant Values
     const mentionUrl = "https://app.asana.com/0/";
+    const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
       context.payload.pull_request?.body || context.payload.issue?.body;
     const pullRequestId =
@@ -60,6 +62,10 @@ export const run = async () => {
           !context.payload.pull_request?.draft));
     const prReviewSubmitted =
       eventName === "pull_request_review" && action === "submitted";
+    const prApproved =
+      eventName === "pull_request_review" &&
+      action === "submitted" &&
+      reviewState === "approved";
 
     // Store User That Triggered Job
     const username =
@@ -209,6 +215,12 @@ export const run = async () => {
           await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
         }
       }, 60000);
+    }
+
+    if (prApproved) {
+      const url = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+      const reviews = await githubAxios.get(url);
+      console.log("reviews", reviews);
     }
 
     // Get Correct Dynamic Comment
