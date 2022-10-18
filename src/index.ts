@@ -217,29 +217,6 @@ export const run = async () => {
       }, 60000);
     }
 
-    if (prApproved) {
-      const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
-      const reviews = await githubAxios.get(githubUrl);
-      console.log("reviews", reviews);
-
-      // Check If All Reviews Approved
-      for (const review of reviews.data) {
-        if (review.state !== "approved") {
-          return;
-        }
-      }
-
-      // Move Asana Task To Approved Section
-      for (const task of asanaTasksIds!) {
-        const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
-        await asanaAxios.post(url, {
-          data: {
-            task,
-          },
-        });
-      }
-    }
-
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (eventName) {
@@ -316,6 +293,28 @@ export const run = async () => {
       pullRequestState,
       pullRequestMerged,
     });
+    
+    if (prApproved) {
+      const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+      const reviews = await githubAxios.get(githubUrl);
+
+      // Check If All Reviews Approved
+      for (const review of reviews.data) {
+        if (review.state !== "approved") {
+          return;
+        }
+      }
+
+      // Move Asana Task To Approved Section
+      for (const task of asanaTasksIds!) {
+        const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
+        await asanaAxios.post(url, {
+          data: {
+            task,
+          },
+        });
+      }
+    }
 
     setOutput(`event`, eventName);
     setOutput(`action`, action);
