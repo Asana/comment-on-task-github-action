@@ -293,7 +293,7 @@ export const run = async () => {
       pullRequestState,
       pullRequestMerged,
     });
-    
+
     if (prApproved) {
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
       const reviews = await githubAxios.get(githubUrl);
