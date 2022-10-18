@@ -13046,6 +13046,7 @@ __nccwpck_require__.r(__webpack_exports__);
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
   "addApprovalTask": () => (/* binding */ addApprovalTask),
+  "moveToApprovedSection": () => (/* binding */ moveToApprovedSection),
   "run": () => (/* binding */ run)
 });
 
@@ -13427,6 +13428,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }), 60000);
         }
+        // Check if PR Review Approved
+        if (prApproved) {
+            // Retrieve All Reviews of PR
+            const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
+            const reviews = yield requests_githubAxios.get(githubUrl);
+            // Check If All Approved and Move Accordingly
+            moveToApprovedSection(asanaTasksIds, reviews.data);
+        }
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (eventName) {
@@ -13498,25 +13507,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             pullRequestState,
             pullRequestMerged,
         });
-        if (prApproved) {
-            const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
-            const reviews = yield requests_githubAxios.get(githubUrl);
-            // Check If All Reviews Approved
-            for (const review of reviews.data) {
-                if (review.state !== "approved") {
-                    return;
-                }
-            }
-            // Move Asana Task To Approved Section
-            for (const task of asanaTasksIds) {
-                const url = `${SECTIONS_URL}1202529262059895${ADD_TASK_URL}`;
-                yield requests_asanaAxios.post(url, {
-                    data: {
-                        task,
-                    },
-                });
-            }
-        }
         (0,core.setOutput)(`event`, eventName);
         (0,core.setOutput)(`action`, action);
         (0,core.setOutput)(`followersStatus`, followersStatus);
@@ -13532,6 +13522,23 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setFailed)(error.message);
         else
             (0,core.setFailed)("Unknown error");
+    }
+});
+const moveToApprovedSection = (asanaTasksIds, reviews) => __awaiter(void 0, void 0, void 0, function* () {
+    // Check If All Reviews Approved
+    for (const review of reviews) {
+        if (review.state !== "approved") {
+            return;
+        }
+    }
+    // Move Asana Task To Approved Section
+    for (const task of asanaTasksIds) {
+        const url = `${SECTIONS_URL}1202529262059895${ADD_TASK_URL}`;
+        yield requests_asanaAxios.post(url, {
+            data: {
+                task,
+            },
+        });
     }
 });
 const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, void 0, void 0, function* () {

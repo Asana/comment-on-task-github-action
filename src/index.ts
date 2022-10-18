@@ -217,6 +217,16 @@ export const run = async () => {
       }, 60000);
     }
 
+    // Check if PR Review Approved
+    if (prApproved) {
+      // Retrieve All Reviews of PR
+      const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+      const reviews = await githubAxios.get(githubUrl);
+
+      // Check If All Approved and Move Accordingly
+      moveToApprovedSection(asanaTasksIds, reviews.data);
+    }
+
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (eventName) {
@@ -294,28 +304,6 @@ export const run = async () => {
       pullRequestMerged,
     });
 
-    if (prApproved) {
-      const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
-      const reviews = await githubAxios.get(githubUrl);
-
-      // Check If All Reviews Approved
-      for (const review of reviews.data) {
-        if (review.state !== "approved") {
-          return;
-        }
-      }
-
-      // Move Asana Task To Approved Section
-      for (const task of asanaTasksIds!) {
-        const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
-        await asanaAxios.post(url, {
-          data: {
-            task,
-          },
-        });
-      }
-    }
-
     setOutput(`event`, eventName);
     setOutput(`action`, action);
 
@@ -331,6 +319,28 @@ export const run = async () => {
     else setFailed("Unknown error");
   }
 };
+
+export const moveToApprovedSection = async (
+  asanaTasksIds: Array<String>,
+  reviews: Array<any>
+) => {
+  // Check If All Reviews Approved
+  for (const review of reviews) {
+    if (review.state !== "approved") {
+      return;
+    }
+  }
+
+  // Move Asana Task To Approved Section
+  for (const task of asanaTasksIds!) {
+    const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
+    await asanaAxios.post(url, {
+      data: {
+        task,
+      },
+    });
+  }
+}
 
 export const addApprovalTask = async (
   asanaTasksIds: Array<String>,
