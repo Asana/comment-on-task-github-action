@@ -340,7 +340,7 @@ export const moveToApprovedSection = async (
       },
     });
   }
-}
+};
 
 export const addApprovalTask = async (
   asanaTasksIds: Array<String>,
