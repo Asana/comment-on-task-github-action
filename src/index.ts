@@ -218,9 +218,26 @@ export const run = async () => {
     }
 
     if (prApproved) {
-      const url = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
-      const reviews = await githubAxios.get(url);
+      const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+      const reviews: any[] = await githubAxios.get(githubUrl);
       console.log("reviews", reviews);
+
+      // // Check If All Reviews Approved
+      // for (const review of reviews) {
+      //   if(review.state !== "approved"){
+      //     return;
+      //   }
+      // }
+
+      // Move Asana Task To Approved Section
+      for (const task of asanaTasksIds!) {
+        const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
+        await asanaAxios.post(url, {
+          data: {
+            task,
+          },
+        });
+      }
     }
 
     // Get Correct Dynamic Comment
@@ -295,6 +312,9 @@ export const run = async () => {
       pullRequestState,
       pullRequestMerged,
     });
+
+    setOutput(`event`, eventName);
+    setOutput(`action`, action);
 
     setOutput(`followersStatus`, followersStatus);
     setOutput("commentStatus", commentResult.status);
