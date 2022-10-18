@@ -13089,6 +13089,7 @@ const isAxiosError = (e) => e.isAxiosError;
 const COMMENT_TEXT = "comment-text";
 const ASANA_SECRET = "asana-secret";
 const ASANA_PAT = "asana-pat";
+const GITHUB_TOKEN = "github-token";
 const ALLOWED_PROJECTS = "allowed-projects";
 const BLOCKED_PROJECTS = "blocked-projects";
 
@@ -13109,6 +13110,10 @@ const SECTIONS_URL = "/sections/";
 const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee";
 const ADD_FOLLOWERS_URL = "/addFollowers";
 const ADD_TASK_URL = "/addTask";
+const BASE_GITHUB_URL = "https://api.github.com/";
+const REPOS_URL = "/repos/";
+const PULLS_URL = "/pulls/";
+const REVIEWS_URL = "/reviews";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
@@ -13218,6 +13223,31 @@ const users = [
     },
 ];
 
+;// CONCATENATED MODULE: ./src/requests/githubAxios.ts
+
+
+
+
+
+const githubAxios = axios_default().create({
+    baseURL: BASE_GITHUB_URL,
+    headers: {
+        Authorization: `Bearer ${(0,core.getInput)(GITHUB_TOKEN)}`,
+    },
+});
+axios_retry_default()(githubAxios, {
+    retries: RETRIES,
+    retryDelay: (retryCount) => retryCount * RETRY_DELAY,
+    retryCondition: (error) => {
+        var _a;
+        const status = (_a = error === null || error === void 0 ? void 0 : error.response) === null || _a === void 0 ? void 0 : _a.status;
+        if (!status)
+            return true;
+        return String(status).startsWith("50");
+    },
+});
+/* harmony default export */ const requests_githubAxios = (githubAxios);
+
 ;// CONCATENATED MODULE: ./src/index.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -13236,10 +13266,11 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13251,41 +13282,45 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("context.payload", github.context.payload);
         // Store Constant Values
         const mentionUrl = "https://app.asana.com/0/";
-        const pullRequestDescription = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.body) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.body);
-        const pullRequestId = ((_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.number) || ((_d = github.context.payload.issue) === null || _d === void 0 ? void 0 : _d.number);
-        const pullRequestName = ((_e = github.context.payload.pull_request) === null || _e === void 0 ? void 0 : _e.title) || ((_f = github.context.payload.issue) === null || _f === void 0 ? void 0 : _f.title);
-        const pullRequestURL = ((_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.html_url) || ((_h = github.context.payload.issue) === null || _h === void 0 ? void 0 : _h.html_url);
-        const pullRequestState = ((_j = github.context.payload.pull_request) === null || _j === void 0 ? void 0 : _j.state) || ((_k = github.context.payload.issue) === null || _k === void 0 ? void 0 : _k.state);
-        const pullRequestMerged = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.merged) || false;
-        const reviewState = ((_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.state) || "";
-        const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
-            ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
+        const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
+        const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
+        const pullRequestId = ((_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.number) || ((_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.number);
+        const pullRequestName = ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.title) || ((_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.title);
+        const pullRequestURL = ((_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.html_url) || ((_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.html_url);
+        const pullRequestState = ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.state) || ((_l = github.context.payload.issue) === null || _l === void 0 ? void 0 : _l.state);
+        const pullRequestMerged = ((_m = github.context.payload.pull_request) === null || _m === void 0 ? void 0 : _m.merged) || false;
+        const reviewState = ((_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.state) || "";
+        const commentUrl = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.html_url) ||
+            ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.html_url) ||
             "";
         // Store Conditions
         const prClosedMerged = eventName === "pull_request" &&
             action === "closed" &&
-            ((_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.merged);
+            ((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.merged);
         const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
         const prReviewRequested = eventName === "pull_request" &&
-            !((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.draft) &&
+            !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft) &&
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" &&
             (action === "ready_for_review" ||
                 ((action === "opened" || action === "edited") &&
-                    !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft)));
+                    !((_t = github.context.payload.pull_request) === null || _t === void 0 ? void 0 : _t.draft)));
         const prReviewSubmitted = eventName === "pull_request_review" && action === "submitted";
+        const prApproved = eventName === "pull_request_review" &&
+            action === "submitted" &&
+            reviewState === "approved";
         // Store User That Triggered Job
-        const username = ((_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.user.login) ||
-            ((_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.user.login) ||
-            ((_v = github.context.payload.sender) === null || _v === void 0 ? void 0 : _v.login);
+        const username = ((_u = github.context.payload.comment) === null || _u === void 0 ? void 0 : _u.user.login) ||
+            ((_v = github.context.payload.review) === null || _v === void 0 ? void 0 : _v.user.login) ||
+            ((_w = github.context.payload.sender) === null || _w === void 0 ? void 0 : _w.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         // Store Requested Reviewers
-        const requestedReviewerName = ((_w = github.context.payload.requested_reviewer) === null || _w === void 0 ? void 0 : _w.login) || "";
+        const requestedReviewerName = ((_x = github.context.payload.requested_reviewer) === null || _x === void 0 ? void 0 : _x.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
         const requestedReviewers = requestedReviewerObj ||
-            ((_x = github.context.payload.pull_request) === null || _x === void 0 ? void 0 : _x.requested_reviewers) ||
+            ((_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.requested_reviewers) ||
             [];
         // Add User to Followers
         const followersStatus = [];
@@ -13301,7 +13336,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             followers.push(requestedReviewers.asanaId);
         }
         // Get Mentioned Users In Comment
-        let commentBody = ((_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.body) || ((_z = github.context.payload.review) === null || _z === void 0 ? void 0 : _z.body) || "";
+        let commentBody = ((_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.body) || ((_0 = github.context.payload.review) === null || _0 === void 0 ? void 0 : _0.body) || "";
         const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
         for (const mention of mentions) {
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
@@ -13392,6 +13427,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }), 60000);
         }
+        if (prApproved) {
+            const url = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
+            const reviews = yield requests_githubAxios.get(url);
+            console.log("reviews", reviews);
+        }
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (eventName) {
@@ -13440,10 +13480,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.path;
+                const path = (_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${(_2 = github.context.payload.comment) === null || _2 === void 0 ? void 0 : _2.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                 break;
             }
         }
@@ -13466,7 +13506,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
