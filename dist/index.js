@@ -13412,7 +13412,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
         }
-        // Check If PR Closed and Merged
+        // Check If PR Closed/Merged OR Changes Requested
         let approvalSubtasks = [];
         if (prClosedMerged || prReviewChangesRequested) {
             setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {

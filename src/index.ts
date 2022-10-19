@@ -196,7 +196,7 @@ export const run = async () => {
       }
     }
 
-    // Check If PR Closed and Merged
+    // Check If PR Closed/Merged OR Changes Requested
     let approvalSubtasks: any = [];
     if (prClosedMerged || prReviewChangesRequested) {
       setTimeout(async () => {
