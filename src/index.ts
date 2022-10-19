@@ -105,7 +105,7 @@ export const run = async () => {
     // Get Mentioned Users In Comment
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
-    const mentions = commentBody.match(/@\S+/gi) || []; // @user1 @user2
+    const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
     for (const mention of mentions) {
       const mentionUserObj = users.find(
         (user) => user.githubName === mention.substring(1, mention.length)
