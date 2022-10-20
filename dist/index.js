@@ -13474,13 +13474,15 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Post Comment to Asana
         let commentResult = "";
-        for (const id of asanaTasksIds) {
-            const url = `${TASKS_URL}${id}${STORIES_URL}`;
-            commentResult = yield requests_asanaAxios.post(url, {
-                data: {
-                    html_text: commentText,
-                },
-            });
+        if (eventName === "issue_comment") {
+            for (const id of asanaTasksIds) {
+                const url = `${TASKS_URL}${id}${STORIES_URL}`;
+                commentResult = yield requests_asanaAxios.post(url, {
+                    data: {
+                        html_text: commentText,
+                    },
+                });
+            }
         }
         (0,core.setOutput)(`event`, eventName);
         (0,core.setOutput)(`action`, action);

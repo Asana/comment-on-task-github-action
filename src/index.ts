@@ -293,13 +293,15 @@ export const run = async () => {
 
     // Post Comment to Asana
     let commentResult: any = "";
-    for (const id of asanaTasksIds!) {
-      const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-      commentResult = await asanaAxios.post(url, {
-        data: {
-          html_text: commentText,
-        },
-      });
+    if(eventName === "issue_comment"){
+      for (const id of asanaTasksIds!) {
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
+        commentResult = await asanaAxios.post(url, {
+          data: {
+            html_text: commentText,
+          },
+        });
+      }
     }
 
     setOutput(`event`, eventName);
