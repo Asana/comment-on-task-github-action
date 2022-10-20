@@ -259,16 +259,16 @@ export const run = async () => {
             if (!commentBody || action === "edited") {
               return;
             }
-            commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
             break;
           case "approved":
             if (!context.payload.review.body) {
               return;
             }
-            commentText = `${userUrl} approved:\n\n${context.payload.review.body}\n\nComment URL -> ${commentUrl}`;
+            commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">approved</a>:\n\n${context.payload.review.body} </body>`;
             break;
           default:
-            commentText = `PR #${pullRequestId} ${pullRequestName} is ${reviewState} by ${userUrl} -> ${commentUrl}`;
+            commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by <a href="${userUrl}">@${userObj?.asanaName}</a> </body>`;
             break;
         }
         break;
@@ -294,7 +294,7 @@ export const run = async () => {
 
     // Post Comment to Asana
     let commentResult: any = "";
-    if (eventName === "pull_request" || eventName === "issue_comment") {
+    if (eventName === "pull_request" || eventName === "issue_comment" || eventName === "pull_request_review") {
       for (const id of asanaTasksIds!) {
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
         commentResult = await asanaAxios.post(url, {
