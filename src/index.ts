@@ -241,12 +241,12 @@ export const run = async () => {
           commentBodyLines.shift();
           commentText = `<body> ${userUrl} <a href="${commentUrl}">replied</a>:<br><br>${commentBodyLines.join(
             ""
-          )}</body>`;
+          )} </body>`;
         } else {
           commentText =
             username === "otto-bot-git"
-              ? `<body> ${commentBody}<br><br><a href="${commentUrl}">Comment URL</a></body>`
-              : `<body>${userUrl} <a href="${commentUrl}">commented</a>:<br><br>${commentBody}</body>`;
+              ? `<body> ${commentBody}<br><br><a href="${commentUrl}">Comment URL</a> </body>`
+              : `<body> ${userUrl} <a href="${commentUrl}">commented</a>:<br><br>${commentBody} </body>`;
         }
         break;
       }
@@ -257,16 +257,16 @@ export const run = async () => {
             if (!commentBody || action === "edited") {
               return;
             }
-            commentText = `<body>${userUrl} is <a href="${commentUrl}">requesting the following changes</a>:<br><br>${commentBody}</body>`;
+            commentText = `<body> ${userUrl} is <a href="${commentUrl}">requesting the following changes</a>:<br><br>${commentBody} </body>`;
             break;
           case "approved":
             if (!context.payload.review.body) {
               return;
             }
-            commentText = `<body>${userUrl} <a href="${commentUrl}">approved changes</a>:<br><br>${context.payload.review.body}</body>`;
+            commentText = `<body> ${userUrl} <a href="${commentUrl}">approved changes</a>:<br><br>${context.payload.review.body} </body>`;
             break;
           default:
-            commentText = `<body><a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userUrl}.</body>`;
+            commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userUrl}. </body>`;
             break;
         }
         break;
@@ -286,7 +286,7 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-        commentText = `<body>${userUrl} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):<br><br>${commentBody}</body>`;
+        commentText = `<body> ${userUrl} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):<br><br>${commentBody} </body>`;
         break;
       }
     }

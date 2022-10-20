@@ -13423,13 +13423,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         return line.indexOf(">") !== 0;
                     });
                     commentBodyLines.shift();
-                    commentText = `<body> ${userUrl} <a href="${commentUrl}">replied</a>:<br><br>${commentBodyLines.join("")}</body>`;
+                    commentText = `<body> ${userUrl} <a href="${commentUrl}">replied</a>:<br><br>${commentBodyLines.join("")} </body>`;
                 }
                 else {
                     commentText =
                         username === "otto-bot-git"
-                            ? `<body> ${commentBody}<br><br><a href="${commentUrl}">Comment URL</a></body>`
-                            : `<body>${userUrl} <a href="${commentUrl}">commented</a>:<br><br>${commentBody}</body>`;
+                            ? `<body> ${commentBody}<br><br><a href="${commentUrl}">Comment URL</a> </body>`
+                            : `<body> ${userUrl} <a href="${commentUrl}">commented</a>:<br><br>${commentBody} </body>`;
                 }
                 break;
             }
@@ -13440,16 +13440,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         if (!commentBody || action === "edited") {
                             return;
                         }
-                        commentText = `<body>${userUrl} is <a href="${commentUrl}">requesting the following changes</a>:<br><br>${commentBody}</body>`;
+                        commentText = `<body> ${userUrl} is <a href="${commentUrl}">requesting the following changes</a>:<br><br>${commentBody} </body>`;
                         break;
                     case "approved":
                         if (!github.context.payload.review.body) {
                             return;
                         }
-                        commentText = `<body>${userUrl} <a href="${commentUrl}">approved changes</a>:<br><br>${github.context.payload.review.body}</body>`;
+                        commentText = `<body> ${userUrl} <a href="${commentUrl}">approved changes</a>:<br><br>${github.context.payload.review.body} </body>`;
                         break;
                     default:
-                        commentText = `<body><a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userUrl}.</body>`;
+                        commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userUrl}. </body>`;
                         break;
                 }
                 break;
@@ -13468,7 +13468,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body>${userUrl} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):<br><br>${commentBody}</body>`;
+                commentText = `<body> ${userUrl} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):<br><br>${commentBody} </body>`;
                 break;
             }
         }
