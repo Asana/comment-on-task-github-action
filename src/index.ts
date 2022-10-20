@@ -279,7 +279,7 @@ export const run = async () => {
         ) {
           return;
         } else {
-          commentText = `<body> <a href=${pullRequestURL}>PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
+          commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
         }
         break;
       case "pull_request_review_comment": {
