@@ -74,6 +74,7 @@ export const run = async () => {
       context.payload.sender?.login;
     const userObj = users.find((user) => user.githubName === username);
     const userUrl = mentionUrl.concat(userObj?.asanaUrlId!);
+    const userHTML = `<a href="${userUrl}">@${userObj?.asanaName}</a>`;
 
     // Store Requested Reviewers
     const requestedReviewerName =
@@ -114,7 +115,8 @@ export const run = async () => {
       followers.push(mentionUserObj?.asanaId);
       // Add To Comment
       const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaUrlId!);
-      commentBody = commentBody.replace(mention, mentionUserUrl);
+      const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj?.asanaName}</a>`;
+      commentBody = commentBody.replace(mention, mentionHTML);
     }
 
     // Get Task IDs From PR Description
@@ -239,16 +241,14 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `<body> <a href="${userUrl}">@${
-            userObj?.asanaName
-          }</a> <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join(
+          commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join(
             ""
           )} </body>`;
         } else {
           commentText =
             username === "otto-bot-git"
               ? `<body> ${commentBody}\n<a href="${commentUrl}">Comment URL</a> </body>`
-              : `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
+              : `<body> ${userHTML} <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
         }
         break;
       }
@@ -259,16 +259,16 @@ export const run = async () => {
             if (!commentBody || action === "edited") {
               return;
             }
-            commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
+            commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
             break;
           case "approved":
             if (!context.payload.review.body) {
               return;
             }
-            commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">approved</a>:\n\n${context.payload.review.body} </body>`;
+            commentText = `<body> ${userHTML} <a href="${commentUrl}">approved</a>:\n\n${context.payload.review.body} </body>`;
             break;
           default:
-            commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by <a href="${userUrl}">@${userObj?.asanaName}</a> </body>`;
+            commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userHTML} </body>`;
             break;
         }
         break;

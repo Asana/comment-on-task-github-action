@@ -13318,6 +13318,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ((_w = github.context.payload.sender) === null || _w === void 0 ? void 0 : _w.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
+        const userHTML = `<a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a>`;
         // Store Requested Reviewers
         const requestedReviewerName = ((_x = github.context.payload.requested_reviewer) === null || _x === void 0 ? void 0 : _x.login) || "";
         const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
@@ -13346,7 +13347,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             followers.push(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaId);
             // Add To Comment
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
-            commentBody = commentBody.replace(mention, mentionUserUrl);
+            const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaName}</a>`;
+            commentBody = commentBody.replace(mention, mentionHTML);
         }
         // Get Task IDs From PR Description
         const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
@@ -13447,13 +13449,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         return line.indexOf(">") !== 0;
                     });
                     commentBodyLines.shift();
-                    commentText = `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join("")} </body>`;
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join("")} </body>`;
                 }
                 else {
                     commentText =
                         username === "otto-bot-git"
                             ? `<body> ${commentBody}\n<a href="${commentUrl}">Comment URL</a> </body>`
-                            : `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
+                            : `<body> ${userHTML} <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -13464,16 +13466,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         if (!commentBody || action === "edited") {
                             return;
                         }
-                        commentText = `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
+                        commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
                         break;
                     case "approved":
                         if (!github.context.payload.review.body) {
                             return;
                         }
-                        commentText = `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">approved</a>:\n\n${github.context.payload.review.body} </body>`;
+                        commentText = `<body> ${userHTML} <a href="${commentUrl}">approved</a>:\n\n${github.context.payload.review.body} </body>`;
                         break;
                     default:
-                        commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> </body>`;
+                        commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userHTML} </body>`;
                         break;
                 }
                 break;
