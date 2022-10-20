@@ -13115,6 +13115,7 @@ const BASE_GITHUB_URL = "https://api.github.com/";
 const REPOS_URL = "/repos/";
 const PULLS_URL = "/pulls/";
 const REVIEWS_URL = "/reviews";
+const STORIES_URL = "/stories";
 
 ;// CONCATENATED MODULE: ./src/requests/axios.ts
 
@@ -13495,18 +13496,31 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             }
         }
-        // Post Comment To Asana
-        const commentResult = yield requests_axios.post(ACTION_URL, {
-            allowedProjects,
-            blockedProjects,
-            commentText,
-            pullRequestDescription,
-            pullRequestId,
-            pullRequestName,
-            pullRequestURL,
-            pullRequestState,
-            pullRequestMerged,
-        });
+        // Post Comment to Asana
+        let commentResult = "";
+        if (eventName === "pull_request") {
+            for (const id of asanaTasksIds) {
+                const url = `${TASKS_URL}${id}${STORIES_URL}`;
+                yield requests_asanaAxios.post(url, {
+                    data: {
+                        html_text: commentText,
+                    },
+                });
+            }
+        }
+        else {
+            commentResult = yield requests_axios.post(ACTION_URL, {
+                allowedProjects,
+                blockedProjects,
+                commentText,
+                pullRequestDescription,
+                pullRequestId,
+                pullRequestName,
+                pullRequestURL,
+                pullRequestState,
+                pullRequestMerged,
+            });
+        }
         (0,core.setOutput)(`event`, eventName);
         (0,core.setOutput)(`action`, action);
         (0,core.setOutput)(`followersStatus`, followersStatus);
