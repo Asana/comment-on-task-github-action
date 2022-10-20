@@ -291,18 +291,30 @@ export const run = async () => {
       }
     }
 
-    // Post Comment To Asana
-    const commentResult = await axios.post(REQUESTS.ACTION_URL, {
-      allowedProjects,
-      blockedProjects,
-      commentText,
-      pullRequestDescription,
-      pullRequestId,
-      pullRequestName,
-      pullRequestURL,
-      pullRequestState,
-      pullRequestMerged,
-    });
+    // Post Comment to Asana
+    let commentResult:any = "";
+    if (eventName === "pull_request") {
+      for (const id of asanaTasksIds!) {
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
+        await asanaAxios.post(url, {
+          data: {
+            html_text: commentText,
+          },
+        });
+      }
+    } else {
+      commentResult = await axios.post(REQUESTS.ACTION_URL, {
+        allowedProjects,
+        blockedProjects,
+        commentText,
+        pullRequestDescription,
+        pullRequestId,
+        pullRequestName,
+        pullRequestURL,
+        pullRequestState,
+        pullRequestMerged,
+      });
+    }
 
     setOutput(`event`, eventName);
     setOutput(`action`, action);
