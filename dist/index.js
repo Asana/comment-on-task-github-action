@@ -13453,7 +13453,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     commentText =
                         username === "otto-bot-git"
                             ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-                            : `<body> ${userUrl} <a href="${commentUrl}">commented</a>:\n\n${commentBody}</body>`;
+                            : `<body> @${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName} <a href="${commentUrl}">commented</a>:\n\n${commentBody}</body>`;
                 }
                 break;
             }
