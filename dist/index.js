@@ -13447,13 +13447,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         return line.indexOf(">") !== 0;
                     });
                     commentBodyLines.shift();
-                    commentText = `${userUrl} replied:\n\n${commentBodyLines.join("")}\n\nComment URL -> ${commentUrl}`;
+                    commentText = `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join("")} </body>`;
                 }
                 else {
                     commentText =
                         username === "otto-bot-git"
-                            ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-                            : `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody}</body>`;
+                            ? `<body> ${commentBody}\n\n<a href="${commentUrl}">Comment URL</a> <body>`
+                            : `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -13464,7 +13464,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         if (!commentBody || action === "edited") {
                             return;
                         }
-                        commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                        commentText = `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
                         break;
                     case "approved":
                         if (!github.context.payload.review.body) {

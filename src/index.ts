@@ -239,14 +239,14 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `${userUrl} replied:\n\n${commentBodyLines.join(
+          commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join(
             ""
-          )}\n\nComment URL -> ${commentUrl}`;
+          )} </body>`;
         } else {
           commentText =
             username === "otto-bot-git"
-              ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-              : `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody}</body>`;
+              ? `<body> ${commentBody}\n\n<a href="${commentUrl}">Comment URL</a> <body>`
+              : `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
         }
         break;
       }
