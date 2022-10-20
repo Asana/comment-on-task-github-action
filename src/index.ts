@@ -246,7 +246,7 @@ export const run = async () => {
           commentText =
             username === "otto-bot-git"
               ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-              : `<body> ${userUrl} <a href="${commentUrl}">commented</a>:\n\n${commentBody}</body>`;
+              : `<body> ${userUrl} <a href="${commentUrl}">commented</a>:<br><br>${commentBody}</body>`;
         }
         break;
       }
