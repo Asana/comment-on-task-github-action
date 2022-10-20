@@ -246,7 +246,7 @@ export const run = async () => {
           commentText =
             username === "otto-bot-git"
               ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-              : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+              : `<body> ${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl} </body>`;
         }
         break;
       }
@@ -292,7 +292,7 @@ export const run = async () => {
 
     // Post Comment to Asana
     let commentResult: any = "";
-    if (eventName === "pull_request") {
+    if (eventName === "pull_request" || eventName === "issue_comment") {
       for (const id of asanaTasksIds!) {
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
         commentResult = await asanaAxios.post(url, {

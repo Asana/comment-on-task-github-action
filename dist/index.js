@@ -13453,7 +13453,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     commentText =
                         username === "otto-bot-git"
                             ? `${commentBody}\n\nComment URL -> ${commentUrl}`
-                            : `${userUrl} commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+                            : `<body> ${userUrl} <a href=""> </a>commented:\n\n${commentBody}\n\nComment URL -> ${commentUrl} </body>`;
                 }
                 break;
             }
@@ -13497,7 +13497,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Post Comment to Asana
         let commentResult = "";
-        if (eventName === "pull_request") {
+        if (eventName === "pull_request" || eventName === "issue_comment") {
             for (const id of asanaTasksIds) {
                 const url = `${TASKS_URL}${id}${STORIES_URL}`;
                 commentResult = yield requests_asanaAxios.post(url, {
