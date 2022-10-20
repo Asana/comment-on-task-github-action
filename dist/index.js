@@ -13484,7 +13484,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     return;
                 }
                 else {
-                    commentText = `[PR #${pullRequestId}](${pullRequestURL === null || pullRequestURL === void 0 ? void 0 : pullRequestURL.slice(8)}) is ${pullRequestState}.`;
+                    commentText = `<a href=${pullRequestURL}>PR #${pullRequestId}</a> is ${pullRequestState}.`;
                 }
                 break;
             case "pull_request_review_comment": {
