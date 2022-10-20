@@ -279,11 +279,7 @@ export const run = async () => {
         ) {
           return;
         } else {
-          const formattedPullRequestURL = `${pullRequestURL?.slice(
-            0,
-            8
-          )}www.${pullRequestURL?.slice(8)}`;
-          commentText = `[PR #${pullRequestId}](${formattedPullRequestURL}) is ${pullRequestState}.`;
+          commentText = `[PR #${pullRequestId}](${pullRequestURL?.slice(8)}) is ${pullRequestState}.`;
         }
         break;
       case "pull_request_review_comment": {

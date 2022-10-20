@@ -13484,8 +13484,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     return;
                 }
                 else {
-                    const formattedPullRequestURL = `${pullRequestURL === null || pullRequestURL === void 0 ? void 0 : pullRequestURL.slice(0, 8)}www.${pullRequestURL === null || pullRequestURL === void 0 ? void 0 : pullRequestURL.slice(8)}`;
-                    commentText = `[PR #${pullRequestId}](${formattedPullRequestURL}) is ${pullRequestState}.`;
+                    commentText = `[PR #${pullRequestId}](${pullRequestURL === null || pullRequestURL === void 0 ? void 0 : pullRequestURL.slice(8)}) is ${pullRequestState}.`;
                 }
                 break;
             case "pull_request_review_comment": {
