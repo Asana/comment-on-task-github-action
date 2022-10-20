@@ -13479,7 +13479,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             case "pull_request":
                 if (action === "review_requested" ||
-                    action === "opened" ||
                     action === "ready_for_review" ||
                     action === "edited") {
                     return;

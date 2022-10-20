@@ -273,7 +273,6 @@ export const run = async () => {
       case "pull_request":
         if (
           action === "review_requested" ||
-          action === "opened" ||
           action === "ready_for_review" ||
           action === "edited"
         ) {
