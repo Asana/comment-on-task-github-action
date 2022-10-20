@@ -13485,7 +13485,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     return;
                 }
                 else {
-                    commentText = `<a href=${pullRequestURL}>PR #${pullRequestId}</a> is ${pullRequestState}.`;
+                    commentText = `<body> <a href=${pullRequestURL}>PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
                 }
                 break;
             case "pull_request_review_comment": {
@@ -13501,7 +13501,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (eventName === "pull_request") {
             for (const id of asanaTasksIds) {
                 const url = `${TASKS_URL}${id}${STORIES_URL}`;
-                yield requests_asanaAxios.post(url, {
+                commentResult = yield requests_asanaAxios.post(url, {
                     data: {
                         html_text: commentText,
                     },

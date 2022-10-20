@@ -279,7 +279,7 @@ export const run = async () => {
         ) {
           return;
         } else {
-          commentText = `<a href=${pullRequestURL}>PR #${pullRequestId}</a> is ${pullRequestState}.`;
+          commentText = `<body> <a href=${pullRequestURL}>PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
         }
         break;
       case "pull_request_review_comment": {
@@ -296,7 +296,7 @@ export const run = async () => {
     if (eventName === "pull_request") {
       for (const id of asanaTasksIds!) {
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-        await asanaAxios.post(url, {
+        commentResult = await asanaAxios.post(url, {
           data: {
             html_text: commentText,
           },
