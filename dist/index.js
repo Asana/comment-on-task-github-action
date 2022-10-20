@@ -13452,7 +13452,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 else {
                     commentText =
                         username === "otto-bot-git"
-                            ? `<body> ${commentBody}\n\n<a href="${commentUrl}">Comment URL</a> </body>`
+                            ? `<body> ${commentBody}\n<a href="${commentUrl}">Comment URL</a> </body>`
                             : `<body> <a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a> <a href="${commentUrl}">commented</a>:\n\n${commentBody} </body>`;
                 }
                 break;
