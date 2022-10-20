@@ -239,7 +239,9 @@ export const run = async () => {
             return line.indexOf(">") !== 0;
           });
           commentBodyLines.shift();
-          commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join(
+          commentText = `<body> <a href="${userUrl}">@${
+            userObj?.asanaName
+          }</a> <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join(
             ""
           )} </body>`;
         } else {
@@ -257,7 +259,7 @@ export const run = async () => {
             if (!commentBody || action === "edited") {
               return;
             }
-            commentText = `${userUrl} is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
+            commentText = `<body> <a href="${userUrl}">@${userObj?.asanaName}</a> is requesting the following changes:\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
             break;
           case "approved":
             if (!context.payload.review.body) {
