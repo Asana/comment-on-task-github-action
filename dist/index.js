@@ -13484,7 +13484,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     return;
                 }
                 else {
-                    commentText = (0,core.getInput)(COMMENT_TEXT);
+                    commentText = `[PR #${pullRequestId}](${pullRequestURL}) is ${pullRequestState}.`;
                 }
                 break;
             case "pull_request_review_comment": {

@@ -1,4 +1,4 @@
-import { getInput, setFailed, setOutput } from "@actions/core";
+import { /*getInput,*/ setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
@@ -279,7 +279,7 @@ export const run = async () => {
         ) {
           return;
         } else {
-          commentText = getInput(INPUTS.COMMENT_TEXT);
+          commentText = `[PR #${pullRequestId}](${pullRequestURL}) is ${pullRequestState}.`;
         }
         break;
       case "pull_request_review_comment": {
