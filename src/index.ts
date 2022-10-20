@@ -279,7 +279,10 @@ export const run = async () => {
         ) {
           return;
         } else {
-          let formattedPullRequestURL = pullRequestURL?.slice(0, 8) + "www." + pullRequestURL?.slice(8);
+          const formattedPullRequestURL = `${pullRequestURL?.slice(
+            0,
+            8
+          )}www.${pullRequestURL?.slice(8)}`;
           commentText = `[PR #${pullRequestId}](${formattedPullRequestURL}) is ${pullRequestState}.`;
         }
         break;
