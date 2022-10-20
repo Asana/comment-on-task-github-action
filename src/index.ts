@@ -233,7 +233,7 @@ export const run = async () => {
     let commentText = "";
     switch (eventName) {
       case "issue_comment": {
-        if (commentBody.includes(">")) {
+        if (commentBody.charAt(0) === ">") {
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
             line: string | string[]

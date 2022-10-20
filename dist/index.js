@@ -13443,7 +13443,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentText = "";
         switch (eventName) {
             case "issue_comment": {
-                if (commentBody.includes(">")) {
+                if (commentBody.charAt(0) === ">") {
                     const lines = commentBody.split("\n");
                     const commentBodyLines = lines.filter(function (line) {
                         return line.indexOf(">") !== 0;
