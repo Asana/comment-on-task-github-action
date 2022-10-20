@@ -292,7 +292,7 @@ export const run = async () => {
     }
 
     // Post Comment to Asana
-    let commentResult:any = "";
+    let commentResult: any = "";
     if (eventName === "pull_request") {
       for (const id of asanaTasksIds!) {
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
