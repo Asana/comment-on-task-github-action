@@ -13437,13 +13437,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         if (!commentBody || action === "edited") {
                             return;
                         }
-                        commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
+                        commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a>:\n\n${commentBody} </body>`;
                         break;
                     case "approved":
                         if (!github.context.payload.review.body) {
                             return;
                         }
-                        commentText = `<body> ${userHTML} <a href="${commentUrl}">approved</a>:\n\n${github.context.payload.review.body} </body>`;
+                        commentText = `<body> ${userHTML} approved with the following <a href="${commentUrl}">comment</a>:\n\n${github.context.payload.review.body} </body>`;
                         break;
                     default:
                         commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userHTML} </body>`;
@@ -13464,7 +13464,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const path = (_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.original_line}):\n\n${commentBody} </body>`;
                 break;
             }
         }

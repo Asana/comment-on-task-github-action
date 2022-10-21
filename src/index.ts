@@ -254,13 +254,13 @@ export const run = async () => {
             if (!commentBody || action === "edited") {
               return;
             }
-            commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a>:\n\n${commentBody} </body>`;
+            commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a>:\n\n${commentBody} </body>`;
             break;
           case "approved":
             if (!context.payload.review.body) {
               return;
             }
-            commentText = `<body> ${userHTML} <a href="${commentUrl}">approved</a>:\n\n${context.payload.review.body} </body>`;
+            commentText = `<body> ${userHTML} approved with the following <a href="${commentUrl}">comment</a>:\n\n${context.payload.review.body} </body>`;
             break;
           default:
             commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userHTML} </body>`;
@@ -282,7 +282,7 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-        commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
+        commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
         break;
       }
     }
