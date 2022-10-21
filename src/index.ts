@@ -103,7 +103,6 @@ export const run = async () => {
       followers.push(requestedReviewers.asanaId);
     }
 
-    
     // Get Arrows and Replace Them
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
