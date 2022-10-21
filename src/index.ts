@@ -161,7 +161,7 @@ export const run = async () => {
     }
 
     // Check if Review Requested
-    if(prReviewRequested){
+    if (prReviewRequested) {
       setTimeout(() => {
         for (const reviewer of requestedReviewers) {
           const reviewerObj = users.find(
@@ -232,6 +232,7 @@ export const run = async () => {
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
       const reviews = await githubAxios.get(githubUrl);
 
+      console.log('reviews', reviews)
       // Check If All Approved and Move Accordingly
       moveToApprovedSection(asanaTasksIds, reviews.data);
     }

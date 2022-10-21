@@ -13416,6 +13416,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Retrieve All Reviews of PR
             const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
             const reviews = yield requests_githubAxios.get(githubUrl);
+            console.log("reviews", reviews);
             // Check If All Approved and Move Accordingly
             moveToApprovedSection(asanaTasksIds, reviews.data);
         }
