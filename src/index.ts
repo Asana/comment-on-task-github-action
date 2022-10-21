@@ -232,7 +232,7 @@ export const run = async () => {
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
       const reviews = await githubAxios.get(githubUrl);
 
-      console.log('reviews', reviews)
+      console.log("reviews", reviews.data);
       // Check If All Approved and Move Accordingly
       moveToApprovedSection(asanaTasksIds, reviews.data);
     }
@@ -332,6 +332,17 @@ export const moveToApprovedSection = async (
   reviews: Array<any>
 ) => {
   // Check If All Reviews Approved
+
+  const usersApproved = reviews
+    .map((review) => {
+      if (review.state === "approved") {
+        return review.user.login;
+      }
+    })
+    .filter((user, index, array) => array.indexOf(user) === index);
+  // const uniqueUsersApproved = usersApproved.filter((user, index, array) => array.indexOf(user) == index);
+  console.log("usersApproved", usersApproved);
+
   for (const review of reviews) {
     if (review.state !== "approved") {
       return;
