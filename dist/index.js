@@ -13507,11 +13507,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const moveToApprovedSection = (asanaTasksIds, reviews) => __awaiter(void 0, void 0, void 0, function* () {
     // Get Users That Approved
-    const usersApproved = reviews.map((review) => {
+    const usersApproved = reviews.filter((review) => {
         if (review.state === "APPROVED") {
             return review.user.login;
         }
     });
+    console.log("usersApproved", usersApproved);
+    const usersTest = [];
+    for (let i = 0; i < reviews.length; i++) {
+        const review = reviews[i];
+        if (review.state === "APPROVED") {
+            usersTest.push(review.user.login);
+        }
+    }
+    console.log("usersTest", usersTest);
     // Get Unique Users That Approved
     const uniqueUsersApproved = usersApproved.filter((user, index, array) => array.indexOf(user) === index);
     console.log("usersApproved", usersApproved);
