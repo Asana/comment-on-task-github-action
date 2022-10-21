@@ -13328,7 +13328,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Quotations and Replace Them
         if (commentBody.includes("`")) {
-            commentBody = commentBody.replaceAll("`", "");
+            commentBody = commentBody.toString().replaceAll("`", "");
         }
         // Get Task IDs From PR Description
         const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
