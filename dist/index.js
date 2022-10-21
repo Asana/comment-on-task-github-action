@@ -13326,9 +13326,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaName}</a>`;
             commentBody = commentBody.replace(mention, mentionHTML);
         }
-        // Get Quotations and Replace Them
-        if (commentBody.includes("`")) {
-            commentBody = commentBody.replace(/`/g, "");
+        // Get Arrows and Replace Them
+        if (commentBody.includes(">")) {
+            commentBody = commentBody.replace(/>/g, "");
         }
         // Get Task IDs From PR Description
         const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);

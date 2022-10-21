@@ -119,9 +119,9 @@ export const run = async () => {
       commentBody = commentBody.replace(mention, mentionHTML);
     }
 
-    // Get Quotations and Replace Them
-    if (commentBody.includes("`")) {
-      commentBody = commentBody.replace(/`/g, '');
+    // Get Arrows and Replace Them
+    if (commentBody.includes(">")) {
+      commentBody = commentBody.replace(/>/g, "");
     }
 
     // Get Task IDs From PR Description
