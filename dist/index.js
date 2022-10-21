@@ -13247,7 +13247,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13296,26 +13296,22 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         const userHTML = `<a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a>`;
         // Store Requested Reviewers
-        const requestedReviewerName = ((_u = github.context.payload.requested_reviewer) === null || _u === void 0 ? void 0 : _u.login) || "";
-        const requestedReviewerObj = users.find((user) => user.githubName === requestedReviewerName);
-        const requestedReviewers = requestedReviewerObj ||
-            ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) ||
-            [];
+        // const requestedReviewerName =
+        //   context.payload.requested_reviewer?.login || "";
+        // const requestedReviewerObj = users.find(
+        //   (user) => user.githubName === requestedReviewerName
+        // );
+        const requestedReviewers = ((_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.requested_reviewers) || [];
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
         // Add Requested Reviewers to Followers
-        if (Array.isArray(requestedReviewers)) {
-            for (const reviewer of requestedReviewers) {
-                const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-                followers.push(reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId);
-            }
-        }
-        else {
-            followers.push(requestedReviewers.asanaId);
+        for (const reviewer of requestedReviewers) {
+            const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+            followers.push(reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId);
         }
         // Get Arrows and Replace Them
-        let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
+        let commentBody = ((_v = github.context.payload.comment) === null || _v === void 0 ? void 0 : _v.body) || ((_w = github.context.payload.review) === null || _w === void 0 ? void 0 : _w.body) || "";
         if (commentBody.includes(">")) {
             commentBody = commentBody.replace(/>/g, "");
         }
@@ -13367,14 +13363,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
-            if (Array.isArray(requestedReviewers)) {
-                for (const reviewer of requestedReviewers) {
-                    const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-                    addApprovalTask(asanaTasksIds, reviewerObj);
-                }
-            }
-            else {
-                addApprovalTask(asanaTasksIds, requestedReviewers);
+            for (const reviewer of requestedReviewers) {
+                const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+                addApprovalTask(asanaTasksIds, reviewerObj);
             }
         }
         if (prReviewSubmitted) {
@@ -13470,10 +13461,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
+                const path = (_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.original_line}):\n\n${commentBody} </body>`;
                 break;
             }
         }
@@ -13496,7 +13487,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_0 = error.response) === null || _0 === void 0 ? void 0 : _0.data) || "Unknown error");
+            console.log(((_z = error.response) === null || _z === void 0 ? void 0 : _z.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

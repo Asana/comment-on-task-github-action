@@ -77,30 +77,24 @@ export const run = async () => {
     const userHTML = `<a href="${userUrl}">@${userObj?.asanaName}</a>`;
 
     // Store Requested Reviewers
-    const requestedReviewerName =
-      context.payload.requested_reviewer?.login || "";
-    const requestedReviewerObj = users.find(
-      (user) => user.githubName === requestedReviewerName
-    );
+    // const requestedReviewerName =
+    //   context.payload.requested_reviewer?.login || "";
+    // const requestedReviewerObj = users.find(
+    //   (user) => user.githubName === requestedReviewerName
+    // );
     const requestedReviewers =
-      requestedReviewerObj ||
-      context.payload.pull_request?.requested_reviewers ||
-      [];
+      context.payload.pull_request?.requested_reviewers || [];
 
     // Add User to Followers
     const followersStatus = [];
     const followers = [userObj?.asanaId];
 
     // Add Requested Reviewers to Followers
-    if (Array.isArray(requestedReviewers)) {
-      for (const reviewer of requestedReviewers) {
-        const reviewerObj = users.find(
-          (user) => user.githubName === reviewer.login
-        );
-        followers.push(reviewerObj?.asanaId);
-      }
-    } else {
-      followers.push(requestedReviewers.asanaId);
+    for (const reviewer of requestedReviewers) {
+      const reviewerObj = users.find(
+        (user) => user.githubName === reviewer.login
+      );
+      followers.push(reviewerObj?.asanaId);
     }
 
     // Get Arrows and Replace Them
@@ -168,15 +162,11 @@ export const run = async () => {
 
     // Check if PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
-      if (Array.isArray(requestedReviewers)) {
-        for (const reviewer of requestedReviewers) {
-          const reviewerObj = users.find(
-            (user) => user.githubName === reviewer.login
-          );
-          addApprovalTask(asanaTasksIds, reviewerObj);
-        }
-      } else {
-        addApprovalTask(asanaTasksIds, requestedReviewers);
+      for (const reviewer of requestedReviewers) {
+        const reviewerObj = users.find(
+          (user) => user.githubName === reviewer.login
+        );
+        addApprovalTask(asanaTasksIds, reviewerObj);
       }
     }
 
