@@ -339,10 +339,10 @@ export const moveToApprovedSection = async (
   });
 
   // Get Unique Users That Approved
-  const uniqueUsersApproved = usersApproved.filter(
-    (user, index, array) => array.indexOf(user) === index
-  );
-  console.log("usersApproved", uniqueUsersApproved);
+  // const uniqueUsersApproved = usersApproved.filter(
+  //   (user, index, array) => array.indexOf(user) === index
+  // );
+  console.log("usersApproved", usersApproved);
 
   for (const review of reviews) {
     if (review.state !== "approved") {

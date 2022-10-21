@@ -13513,8 +13513,10 @@ const moveToApprovedSection = (asanaTasksIds, reviews) => __awaiter(void 0, void
         }
     });
     // Get Unique Users That Approved
-    const uniqueUsersApproved = usersApproved.filter((user, index, array) => array.indexOf(user) === index);
-    console.log("usersApproved", uniqueUsersApproved);
+    // const uniqueUsersApproved = usersApproved.filter(
+    //   (user, index, array) => array.indexOf(user) === index
+    // );
+    console.log("usersApproved", usersApproved);
     for (const review of reviews) {
         if (review.state !== "approved") {
             return;
