@@ -2,7 +2,7 @@ import { /*getInput,*/ setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
-import axios from "./requests/axios";
+/*import axios from "./requests/axios";*/
 import asanaAxios from "./requests/asanaAxios";
 import * as REQUESTS from "./constants/requests";
 import { users } from "./constants/users";
@@ -30,13 +30,13 @@ export const run = async () => {
       context.payload.pull_request?.body || context.payload.issue?.body;
     const pullRequestId =
       context.payload.pull_request?.number || context.payload.issue?.number;
-    const pullRequestName =
-      context.payload.pull_request?.title || context.payload.issue?.title;
+    // const pullRequestName =
+    //   context.payload.pull_request?.title || context.payload.issue?.title;
     const pullRequestURL =
       context.payload.pull_request?.html_url || context.payload.issue?.html_url;
     const pullRequestState =
       context.payload.pull_request?.state || context.payload.issue?.state;
-    const pullRequestMerged = context.payload.pull_request?.merged || false;
+    // const pullRequestMerged = context.payload.pull_request?.merged || false;
     const reviewState = context.payload.review?.state || "";
     const commentUrl =
       context.payload.comment?.html_url ||
@@ -287,39 +287,21 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-        commentText = `${userUrl} is requesting the following changes on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody}\n\nComment URL -> ${commentUrl}`;
-        break;
+        commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`; break;
       }
     }
 
     // Post Comment to Asana
     let commentResult: any = "";
-    if (
-      eventName === "pull_request" ||
-      eventName === "issue_comment" ||
-      eventName === "pull_request_review"
-    ) {
-      for (const id of asanaTasksIds!) {
-        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-        commentResult = await asanaAxios.post(url, {
-          data: {
-            html_text: commentText,
-          },
-        });
-      }
-    } else {
-      commentResult = await axios.post(REQUESTS.ACTION_URL, {
-        allowedProjects,
-        blockedProjects,
-        commentText,
-        pullRequestDescription,
-        pullRequestId,
-        pullRequestName,
-        pullRequestURL,
-        pullRequestState,
-        pullRequestMerged,
+    for (const id of asanaTasksIds!) {
+      const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
+      commentResult = await asanaAxios.post(url, {
+        data: {
+          html_text: commentText,
+        },
       });
     }
+
 
     setOutput(`event`, eventName);
     setOutput(`action`, action);
