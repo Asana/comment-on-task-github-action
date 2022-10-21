@@ -13314,8 +13314,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         else {
             followers.push(requestedReviewers.asanaId);
         }
-        // Get Mentioned Users In Comment
+        // Get Arrows and Replace Them
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
+        if (commentBody.includes(">")) {
+            commentBody = commentBody.replace(/>/g, "");
+        }
+        // Get Mentioned Users In Comment
         const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
         for (const mention of mentions) {
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
@@ -13325,10 +13329,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaName}</a>`;
             commentBody = commentBody.replace(mention, mentionHTML);
-        }
-        // Get Arrows and Replace Them
-        if (commentBody.includes(">")) {
-            commentBody = commentBody.replace(/>/g, "");
         }
         // Get Task IDs From PR Description
         const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);

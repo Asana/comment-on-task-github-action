@@ -103,9 +103,15 @@ export const run = async () => {
       followers.push(requestedReviewers.asanaId);
     }
 
-    // Get Mentioned Users In Comment
+    
+    // Get Arrows and Replace Them
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
+    if (commentBody.includes(">")) {
+      commentBody = commentBody.replace(/>/g, "");
+    }
+
+    // Get Mentioned Users In Comment
     const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
     for (const mention of mentions) {
       const mentionUserObj = users.find(
@@ -117,11 +123,6 @@ export const run = async () => {
       const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaUrlId!);
       const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj?.asanaName}</a>`;
       commentBody = commentBody.replace(mention, mentionHTML);
-    }
-
-    // Get Arrows and Replace Them
-    if (commentBody.includes(">")) {
-      commentBody = commentBody.replace(/>/g, "");
     }
 
     // Get Task IDs From PR Description
