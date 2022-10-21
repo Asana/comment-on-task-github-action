@@ -119,6 +119,11 @@ export const run = async () => {
       commentBody = commentBody.replace(mention, mentionHTML);
     }
 
+    // Get Quotations and Replace Them
+    if(commentBody.includes("`")){
+      commentBody = commentBody.replaceAll("`", "");
+    }
+
     // Get Task IDs From PR Description
     const asanaTasksLinks = pullRequestDescription?.match(
       /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
