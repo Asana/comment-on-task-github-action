@@ -121,7 +121,7 @@ export const run = async () => {
 
     // Get Quotations and Replace Them
     if (commentBody.includes("`")) {
-      commentBody = commentBody.toString().replaceAll("`", "");
+      commentBody = commentBody.replace(/`/g, '');
     }
 
     // Get Task IDs From PR Description
