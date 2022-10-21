@@ -331,17 +331,18 @@ export const moveToApprovedSection = async (
   asanaTasksIds: Array<String>,
   reviews: Array<any>
 ) => {
-  // Check If All Reviews Approved
+  // Get Users That Approved
+  const usersApproved = reviews.map((review) => {
+    if (review.state === "approved") {
+      return review.user.login;
+    }
+  });
 
-  const usersApproved = reviews
-    .map((review) => {
-      if (review.state === "approved") {
-        return review.user.login;
-      }
-    })
-    .filter((user, index, array) => array.indexOf(user) === index);
-  // const uniqueUsersApproved = usersApproved.filter((user, index, array) => array.indexOf(user) == index);
-  console.log("usersApproved", usersApproved);
+  // Get Unique Users That Approved
+  const uniqueUsersApproved = usersApproved.filter(
+    (user, index, array) => array.indexOf(user) === index
+  );
+  console.log("usersApproved", uniqueUsersApproved);
 
   for (const review of reviews) {
     if (review.state !== "approved") {
