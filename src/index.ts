@@ -333,16 +333,17 @@ export const moveToApprovedSection = async (
 ) => {
   // Get Users That Approved
   const usersApproved = reviews.map((review) => {
-    if (review.state === "approved") {
+    if (review.state === "APPROVED") {
       return review.user.login;
     }
   });
 
   // Get Unique Users That Approved
-  // const uniqueUsersApproved = usersApproved.filter(
-  //   (user, index, array) => array.indexOf(user) === index
-  // );
+  const uniqueUsersApproved = usersApproved.filter(
+    (user, index, array) => array.indexOf(user) === index
+  );
   console.log("usersApproved", usersApproved);
+  console.log("uniqueUsersApproved", uniqueUsersApproved);
 
   for (const review of reviews) {
     if (review.state !== "approved") {
