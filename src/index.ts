@@ -160,8 +160,20 @@ export const run = async () => {
       }
     }
 
+    // Check if Review Requested
+    if(prReviewRequested){
+      setTimeout(() => {
+        for (const reviewer of requestedReviewers) {
+          const reviewerObj = users.find(
+            (user) => user.githubName === reviewer.login
+          );
+          addApprovalTask(asanaTasksIds, reviewerObj);
+        }
+      }, 30000);
+    }
+
     // Check if PR Ready For Review
-    if (prReviewRequested || prReadyForReview) {
+    if (prReadyForReview) {
       for (const reviewer of requestedReviewers) {
         const reviewerObj = users.find(
           (user) => user.githubName === reviewer.login
