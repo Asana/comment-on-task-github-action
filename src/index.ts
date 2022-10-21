@@ -287,7 +287,8 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-        commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`; break;
+        commentText = `<body> ${userHTML} is <a href="${commentUrl}">requesting the following changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
+        break;
       }
     }
 
@@ -301,7 +302,6 @@ export const run = async () => {
         },
       });
     }
-
 
     setOutput(`event`, eventName);
     setOutput(`action`, action);
