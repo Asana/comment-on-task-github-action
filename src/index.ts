@@ -342,8 +342,8 @@ export const moveToApprovedSection = async (
   }
 
   // Check if All Requested Reviewers Approved
-  for(let i=0;i<requestedReviewers.length;i++){
-    let username = requestedReviewers[i].login;
+  for (let i = 0; i < requestedReviewers.length; i++) {
+    const username = requestedReviewers[i].login;
     if (!usersApproved.includes(username)) {
       return;
     }
