@@ -13418,7 +13418,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const reviews = yield requests_githubAxios.get(githubUrl);
             console.log("reviews", reviews.data);
             // Check If All Approved and Move Accordingly
-            moveToApprovedSection(asanaTasksIds, reviews.data);
+            moveToApprovedSection(asanaTasksIds, reviews.data, requestedReviewers);
         }
         // Get Correct Dynamic Comment
         let commentText = "";
@@ -13505,28 +13505,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setFailed)("Unknown error");
     }
 });
-const moveToApprovedSection = (asanaTasksIds, reviews) => __awaiter(void 0, void 0, void 0, function* () {
+const moveToApprovedSection = (asanaTasksIds, reviews, requestedReviewers) => __awaiter(void 0, void 0, void 0, function* () {
     // Get Users That Approved
-    const usersApproved = reviews.filter((review) => {
-        if (review.state === "APPROVED") {
-            return review.user.login;
-        }
-    });
-    console.log("usersApproved", usersApproved);
-    const usersTest = [];
+    const usersApproved = [];
     for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
         if (review.state === "APPROVED") {
-            usersTest.push(review.user.login);
+            usersApproved.push(review.user.login);
         }
     }
-    console.log("usersTest", usersTest);
-    // Get Unique Users That Approved
-    const uniqueUsersApproved = usersApproved.filter((user, index, array) => array.indexOf(user) === index);
-    console.log("usersApproved", usersApproved);
-    console.log("uniqueUsersApproved", uniqueUsersApproved);
-    for (const review of reviews) {
-        if (review.state !== "approved") {
+    // Check if All Requested Reviewers Approved
+    for (let i = 0; i < requestedReviewers.length; i++) {
+        const username = requestedReviewers[i].login;
+        if (!usersApproved.includes(username)) {
             return;
         }
     }
