@@ -13108,7 +13108,7 @@ const RETRY_DELAY = 1000;
 const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
 const TASKS_URL = "/tasks/";
 const SECTIONS_URL = "/sections/";
-const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee,created_by";
+const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee,created_by,name";
 const ADD_FOLLOWERS_URL = "/addFollowers";
 const ADD_TASK_URL = "/addTask";
 const BASE_GITHUB_URL = "https://api.github.com/";
@@ -13557,7 +13557,8 @@ const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, 
         const subtasks = yield requests_asanaAxios.get(url);
         const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
             !subtask.completed &&
-            subtask.assignee.gid === (requestedReviewer === null || requestedReviewer === void 0 ? void 0 : requestedReviewer.asanaId));
+            subtask.assignee.gid === (requestedReviewer === null || requestedReviewer === void 0 ? void 0 : requestedReviewer.asanaId) &&
+            subtask.name === "Review");
         // If Request Reviewer already has incomplete subtask
         if (approvalSubtask) {
             continue;
