@@ -13380,7 +13380,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Get Approval Subtasks
                 const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
                 const subtasks = yield requests_asanaAxios.get(url);
-                const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+                const approvalSubtask = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
                     subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
                     subtask.name === "Review");
