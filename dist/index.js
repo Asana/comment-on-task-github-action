@@ -13475,10 +13475,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
                 console.log("REPLIED", (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.in_reply_to_id);
-                if (!((_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.in_reply_to_id)) {
-                    commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
+                if (!((_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.in_reply_to_id)) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
                 }
-                commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
                 break;
             }
         }
