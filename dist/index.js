@@ -13373,7 +13373,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 addApprovalTask(asanaTasksIds, reviewerObj);
             }
         }
-        if (eventName === "pull_request_review_comment" && action === "edited") {
+        if (eventName === "issue_comment" && action === "edited") {
             for (const id of asanaTasksIds) {
                 // Get Approval Subtasks
                 const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;

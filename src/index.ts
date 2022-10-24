@@ -178,6 +178,14 @@ export const run = async () => {
       }
     }
 
+    if (eventName === "issue_comment" && action === "edited") {
+      for (const id of asanaTasksIds!) {
+        // Get Approval Subtasks
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
+        const subtasks = await asanaAxios.get(url);
+        console.log("subtasks.data.data", subtasks.data.data);
+      }
+    }
     if (prReviewSubmitted) {
       for (const id of asanaTasksIds!) {
         // Get Approval Subtasks
