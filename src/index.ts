@@ -36,7 +36,7 @@ export const run = async () => {
       context.payload.pull_request?.html_url || context.payload.issue?.html_url;
     const pullRequestState =
       context.payload.pull_request?.state || context.payload.issue?.state;
-    // const pullRequestMerged = context.payload.pull_request?.merged || false;
+    const pullRequestMerged = context.payload.pull_request?.merged || false;
     const reviewState = context.payload.review?.state || "";
     const commentUrl =
       context.payload.comment?.html_url ||
@@ -287,6 +287,8 @@ export const run = async () => {
           action === "edited"
         ) {
           return;
+        } else if (action === "closed" && pullRequestMerged){
+          commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is merged and ${pullRequestState}. </body>`;
         } else {
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
         }
