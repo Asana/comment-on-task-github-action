@@ -190,7 +190,8 @@ export const run = async () => {
           (subtask: any) =>
             subtask.resource_subtype === "approval" &&
             !subtask.completed &&
-            subtask.created_by.gid === ottoObj?.asanaId
+            subtask.created_by.gid === ottoObj?.asanaId &&
+            subtask.name === "Review"
         );
         console.log("approvalSubtask", approvalSubtask);
       }
@@ -229,7 +230,7 @@ export const run = async () => {
           const subtasks = await asanaAxios.get(url);
           approvalSubtasks = subtasks.data.data.filter(
             (subtask: any) =>
-              subtask.resource_subtype === "approval" && 
+              subtask.resource_subtype === "approval" &&
               !subtask.completed &&
               subtask.created_by.gid === ottoObj?.asanaId
           );
@@ -396,7 +397,8 @@ export const addApprovalTask = async (
       (subtask: any) =>
         subtask.resource_subtype === "approval" &&
         !subtask.completed &&
-        subtask.assignee.gid === requestedReviewer?.asanaId
+        subtask.assignee.gid === requestedReviewer?.asanaId &&
+        subtask.name === "Review"
     );
 
     // If Request Reviewer already has incomplete subtask
