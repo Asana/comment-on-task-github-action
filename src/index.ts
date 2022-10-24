@@ -72,6 +72,9 @@ export const run = async () => {
     const userUrl = mentionUrl.concat(userObj?.asanaUrlId!);
     const userHTML = `<a href="${userUrl}">@${userObj?.asanaName}</a>`;
 
+    // Store Otto
+    const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
+
     // Store Requested Reviewers
     // const requestedReviewerName =
     //   context.payload.requested_reviewer?.login || "";
@@ -183,19 +186,26 @@ export const run = async () => {
         // Get Approval Subtasks
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
         const subtasks = await asanaAxios.get(url);
-        console.log("subtasks.data.data", subtasks.data.data);
+        const approvalSubtask = subtasks.data.data.find(
+          (subtask: any) =>
+            subtask.resource_subtype === "approval" &&
+            !subtask.completed &&
+            subtask.created_by.gid === ottoObj?.asanaId
+        );
+        console.log("approvalSubtask", approvalSubtask);
       }
     }
     if (prReviewSubmitted) {
       for (const id of asanaTasksIds!) {
-        // Get Approval Subtasks
+        // Get Approval Subtasks Created By Otto
         const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
         const subtasks = await asanaAxios.get(url);
         const approvalSubtask = subtasks.data.data.find(
           (subtask: any) =>
             subtask.resource_subtype === "approval" &&
             !subtask.completed &&
-            subtask.assignee.gid === userObj?.asanaId
+            subtask.assignee.gid === userObj?.asanaId &&
+            subtask.created_by.gid === ottoObj?.asanaId
         );
 
         // Update Approval Subtask Of User
@@ -219,7 +229,9 @@ export const run = async () => {
           const subtasks = await asanaAxios.get(url);
           approvalSubtasks = subtasks.data.data.filter(
             (subtask: any) =>
-              subtask.resource_subtype === "approval" && !subtask.completed
+              subtask.resource_subtype === "approval" && 
+              !subtask.completed &&
+              subtask.created_by.gid === ottoObj?.asanaId
           );
         }
 

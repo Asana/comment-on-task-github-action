@@ -13291,6 +13291,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         const userHTML = `<a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a>`;
+        // Store Otto
+        const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
         // const requestedReviewerName =
         //   context.payload.requested_reviewer?.login || "";
@@ -13378,17 +13380,21 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Get Approval Subtasks
                 const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
                 const subtasks = yield requests_asanaAxios.get(url);
-                console.log("subtasks.data.data", subtasks.data.data);
+                const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+                    !subtask.completed &&
+                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
+                console.log("approvalSubtask", approvalSubtask);
             }
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
-                // Get Approval Subtasks
+                // Get Approval Subtasks Created By Otto
                 const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
                 const subtasks = yield requests_asanaAxios.get(url);
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
-                    subtask.assignee.gid === (userObj === null || userObj === void 0 ? void 0 : userObj.asanaId));
+                    subtask.assignee.gid === (userObj === null || userObj === void 0 ? void 0 : userObj.asanaId) &&
+                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
                 // Update Approval Subtask Of User
                 if (approvalSubtask) {
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
@@ -13407,7 +13413,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
                     const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
                     const subtasks = yield requests_asanaAxios.get(url);
-                    approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" && !subtask.completed);
+                    approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
+                        !subtask.completed &&
+                        subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
                 }
                 // Delete Incomplete Approval Taks
                 for (const subtask of approvalSubtasks) {
