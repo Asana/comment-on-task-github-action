@@ -13247,7 +13247,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13474,10 +13474,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const path = (_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                if (!((_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.in_reply_to_id)) {
-                    commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
+                console.log("REPLIED", (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.in_reply_to_id);
+                if (!((_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.in_reply_to_id)) {
+                    commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
                 }
-                commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
                 break;
             }
         }
@@ -13500,7 +13501,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_1 = error.response) === null || _1 === void 0 ? void 0 : _1.data) || "Unknown error");
+            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

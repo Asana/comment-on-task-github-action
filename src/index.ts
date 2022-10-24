@@ -295,7 +295,7 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-
+console.log('REPLIED', context.payload.comment?.in_reply_to_id)
         if (!context.payload.comment?.in_reply_to_id) {
           commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
         }
