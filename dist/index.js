@@ -13108,7 +13108,7 @@ const RETRY_DELAY = 1000;
 const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
 const TASKS_URL = "/tasks/";
 const SECTIONS_URL = "/sections/";
-const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee";
+const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee,created_by";
 const ADD_FOLLOWERS_URL = "/addFollowers";
 const ADD_TASK_URL = "/addTask";
 const BASE_GITHUB_URL = "https://api.github.com/";
@@ -13371,6 +13371,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             for (const reviewer of requestedReviewers) {
                 const reviewerObj = users.find((user) => user.githubName === reviewer.login);
                 addApprovalTask(asanaTasksIds, reviewerObj);
+            }
+        }
+        if (eventName === "pull_request_review_comment" && action === "edited") {
+            for (const id of asanaTasksIds) {
+                // Get Approval Subtasks
+                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+                const subtasks = yield requests_asanaAxios.get(url);
+                console.log("subtasks.data.data", subtasks.data.data);
             }
         }
         if (prReviewSubmitted) {
