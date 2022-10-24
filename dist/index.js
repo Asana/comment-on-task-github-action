@@ -13375,18 +13375,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 addApprovalTask(asanaTasksIds, reviewerObj);
             }
         }
-        if (eventName === "issue_comment" && action === "edited") {
-            for (const id of asanaTasksIds) {
-                // Get Approval Subtasks
-                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
-                const subtasks = yield requests_asanaAxios.get(url);
-                const approvalSubtask = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
-                    !subtask.completed &&
-                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
-                    subtask.name === "Review");
-                console.log("approvalSubtask", approvalSubtask);
-            }
-        }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
                 // Get Approval Subtasks Created By Otto
@@ -13395,7 +13383,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
                     subtask.assignee.gid === (userObj === null || userObj === void 0 ? void 0 : userObj.asanaId) &&
-                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
+                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
+                    subtask.name === "Review");
                 // Update Approval Subtask Of User
                 if (approvalSubtask) {
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
@@ -13416,7 +13405,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     const subtasks = yield requests_asanaAxios.get(url);
                     approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
                         !subtask.completed &&
-                        subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
+                        subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
+                        subtask.name === "Review");
                 }
                 // Delete Incomplete Approval Taks
                 for (const subtask of approvalSubtasks) {

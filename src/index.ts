@@ -181,21 +181,6 @@ export const run = async () => {
       }
     }
 
-    if (eventName === "issue_comment" && action === "edited") {
-      for (const id of asanaTasksIds!) {
-        // Get Approval Subtasks
-        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
-        const subtasks = await asanaAxios.get(url);
-        const approvalSubtask = subtasks.data.data.filter(
-          (subtask: any) =>
-            subtask.resource_subtype === "approval" &&
-            !subtask.completed &&
-            subtask.created_by.gid === ottoObj?.asanaId &&
-            subtask.name === "Review"
-        );
-        console.log("approvalSubtask", approvalSubtask);
-      }
-    }
     if (prReviewSubmitted) {
       for (const id of asanaTasksIds!) {
         // Get Approval Subtasks Created By Otto
@@ -206,7 +191,8 @@ export const run = async () => {
             subtask.resource_subtype === "approval" &&
             !subtask.completed &&
             subtask.assignee.gid === userObj?.asanaId &&
-            subtask.created_by.gid === ottoObj?.asanaId
+            subtask.created_by.gid === ottoObj?.asanaId &&
+            subtask.name === "Review"
         );
 
         // Update Approval Subtask Of User
@@ -229,10 +215,12 @@ export const run = async () => {
           const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
           const subtasks = await asanaAxios.get(url);
           approvalSubtasks = subtasks.data.data.filter(
+            
             (subtask: any) =>
               subtask.resource_subtype === "approval" &&
               !subtask.completed &&
-              subtask.created_by.gid === ottoObj?.asanaId
+              subtask.created_by.gid === ottoObj?.asanaId &&
+              subtask.name === "Review"
           );
         }
 
