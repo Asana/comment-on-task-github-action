@@ -287,7 +287,7 @@ export const run = async () => {
           action === "edited"
         ) {
           return;
-        } else if (action === "closed" && pullRequestMerged){
+        } else if (action === "closed" && pullRequestMerged) {
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is merged and ${pullRequestState}. </body>`;
         } else {
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
