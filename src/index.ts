@@ -19,8 +19,6 @@ export const run = async () => {
     utils.validateTrigger(eventName);
     utils.validateProjectLists(allowedProjects, blockedProjects);
 
-    console.log("context.eventName", eventName);
-    console.log("context.payload.action", action);
     console.log("context.payload", context.payload);
 
     // Store Constant Values
@@ -30,8 +28,6 @@ export const run = async () => {
       context.payload.pull_request?.body || context.payload.issue?.body;
     const pullRequestId =
       context.payload.pull_request?.number || context.payload.issue?.number;
-    // const pullRequestName =
-    //   context.payload.pull_request?.title || context.payload.issue?.title;
     const pullRequestURL =
       context.payload.pull_request?.html_url || context.payload.issue?.html_url;
     const pullRequestState =
@@ -232,7 +228,6 @@ export const run = async () => {
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
       const reviews = await githubAxios.get(githubUrl);
 
-      console.log("reviews", reviews.data);
       // Check If All Approved and Move Accordingly
       moveToApprovedSection(asanaTasksIds, reviews.data, requestedReviewers);
     }
@@ -297,7 +292,7 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-        console.log("REPLIED", context.payload.comment?.in_reply_to_id);
+
         commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
         if (context.payload.comment?.in_reply_to_id) {
           commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;

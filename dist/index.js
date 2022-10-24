@@ -13247,23 +13247,19 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
         const action = github.context.payload.action;
         validateTrigger(eventName);
         validateProjectLists(allowedProjects, blockedProjects);
-        console.log("context.eventName", eventName);
-        console.log("context.payload.action", action);
         console.log("context.payload", github.context.payload);
         // Store Constant Values
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
         const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
         const pullRequestId = ((_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.number) || ((_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.number);
-        // const pullRequestName =
-        //   context.payload.pull_request?.title || context.payload.issue?.title;
         const pullRequestURL = ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.html_url) || ((_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.html_url);
         const pullRequestState = ((_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.state) || ((_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.state);
         const pullRequestMerged = ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.merged) || false;
@@ -13416,7 +13412,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Retrieve All Reviews of PR
             const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
             const reviews = yield requests_githubAxios.get(githubUrl);
-            console.log("reviews", reviews.data);
             // Check If All Approved and Move Accordingly
             moveToApprovedSection(asanaTasksIds, reviews.data, requestedReviewers);
         }
@@ -13477,10 +13472,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                console.log("REPLIED", (_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.in_reply_to_id);
-                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
-                if ((_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.in_reply_to_id) {
-                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_2 = github.context.payload.comment) === null || _2 === void 0 ? void 0 : _2.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
+                if ((_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.in_reply_to_id) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -13504,7 +13498,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
+            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
