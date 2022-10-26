@@ -13415,7 +13415,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentText = "";
         switch (eventName) {
             case "issue_comment": {
+                console.log('commentBody', commentBody);
                 if (commentBody.charAt(0) === ">") {
+                    console.log('true reply');
                     const lines = commentBody.split("\n");
                     const commentBodyLines = lines.filter(function (line) {
                         return line.indexOf(">") !== 0;

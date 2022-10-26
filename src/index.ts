@@ -230,7 +230,11 @@ export const run = async () => {
     let commentText = "";
     switch (eventName) {
       case "issue_comment": {
+        console.log('commentBody', commentBody);
+        
         if (commentBody.charAt(0) === ">") {
+          console.log('true reply');
+          
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
             line: string | string[]
