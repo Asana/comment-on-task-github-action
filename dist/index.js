@@ -13481,7 +13481,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
             if (action === "edited" && eventName === "issue_comment") {
                 const comments = yield requests_asanaAxios.get(url);
-                console.log('comments', comments);
+                console.log('comments', comments.data.data);
             }
             else {
                 // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;

@@ -301,7 +301,7 @@ export const run = async () => {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
       if(action === "edited" && eventName === "issue_comment"){
         const comments = await asanaAxios.get(url);
-        console.log('comments', comments);
+        console.log('comments', comments.data.data);
       }
       else {
         // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
