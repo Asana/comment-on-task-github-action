@@ -13480,8 +13480,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
             if (action === "edited" && eventName === "issue_comment") {
-                const comments = yield requests_asanaAxios.get(url);
-                console.log('comments', comments.data.data);
+                let comments = yield requests_asanaAxios.get(url);
+                comments = comments.data.data.filter((comment) => comment.resource_subtype === "comment_added");
+                console.log('comments', comments);
             }
             else {
                 // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;

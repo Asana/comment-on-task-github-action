@@ -300,8 +300,12 @@ export const run = async () => {
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
       if(action === "edited" && eventName === "issue_comment"){
-        const comments = await asanaAxios.get(url);
-        console.log('comments', comments.data.data);
+        let comments = await asanaAxios.get(url);
+        comments = comments.data.data.filter(
+          (comment: any) =>
+            comment.resource_subtype === "comment_added"
+        );
+        console.log('comments', comments);
       }
       else {
         // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
