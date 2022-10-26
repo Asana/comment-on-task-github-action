@@ -13108,6 +13108,7 @@ const RETRY_DELAY = 1000;
 const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
 const TASKS_URL = "/tasks/";
 const SECTIONS_URL = "/sections/";
+const STORIES_URL = "/stories/";
 const SUBTASKS_URL = "/subtasks?opt_fields=completed,resource_subtype,assignee,created_by,name";
 const ADD_FOLLOWERS_URL = "/addFollowers";
 const ADD_TASK_URL = "/addTask";
@@ -13115,7 +13116,6 @@ const BASE_GITHUB_URL = "https://api.github.com/";
 const REPOS_URL = "/repos/";
 const PULLS_URL = "/pulls/";
 const REVIEWS_URL = "/reviews";
-const STORIES_URL = "/stories";
 
 ;// CONCATENATED MODULE: ./src/requests/asanaAxios.ts
 
@@ -13481,10 +13481,15 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
             if (action === "edited" && eventName === "issue_comment") {
                 let comments = yield requests_asanaAxios.get(url);
-                comments = comments.data.data.filter((comment) => comment.resource_subtype === "comment_added" &&
+                const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
                     comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
                     comment.text.includes(commentUrl));
-                console.log('comments', comments);
+                commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
+                    data: {
+                        html_text: commentText,
+                    },
+                });
+                console.log('comments', comment);
             }
             else {
                 // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
