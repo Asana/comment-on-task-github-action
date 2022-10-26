@@ -13479,11 +13479,18 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentResult = "";
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
-            commentResult = yield requests_asanaAxios.post(url, {
-                data: {
-                    html_text: commentText,
-                },
-            });
+            if (action === "edited" && eventName === "issue_comment") {
+                const comments = yield requests_asanaAxios.get(url);
+                console.log('comments', comments);
+            }
+            else {
+                // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
+                commentResult = yield requests_asanaAxios.post(url, {
+                    data: {
+                        html_text: commentText,
+                    },
+                });
+            }
         }
         (0,core.setOutput)(`event`, eventName);
         (0,core.setOutput)(`action`, action);

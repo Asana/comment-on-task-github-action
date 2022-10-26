@@ -299,11 +299,18 @@ export const run = async () => {
     let commentResult: any = "";
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-      commentResult = await asanaAxios.post(url, {
-        data: {
-          html_text: commentText,
-        },
-      });
+      if(action === "edited" && eventName === "issue_comment"){
+        const comments = await asanaAxios.get(url);
+        console.log('comments', comments);
+      }
+      else {
+        // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
+        commentResult = await asanaAxios.post(url, {
+          data: {
+            html_text: commentText,
+          },
+        });
+      }
     }
 
     setOutput(`event`, eventName);
