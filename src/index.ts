@@ -161,12 +161,12 @@ export const run = async () => {
 
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
-        for (const reviewer of requestedReviewers) {
-          const reviewerObj = users.find(
-            (user) => user.githubName === reviewer.login
-          );
-          addApprovalTask(asanaTasksIds, reviewerObj);
-        }
+      for (const reviewer of requestedReviewers) {
+        const reviewerObj = users.find(
+          (user) => user.githubName === reviewer.login
+        );
+        addApprovalTask(asanaTasksIds, reviewerObj);
+      }
     }
 
     if (prReviewSubmitted) {
@@ -299,15 +299,20 @@ export const run = async () => {
     let commentResult: any = "";
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-      if(action === "edited" && eventName === "issue_comment"){
+      if (action === "edited" && eventName === "issue_comment") {
         let comments = await asanaAxios.get(url);
-        comments = comments.data.data.filter(
+        const comment = comments.data.data.find(
           (comment: any) =>
             comment.resource_subtype === "comment_added" &&
             comment.created_by.gid === ottoObj?.asanaId &&
             comment.text.includes(commentUrl)
         );
-        console.log('comments', comments);
+        commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
+          data: {
+            html_text: commentText,
+          },
+        });
+        console.log('comments', comment);
       }
       else {
         // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
@@ -386,7 +391,7 @@ export const addApprovalTask = async (
         !subtask.completed &&
         subtask.assignee.gid === requestedReviewer?.asanaId &&
         subtask.created_by.gid === ottoObj?.asanaId
-        );
+    );
 
     // If Request Reviewer already has incomplete subtask
     if (approvalSubtask) {
