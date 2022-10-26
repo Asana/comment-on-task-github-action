@@ -303,7 +303,9 @@ export const run = async () => {
         let comments = await asanaAxios.get(url);
         comments = comments.data.data.filter(
           (comment: any) =>
-            comment.resource_subtype === "comment_added"
+            comment.resource_subtype === "comment_added" &&
+            comment.created_by.gid === ottoObj?.asanaId &&
+            comment.text.includes(commentUrl)
         );
         console.log('comments', comments);
       }

@@ -13481,7 +13481,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
             if (action === "edited" && eventName === "issue_comment") {
                 let comments = yield requests_asanaAxios.get(url);
-                comments = comments.data.data.filter((comment) => comment.resource_subtype === "comment_added");
+                comments = comments.data.data.filter((comment) => comment.resource_subtype === "comment_added" &&
+                    comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
+                    comment.text.includes(commentUrl));
                 console.log('comments', comments);
             }
             else {
