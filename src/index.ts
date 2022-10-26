@@ -99,7 +99,7 @@ export const run = async () => {
     // Get Arrows and Replace Them
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
-    if (commentBody.includes(">")) {
+    if (commentBody.includes(">") && eventName !== "issue_comment") {
       commentBody = commentBody.replace(/>/g, "");
     }
 
@@ -229,12 +229,8 @@ export const run = async () => {
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (eventName) {
-      case "issue_comment": {
-        console.log('commentBody', commentBody);
-        
-        if (commentBody.charAt(0) === ">") {
-          console.log('true reply');
-          
+      case "issue_comment": {        
+        if (commentBody.charAt(0) === ">") {          
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
             line: string | string[]

@@ -13310,7 +13310,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Arrows and Replace Them
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
-        if (commentBody.includes(">")) {
+        if (commentBody.includes(">") && eventName !== "issue_comment") {
             commentBody = commentBody.replace(/>/g, "");
         }
         // Get Mentioned Users In Comment
@@ -13415,9 +13415,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentText = "";
         switch (eventName) {
             case "issue_comment": {
-                console.log('commentBody', commentBody);
                 if (commentBody.charAt(0) === ">") {
-                    console.log('true reply');
                     const lines = commentBody.split("\n");
                     const commentBodyLines = lines.filter(function (line) {
                         return line.indexOf(">") !== 0;
