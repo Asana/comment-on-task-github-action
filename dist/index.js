@@ -13359,17 +13359,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 });
             }
         }
-        // Check if Review Requested
-        if (prReviewRequested) {
-            setTimeout(() => {
-                for (const reviewer of requestedReviewers) {
-                    const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-                    addApprovalTask(asanaTasksIds, reviewerObj);
-                }
-            }, 30000);
-        }
-        // Check if PR Ready For Review
-        if (prReadyForReview) {
+        // Check if Review Requested OR PR Ready For Review
+        if (prReviewRequested || prReadyForReview) {
             for (const reviewer of requestedReviewers) {
                 const reviewerObj = users.find((user) => user.githubName === reviewer.login);
                 addApprovalTask(asanaTasksIds, reviewerObj);
@@ -13383,8 +13374,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
                     !subtask.completed &&
                     subtask.assignee.gid === (userObj === null || userObj === void 0 ? void 0 : userObj.asanaId) &&
-                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
-                    subtask.name === "Review");
+                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
                 // Update Approval Subtask Of User
                 if (approvalSubtask) {
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
@@ -13405,8 +13395,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     const subtasks = yield requests_asanaAxios.get(url);
                     approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
                         !subtask.completed &&
-                        subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
-                        subtask.name === "Review");
+                        subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
                 }
                 // Delete Incomplete Approval Taks
                 for (const subtask of approvalSubtasks) {
@@ -13540,6 +13529,7 @@ const moveToApprovedSection = (asanaTasksIds, reviews, requestedReviewers) => __
     }
 });
 const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, void 0, void 0, function* () {
+    const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     for (const id of asanaTasksIds) {
@@ -13549,7 +13539,7 @@ const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, 
         const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
             !subtask.completed &&
             subtask.assignee.gid === (requestedReviewer === null || requestedReviewer === void 0 ? void 0 : requestedReviewer.asanaId) &&
-            subtask.name === "Review");
+            subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
         // If Request Reviewer already has incomplete subtask
         if (approvalSubtask) {
             continue;

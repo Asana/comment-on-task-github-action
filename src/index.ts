@@ -159,26 +159,14 @@ export const run = async () => {
       }
     }
 
-    // Check if Review Requested
-    if (prReviewRequested) {
-      setTimeout(() => {
+    // Check if Review Requested OR PR Ready For Review
+    if (prReviewRequested || prReadyForReview) {
         for (const reviewer of requestedReviewers) {
           const reviewerObj = users.find(
             (user) => user.githubName === reviewer.login
           );
           addApprovalTask(asanaTasksIds, reviewerObj);
         }
-      }, 30000);
-    }
-
-    // Check if PR Ready For Review
-    if (prReadyForReview) {
-      for (const reviewer of requestedReviewers) {
-        const reviewerObj = users.find(
-          (user) => user.githubName === reviewer.login
-        );
-        addApprovalTask(asanaTasksIds, reviewerObj);
-      }
     }
 
     if (prReviewSubmitted) {
@@ -191,8 +179,7 @@ export const run = async () => {
             subtask.resource_subtype === "approval" &&
             !subtask.completed &&
             subtask.assignee.gid === userObj?.asanaId &&
-            subtask.created_by.gid === ottoObj?.asanaId &&
-            subtask.name === "Review"
+            subtask.created_by.gid === ottoObj?.asanaId
         );
 
         // Update Approval Subtask Of User
@@ -218,8 +205,7 @@ export const run = async () => {
             (subtask: any) =>
               subtask.resource_subtype === "approval" &&
               !subtask.completed &&
-              subtask.created_by.gid === ottoObj?.asanaId &&
-              subtask.name === "Review"
+              subtask.created_by.gid === ottoObj?.asanaId
           );
         }
 
@@ -373,6 +359,7 @@ export const addApprovalTask = async (
   asanaTasksIds: Array<String>,
   requestedReviewer: any
 ) => {
+  const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -385,8 +372,8 @@ export const addApprovalTask = async (
         subtask.resource_subtype === "approval" &&
         !subtask.completed &&
         subtask.assignee.gid === requestedReviewer?.asanaId &&
-        subtask.name === "Review"
-    );
+        subtask.created_by.gid === ottoObj?.asanaId
+        );
 
     // If Request Reviewer already has incomplete subtask
     if (approvalSubtask) {
