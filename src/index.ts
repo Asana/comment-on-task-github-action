@@ -286,7 +286,7 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-
+        
         commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
         if (context.payload.comment?.in_reply_to_id) {
           commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
@@ -299,7 +299,7 @@ export const run = async () => {
     let commentResult: any = "";
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-      if (action === "edited" && eventName === "issue_comment") {
+      if (action === "edited") {
         let comments = await asanaAxios.get(url);
         const comment = comments.data.data.find(
           (comment: any) =>

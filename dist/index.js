@@ -13479,7 +13479,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentResult = "";
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
-            if (action === "edited" && eventName === "issue_comment") {
+            if (action === "edited") {
                 let comments = yield requests_asanaAxios.get(url);
                 const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
                     comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
