@@ -13239,7 +13239,6 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-/*import axios from "./requests/axios";*/
 
 
 
@@ -13294,11 +13293,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Store Otto
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
-        // const requestedReviewerName =
-        //   context.payload.requested_reviewer?.login || "";
-        // const requestedReviewerObj = users.find(
-        //   (user) => user.githubName === requestedReviewerName
-        // );
         const requestedReviewers = ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) || [];
         // Add User to Followers
         const followersStatus = [];
@@ -13489,10 +13483,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         html_text: commentText,
                     },
                 });
-                console.log('comments', comment);
             }
             else {
-                // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
                 commentResult = yield requests_asanaAxios.post(url, {
                     data: {
                         html_text: commentText,

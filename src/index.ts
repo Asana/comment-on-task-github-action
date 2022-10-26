@@ -2,7 +2,6 @@ import { /*getInput,*/ setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
-/*import axios from "./requests/axios";*/
 import asanaAxios from "./requests/asanaAxios";
 import * as REQUESTS from "./constants/requests";
 import { users } from "./constants/users";
@@ -76,11 +75,6 @@ export const run = async () => {
     const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
 
     // Store Requested Reviewers
-    // const requestedReviewerName =
-    //   context.payload.requested_reviewer?.login || "";
-    // const requestedReviewerObj = users.find(
-    //   (user) => user.githubName === requestedReviewerName
-    // );
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
 
@@ -312,10 +306,8 @@ export const run = async () => {
             html_text: commentText,
           },
         });
-        console.log('comments', comment);
       }
       else {
-        // const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
         commentResult = await asanaAxios.post(url, {
           data: {
             html_text: commentText,
