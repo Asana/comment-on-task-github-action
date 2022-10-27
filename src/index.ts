@@ -139,26 +139,19 @@ export const run = async () => {
     // Check if Automated CI Testing
     if (is_ci_testing) {
       for (const id of asanaTasksIds!) {
-        // Get Approval Subtasks Assigned to/Created by Otto
-        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
-        const subtasks = await asanaAxios.get(url);
-        const approvalSubtask = subtasks.data.data.find(
-          (subtask: any) =>
-            subtask.resource_subtype === "approval" &&
-            subtask.assignee.gid === ottoObj?.asanaId &&
-            subtask.created_by.gid === ottoObj?.asanaId
-        );
+        const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
 
         // If Found Update It, Else Create It
         if (approvalSubtask) {
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
             data: {
-              approval_status: ci_status === "success" ? "approved" : "rejected",
+              approval_status: ci_status,
             },
           });
-        } else {
-          addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing");
+          continue;
         }
+
+        addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
       }
       return;
     }
@@ -183,22 +176,22 @@ export const run = async () => {
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-        addApprovalTask(asanaTasksIds, reviewer, "Review");
+        for (const id of asanaTasksIds!) {
+          const approvalSubtask = await getApprovalSubtask(id, false, reviewer, ottoObj);
+
+          // If Request Reviewer already has incomplete subtask
+          if (approvalSubtask) {
+            continue;
+          }
+
+          addApprovalTask(asanaTasksIds, reviewer, "Review", "pending");
+        }
       }
     }
 
     if (prReviewSubmitted) {
       for (const id of asanaTasksIds!) {
-        // Get Approval Subtasks Created By Otto
-        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
-        const subtasks = await asanaAxios.get(url);
-        const approvalSubtask = subtasks.data.data.find(
-          (subtask: any) =>
-            subtask.resource_subtype === "approval" &&
-            !subtask.completed &&
-            subtask.assignee.gid === userObj?.asanaId &&
-            subtask.created_by.gid === ottoObj?.asanaId
-        );
+        const approvalSubtask = await getApprovalSubtask(id, false, userObj, ottoObj);
 
         // Update Approval Subtask Of User
         if (approvalSubtask) {
@@ -263,9 +256,18 @@ export const run = async () => {
 
       // Check If Should Create QA Tasks
       if (is_approved_by_dev && !is_approved_by_qa) {
-        QA_requestedReviewersObjs.forEach((reviewer: any) => {
+        QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
           followers.push(reviewer?.asanaId);
-          addApprovalTask(asanaTasksIds, reviewer, "Review");
+          for (const id of asanaTasksIds!) {
+            const approvalSubtask = await getApprovalSubtask(id, false, reviewer, ottoObj);
+
+            // If Request Reviewer already has incomplete subtask
+            if (approvalSubtask) {
+              continue;
+            }
+
+            addApprovalTask(asanaTasksIds, reviewer, "Review", "pending");
+          }
         });
       }
 
@@ -412,47 +414,44 @@ export const moveToApprovedSection = async (
 };
 
 export const addApprovalTask = async (
-  asanaTasksIds: Array<String>,
+  asanaTaskId: Array<String>,
   requestedReviewer: any,
-  taskName: String
+  taskName: String,
+  approvalStatus: String,
 ) => {
-  const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  for (const id of asanaTasksIds!) {
-    // Get Approval Subtasks
-    const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
-    const subtasks = await asanaAxios.get(url);
-    const approvalSubtask = subtasks.data.data.find(
-      (subtask: any) =>
-        subtask.resource_subtype === "approval" &&
-        !subtask.completed &&
-        subtask.assignee.gid === requestedReviewer?.asanaId &&
-        subtask.created_by.gid === ottoObj?.asanaId
-    );
-
-    // If Request Reviewer already has incomplete subtask
-    if (approvalSubtask) {
-      continue;
-    }
-
-    // Create Approval Subtasks For Requested Reviewer
-    await asanaAxios.post(url, {
-      data: {
-        assignee: requestedReviewer?.asanaId,
-        approval_status: "pending",
-        completed: false,
-        due_on: tomorrow.toISOString().substring(0, 10),
-        resource_subtype: "approval",
-        name: taskName,
-      },
-    });
-  }
+  // Create Approval Subtasks For Requested Reviewer
+  await asanaAxios.post(`${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}`, {
+    data: {
+      assignee: requestedReviewer?.asanaId,
+      approval_status: approvalStatus,
+      completed: false,
+      due_on: tomorrow.toISOString().substring(0, 10),
+      resource_subtype: "approval",
+      name: taskName,
+    },
+  });
 };
 
-function getApprovalTasksByOtto(asanaTasksIds: Array<String>, is_complete: boolean, assignee: any) {
-  throw new Error("Function not implemented.");
+export const getApprovalSubtask = async (
+  asanaTaskId: String,
+  is_complete: boolean,
+  assignee: any,
+  creator: any
+) => {
+  const url = `${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}`;
+  const subtasks = await asanaAxios.get(url);
+  const approvalSubtask = subtasks.data.data.find(
+    (subtask: any) =>
+      subtask.resource_subtype === "approval" &&
+      subtask.completed === is_complete &&
+      subtask.assignee.gid === assignee?.asanaId &&
+      subtask.created_by.gid === creator?.asanaId
+  );
+
+  return approvalSubtask;
 };
 
 run();
