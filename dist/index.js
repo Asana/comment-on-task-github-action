@@ -13266,7 +13266,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateProjectLists(allowedProjects, blockedProjects);
         console.log("context.payload", github.context.payload);
         // Store Constant Values
-        const is_ci_testing = (0,core.getInput)(IS_CI_TESTING);
         const ci_status = (0,core.getInput)(COMMENT_TEXT);
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
@@ -13296,6 +13295,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prApproved = eventName === "pull_request_review" &&
             action === "submitted" &&
             reviewState === "approved";
+        const prSynchronize = eventName === "pull_requestc" &&
+            action === "synchronize";
         // Store User That Triggered Job
         const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
             ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
@@ -13348,7 +13349,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             return linkArray[linkArray.length - 1];
         })) || [];
         // Check if Automated CI Testing
-        if (is_ci_testing) {
+        if (prSynchronize) {
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
                 // If Found Update It, Else Create It

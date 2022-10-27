@@ -21,9 +21,7 @@ export const run = async () => {
     console.log("context.payload", context.payload);
 
     // Store Constant Values
-    const is_ci_testing = getInput(INPUTS.IS_CI_TESTING);
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
-
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
@@ -64,6 +62,9 @@ export const run = async () => {
       eventName === "pull_request_review" &&
       action === "submitted" &&
       reviewState === "approved";
+    const prSynchronize =
+      eventName === "pull_requestc" &&
+      action === "synchronize"
 
     // Store User That Triggered Job
     const username =
@@ -137,7 +138,7 @@ export const run = async () => {
       }) || [];
 
     // Check if Automated CI Testing
-    if (is_ci_testing) {
+    if (prSynchronize) {
       for (const id of asanaTasksIds!) {
         const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
 
