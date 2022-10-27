@@ -13303,10 +13303,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
         const requestedReviewers = ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) || [];
-        console.log(requestedReviewers);
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
-            console.log('reviewer 1', reviewer);
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
             requestedReviewersObjs.push(reviewerObj);
         }
@@ -13372,9 +13370,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
-            console.log('all', requestedReviewersObjs);
-            console.log('qa', QA_requestedReviewersObjs);
-            console.log('dev', DEV_requestedReviewersObjs);
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
                 addApprovalTask(asanaTasksIds, reviewer);
             }
@@ -13421,7 +13416,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Retrieve All Reviews of PR
             const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
             const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
-            console.log("reviews", reviews);
             let is_approved_by_qa = true;
             let is_approved_by_dev = true;
             // Get All Users With Approved Review

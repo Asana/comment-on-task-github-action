@@ -77,12 +77,9 @@ export const run = async () => {
     // Store Requested Reviewers
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
-      console.log(requestedReviewers);
       
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
-      console.log('reviewer 1', reviewer);
-      
       const reviewerObj = users.find(
         (user) => user.githubName === reviewer.login
       );
@@ -165,11 +162,7 @@ export const run = async () => {
     }
 
     // Check if Review Requested OR PR Ready For Review
-    if (prReviewRequested || prReadyForReview) {
-      console.log('all',requestedReviewersObjs);
-      console.log('qa', QA_requestedReviewersObjs);
-      console.log('dev', DEV_requestedReviewersObjs);
-      
+    if (prReviewRequested || prReadyForReview) {      
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
         addApprovalTask(asanaTasksIds, reviewer);
       }
@@ -227,7 +220,6 @@ export const run = async () => {
       // Retrieve All Reviews of PR
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
       const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
-      console.log("reviews", reviews);
 
       let is_approved_by_qa = true;
       let is_approved_by_dev = true;
