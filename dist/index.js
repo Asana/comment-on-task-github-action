@@ -13308,6 +13308,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
             requestedReviewers.push(reviewerObj);
         }
+        let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "QA");
+        let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "DEV");
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
@@ -13368,7 +13370,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
-            for (const reviewer of requestedReviewersObjs) {
+            for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
                 addApprovalTask(asanaTasksIds, reviewer);
             }
         }
@@ -13413,9 +13415,36 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prApproved) {
             // Retrieve All Reviews of PR
             const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
-            const reviews = yield requests_githubAxios.get(githubUrl);
-            // Check If All Approved and Move Accordingly
-            moveToApprovedSection(asanaTasksIds, reviews.data, requestedReviewers);
+            const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
+            console.log("reviews", reviews);
+            let is_approved_by_qa = true;
+            let is_approved_by_dev = true;
+            // Get All Users With Approved Review
+            const usersApproved = [];
+            for (let i = 0; i < reviews.length; i++) {
+                const review = reviews[i];
+                if (review.state === "APPROVED") {
+                    usersApproved.push(review.user.login);
+                }
+            }
+            // Check if QA/DEV Reviewers Approved
+            requestedReviewersObjs.forEach((reviewer) => {
+                const username = reviewer.githubName;
+                const team = reviewer.team;
+                if (!usersApproved.includes(username)) {
+                    team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false;
+                }
+            });
+            // Check If Should Create QA Tasks
+            if (is_approved_by_dev && !is_approved_by_qa) {
+                QA_requestedReviewersObjs.forEach((reviewer) => {
+                    addApprovalTask(asanaTasksIds, reviewer);
+                });
+            }
+            // Check If Should Move To Approved
+            if (is_approved_by_dev && is_approved_by_qa) {
+                moveToApprovedSection(asanaTasksIds);
+            }
         }
         // Get Correct Dynamic Comment
         let commentText = "";
@@ -13521,23 +13550,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setFailed)("Unknown error");
     }
 });
-const moveToApprovedSection = (asanaTasksIds, reviews, requestedReviewers) => __awaiter(void 0, void 0, void 0, function* () {
-    // Get Users That Approved
-    const usersApproved = [];
-    for (let i = 0; i < reviews.length; i++) {
-        const review = reviews[i];
-        if (review.state === "APPROVED") {
-            usersApproved.push(review.user.login);
-        }
-    }
-    // Check if All Requested Reviewers Approved
-    for (let i = 0; i < requestedReviewers.length; i++) {
-        const username = requestedReviewers[i].login;
-        if (!usersApproved.includes(username)) {
-            return;
-        }
-    }
-    // Move Asana Task To Approved Section
+const moveToApprovedSection = (asanaTasksIds) => __awaiter(void 0, void 0, void 0, function* () {
     for (const task of asanaTasksIds) {
         const url = `${SECTIONS_URL}1202529262059895${ADD_TASK_URL}`;
         yield requests_asanaAxios.post(url, {
