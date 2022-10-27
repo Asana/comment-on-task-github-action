@@ -94,7 +94,7 @@ export const run = async () => {
     const followers = [userObj?.asanaId];
 
     // Add Requested Reviewers to Followers
-    for (const reviewer of requestedReviewersObjs) {
+    for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
       followers.push(reviewer?.asanaId);
     }
 
@@ -132,17 +132,6 @@ export const run = async () => {
         }
         return linkArray[linkArray.length - 1];
       }) || [];
-
-    // Call Asana Axios To Add Followers To the Tasks
-    for (const id of asanaTasksIds!) {
-      const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
-      const followersResult = await asanaAxios.post(url, {
-        data: {
-          followers,
-        },
-      });
-      followersStatus.push({ taskId: id, status: followersResult.status });
-    }
 
     // Check if PR has Merge Conflicts
     const prMergeConflicts =
@@ -245,6 +234,7 @@ export const run = async () => {
       // Check If Should Create QA Tasks
       if (is_approved_by_dev && !is_approved_by_qa) {
         QA_requestedReviewersObjs.forEach((reviewer: any) => {
+          followers.push(reviewer?.asanaId);
           addApprovalTask(asanaTasksIds, reviewer)
         });
       }
@@ -253,6 +243,17 @@ export const run = async () => {
       if (is_approved_by_dev && is_approved_by_qa) {
         moveToApprovedSection(asanaTasksIds);
       }
+    }
+    
+    // Call Asana Axios To Add Followers To the Tasks
+    for (const id of asanaTasksIds!) {
+      const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
+      const followersResult = await asanaAxios.post(url, {
+        data: {
+          followers,
+        },
+      });
+      followersStatus.push({ taskId: id, status: followersResult.status });
     }
 
     // Get Correct Dynamic Comment

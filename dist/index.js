@@ -13315,7 +13315,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
         // Add Requested Reviewers to Followers
-        for (const reviewer of requestedReviewersObjs) {
+        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
             followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
         }
         // Get Arrows and Replace Them
@@ -13344,16 +13344,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             return linkArray[linkArray.length - 1];
         })) || [];
-        // Call Asana Axios To Add Followers To the Tasks
-        for (const id of asanaTasksIds) {
-            const url = `${TASKS_URL}${id}${ADD_FOLLOWERS_URL}`;
-            const followersResult = yield requests_asanaAxios.post(url, {
-                data: {
-                    followers,
-                },
-            });
-            followersStatus.push({ taskId: id, status: followersResult.status });
-        }
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
             username === "otto-bot-git" &&
@@ -13438,6 +13428,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Check If Should Create QA Tasks
             if (is_approved_by_dev && !is_approved_by_qa) {
                 QA_requestedReviewersObjs.forEach((reviewer) => {
+                    followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
                     addApprovalTask(asanaTasksIds, reviewer);
                 });
             }
@@ -13445,6 +13436,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (is_approved_by_dev && is_approved_by_qa) {
                 moveToApprovedSection(asanaTasksIds);
             }
+        }
+        // Call Asana Axios To Add Followers To the Tasks
+        for (const id of asanaTasksIds) {
+            const url = `${TASKS_URL}${id}${ADD_FOLLOWERS_URL}`;
+            const followersResult = yield requests_asanaAxios.post(url, {
+                data: {
+                    followers,
+                },
+            });
+            followersStatus.push({ taskId: id, status: followersResult.status });
         }
         // Get Correct Dynamic Comment
         let commentText = "";
