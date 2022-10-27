@@ -13093,6 +13093,7 @@ const ASANA_PAT = "asana-pat";
 const GITHUB_TOKEN = "github-token";
 const ALLOWED_PROJECTS = "allowed-projects";
 const BLOCKED_PROJECTS = "blocked-projects";
+const IS_CI_TESTING = "is-ci-testing";
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __nccwpck_require__(6545);
