@@ -13303,6 +13303,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
         const requestedReviewers = ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) || [];
+        console.log(requestedReviewers);
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);

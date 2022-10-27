@@ -77,6 +77,8 @@ export const run = async () => {
     // Store Requested Reviewers
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
+      console.log(requestedReviewers);
+      
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
       const reviewerObj = users.find(
