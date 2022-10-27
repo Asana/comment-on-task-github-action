@@ -86,7 +86,7 @@ export const run = async () => {
       const reviewerObj = users.find(
         (user) => user.githubName === reviewer.login
       );
-      requestedReviewers.push(reviewerObj);
+      requestedReviewersObjs.push(reviewerObj);
     }
     
     let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA");

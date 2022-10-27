@@ -13308,7 +13308,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const reviewer of requestedReviewers) {
             console.log('reviewer 1', reviewer);
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-            requestedReviewers.push(reviewerObj);
+            requestedReviewersObjs.push(reviewerObj);
         }
         let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "QA");
         let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "DEV");
