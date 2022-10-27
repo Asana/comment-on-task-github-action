@@ -77,13 +77,15 @@ export const run = async () => {
     // Store Requested Reviewers
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
-    let requestedReviewersObjs:any = [];
+    let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
-        const reviewerObj = users.find(
-          (user) => user.githubName === reviewer.login
-        );
-        requestedReviewers.push(reviewerObj);
+      const reviewerObj = users.find(
+        (user) => user.githubName === reviewer.login
+      );
+      requestedReviewers.push(reviewerObj);
     }
+    let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA");
+    let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV");
 
     // Add User to Followers
     const followersStatus = [];
@@ -159,7 +161,7 @@ export const run = async () => {
 
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
-      for (const reviewer of requestedReviewersObjs) {
+      for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
         addApprovalTask(asanaTasksIds, reviewer);
       }
     }
@@ -215,17 +217,48 @@ export const run = async () => {
     if (prApproved) {
       // Retrieve All Reviews of PR
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
-      const reviews = await githubAxios.get(githubUrl);
+      const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
+      console.log("reviews", reviews);
 
-      // Check If All Approved and Move Accordingly
-      moveToApprovedSection(asanaTasksIds, reviews.data, requestedReviewers);
+      let is_approved_by_qa = true;
+      let is_approved_by_dev = true;
+
+      // Get All Users With Approved Review
+      const usersApproved: String[] = [];
+      for (let i = 0; i < reviews.length; i++) {
+        const review = reviews[i];
+        if (review.state === "APPROVED") {
+          usersApproved.push(review.user.login);
+        }
+      }
+
+      // Check if QA/DEV Reviewers Approved
+      requestedReviewersObjs.forEach((reviewer: any) => {
+        const username = reviewer.githubName;
+        const team = reviewer.team;
+        if (!usersApproved.includes(username)) {
+          team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false;
+        }
+      });
+
+      // Check If Should Create QA Tasks
+      if (is_approved_by_dev && !is_approved_by_qa) {
+        QA_requestedReviewersObjs.forEach((reviewer: any) => {
+          addApprovalTask(asanaTasksIds, reviewer)
+        });
+      }
+
+      // Check If Should Move To Approved
+      if (is_approved_by_dev && is_approved_by_qa) {
+        moveToApprovedSection(asanaTasksIds);
+      }
     }
 
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (eventName) {
-      case "issue_comment": {        
-        if (commentBody.charAt(0) === ">") {          
+      case "issue_comment": {
+        if (commentBody.charAt(0) === ">") {
           const lines = commentBody.split("\n");
           const commentBodyLines = lines.filter(function (
             line: string | string[]
@@ -281,7 +314,7 @@ export const run = async () => {
         const path = context.payload.comment?.path;
         const files = path.split("/");
         const fileName = files[files.length - 1];
-        
+
         commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
         if (context.payload.comment?.in_reply_to_id) {
           commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${context.payload.comment?.original_line}):\n\n${commentBody} </body>`;
@@ -334,28 +367,8 @@ export const run = async () => {
 };
 
 export const moveToApprovedSection = async (
-  asanaTasksIds: Array<String>,
-  reviews: Array<any>,
-  requestedReviewers: Array<any>
+  asanaTasksIds: Array<String>
 ) => {
-  // Get Users That Approved
-  const usersApproved = [];
-  for (let i = 0; i < reviews.length; i++) {
-    const review = reviews[i];
-    if (review.state === "APPROVED") {
-      usersApproved.push(review.user.login);
-    }
-  }
-
-  // Check if All Requested Reviewers Approved
-  for (let i = 0; i < requestedReviewers.length; i++) {
-    const username = requestedReviewers[i].login;
-    if (!usersApproved.includes(username)) {
-      return;
-    }
-  }
-
-  // Move Asana Task To Approved Section
   for (const task of asanaTasksIds!) {
     const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
     await asanaAxios.post(url, {
