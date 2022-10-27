@@ -13370,6 +13370,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
+            console.log('all', requestedReviewersObjs);
+            console.log('qa', QA_requestedReviewersObjs);
+            console.log('dev', DEV_requestedReviewersObjs);
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
                 addApprovalTask(asanaTasksIds, reviewer);
             }
