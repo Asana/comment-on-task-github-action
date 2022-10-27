@@ -13306,11 +13306,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(requestedReviewers);
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
-            console.log('reviewer', reviewer);
+            console.log('reviewer 1', reviewer);
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
             requestedReviewers.push(reviewerObj);
         }
-        console.log("HELLOOO");
         let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "QA");
         let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "DEV");
         // Add User to Followers

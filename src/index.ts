@@ -81,15 +81,13 @@ export const run = async () => {
       
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
-      console.log('reviewer', reviewer);
+      console.log('reviewer 1', reviewer);
       
       const reviewerObj = users.find(
         (user) => user.githubName === reviewer.login
       );
       requestedReviewers.push(reviewerObj);
     }
-
-    console.log("HELLOOO");
     
     let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA");
     let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV");
