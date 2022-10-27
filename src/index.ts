@@ -86,6 +86,9 @@ export const run = async () => {
       );
       requestedReviewers.push(reviewerObj);
     }
+
+    console.log("HELLOOO");
+    
     let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA");
     let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV");
 
