@@ -77,17 +77,21 @@ export const run = async () => {
     // Store Requested Reviewers
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
+    let requestedReviewersObjs:any = [];
+    for (const reviewer of requestedReviewers) {
+        const reviewerObj = users.find(
+          (user) => user.githubName === reviewer.login
+        );
+        requestedReviewers.push(reviewerObj);
+    }
 
     // Add User to Followers
     const followersStatus = [];
     const followers = [userObj?.asanaId];
 
     // Add Requested Reviewers to Followers
-    for (const reviewer of requestedReviewers) {
-      const reviewerObj = users.find(
-        (user) => user.githubName === reviewer.login
-      );
-      followers.push(reviewerObj?.asanaId);
+    for (const reviewer of requestedReviewersObjs) {
+      followers.push(reviewer?.asanaId);
     }
 
     // Get Arrows and Replace Them
@@ -155,11 +159,8 @@ export const run = async () => {
 
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
-      for (const reviewer of requestedReviewers) {
-        const reviewerObj = users.find(
-          (user) => user.githubName === reviewer.login
-        );
-        addApprovalTask(asanaTasksIds, reviewerObj);
+      for (const reviewer of requestedReviewersObjs) {
+        addApprovalTask(asanaTasksIds, reviewer);
       }
     }
 

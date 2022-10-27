@@ -13149,54 +13149,63 @@ const users = [
         asanaUrlId: "1992899177766",
         asanaName: "Nathan",
         githubName: "tylerdigital",
+        team: "DEV",
     },
     {
         asanaId: "11332651049773",
         asanaUrlId: "11332651049782",
         asanaName: "Natalie MacLees",
         githubName: "NatalieMac",
+        team: "DEV",
     },
     {
         asanaId: "1172261355139211",
         asanaUrlId: "1172261355686366",
         asanaName: "Natalie Garza",
         githubName: "gnarza",
+        team: "QA",
     },
     {
         asanaId: "1200161861602258",
         asanaUrlId: "1200161861631865",
         asanaName: "Cynthia Hug",
         githubName: "cynhu92",
+        team: "QA",
     },
     {
         asanaId: "1202256129588512",
         asanaUrlId: "1202258098000877",
         asanaName: "Mariam El Zaatari",
         githubName: "MariamElZaatari",
+        team: "DEV",
     },
     {
         asanaId: "1202393076412167",
         asanaUrlId: "1202395095687177",
         asanaName: "Amin Abdulkhalek",
         githubName: "aminabdulkhalek",
+        team: "DEV",
     },
     {
         asanaId: "1202852151625813",
         asanaUrlId: "1202852821241548",
         asanaName: "Hamze Ammar",
         githubName: "Hamze-Ammar",
+        team: "DEV",
     },
     {
         asanaId: "1202852209355924",
         asanaUrlId: "1202852825308828",
         asanaName: "Hsein Bitar",
         githubName: "hsein-bitar",
+        team: "DEV",
     },
     {
         asanaId: "1202470392325800",
         asanaUrlId: "1202470337039007",
         asanaName: "Otto Bot",
         githubName: "otto-bot-git",
+        team: "BOT",
     },
 ];
 
@@ -13294,13 +13303,17 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
         const requestedReviewers = ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) || [];
+        let requestedReviewersObjs = [];
+        for (const reviewer of requestedReviewers) {
+            const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+            requestedReviewers.push(reviewerObj);
+        }
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
         // Add Requested Reviewers to Followers
-        for (const reviewer of requestedReviewers) {
-            const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-            followers.push(reviewerObj === null || reviewerObj === void 0 ? void 0 : reviewerObj.asanaId);
+        for (const reviewer of requestedReviewersObjs) {
+            followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
         }
         // Get Arrows and Replace Them
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
@@ -13355,9 +13368,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
-            for (const reviewer of requestedReviewers) {
-                const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-                addApprovalTask(asanaTasksIds, reviewerObj);
+            for (const reviewer of requestedReviewersObjs) {
+                addApprovalTask(asanaTasksIds, reviewer);
             }
         }
         if (prReviewSubmitted) {
