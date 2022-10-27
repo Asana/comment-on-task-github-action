@@ -81,6 +81,8 @@ export const run = async () => {
       
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
+      console.log('reviewer', reviewer);
+      
       const reviewerObj = users.find(
         (user) => user.githubName === reviewer.login
       );

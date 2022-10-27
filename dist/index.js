@@ -13306,6 +13306,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(requestedReviewers);
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
+            console.log('reviewer', reviewer);
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
             requestedReviewers.push(reviewerObj);
         }
