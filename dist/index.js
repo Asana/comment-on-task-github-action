@@ -13265,6 +13265,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateProjectLists(allowedProjects, blockedProjects);
         console.log("context.payload", github.context.payload);
         // Store Constant Values
+        const is_ci_testing = (0,core.getInput)(IS_CI_TESTING);
+        const ci_status = (0,core.getInput)(COMMENT_TEXT);
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
         const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
@@ -13344,6 +13346,29 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             return linkArray[linkArray.length - 1];
         })) || [];
+        // Check if Automated CI Testing
+        if (is_ci_testing) {
+            for (const id of asanaTasksIds) {
+                // Get Approval Subtasks Assigned to/Created by Otto
+                const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+                const subtasks = yield requests_asanaAxios.get(url);
+                const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
+                    subtask.assignee.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
+                    subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
+                // If Found Update It, Else Create It
+                if (approvalSubtask) {
+                    yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
+                        data: {
+                            approval_status: ci_status === "success" ? "approved" : "rejected",
+                        },
+                    });
+                }
+                else {
+                    addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing");
+                }
+            }
+            return;
+        }
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
             username === "otto-bot-git" &&
@@ -13362,7 +13387,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-                addApprovalTask(asanaTasksIds, reviewer);
+                addApprovalTask(asanaTasksIds, reviewer, "Review");
             }
         }
         if (prReviewSubmitted) {
@@ -13429,7 +13454,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (is_approved_by_dev && !is_approved_by_qa) {
                 QA_requestedReviewersObjs.forEach((reviewer) => {
                     followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
-                    addApprovalTask(asanaTasksIds, reviewer);
+                    addApprovalTask(asanaTasksIds, reviewer, "Review");
                 });
             }
             // Check If Should Move To Approved
@@ -13561,7 +13586,7 @@ const moveToApprovedSection = (asanaTasksIds) => __awaiter(void 0, void 0, void 
         });
     }
 });
-const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, void 0, void 0, function* () {
+const addApprovalTask = (asanaTasksIds, requestedReviewer, taskName) => __awaiter(void 0, void 0, void 0, function* () {
     const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -13585,11 +13610,15 @@ const addApprovalTask = (asanaTasksIds, requestedReviewer) => __awaiter(void 0, 
                 completed: false,
                 due_on: tomorrow.toISOString().substring(0, 10),
                 resource_subtype: "approval",
-                name: "Review",
+                name: taskName,
             },
         });
     }
 });
+function getApprovalTasksByOtto(asanaTasksIds, is_complete, assignee) {
+    throw new Error("Function not implemented.");
+}
+;
 run();
 
 })();

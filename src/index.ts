@@ -1,4 +1,4 @@
-import { /*getInput,*/ setFailed, setOutput } from "@actions/core";
+import { getInput, setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
@@ -21,6 +21,9 @@ export const run = async () => {
     console.log("context.payload", context.payload);
 
     // Store Constant Values
+    const is_ci_testing = getInput(INPUTS.IS_CI_TESTING);
+    const ci_status = getInput(INPUTS.COMMENT_TEXT);
+
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
@@ -77,7 +80,7 @@ export const run = async () => {
     // Store Requested Reviewers
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
-      
+
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
       const reviewerObj = users.find(
@@ -85,7 +88,7 @@ export const run = async () => {
       );
       requestedReviewersObjs.push(reviewerObj);
     }
-    
+
     let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA");
     let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV");
 
@@ -133,6 +136,33 @@ export const run = async () => {
         return linkArray[linkArray.length - 1];
       }) || [];
 
+    // Check if Automated CI Testing
+    if (is_ci_testing) {
+      for (const id of asanaTasksIds!) {
+        // Get Approval Subtasks Assigned to/Created by Otto
+        const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`;
+        const subtasks = await asanaAxios.get(url);
+        const approvalSubtask = subtasks.data.data.find(
+          (subtask: any) =>
+            subtask.resource_subtype === "approval" &&
+            subtask.assignee.gid === ottoObj?.asanaId &&
+            subtask.created_by.gid === ottoObj?.asanaId
+        );
+
+        // If Found Update It, Else Create It
+        if (approvalSubtask) {
+          await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
+            data: {
+              approval_status: ci_status === "success" ? "approved" : "rejected",
+            },
+          });
+        } else {
+          addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing");
+        }
+      }
+      return;
+    }
+
     // Check if PR has Merge Conflicts
     const prMergeConflicts =
       eventName === "issue_comment" &&
@@ -151,9 +181,9 @@ export const run = async () => {
     }
 
     // Check if Review Requested OR PR Ready For Review
-    if (prReviewRequested || prReadyForReview) {      
+    if (prReviewRequested || prReadyForReview) {
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-        addApprovalTask(asanaTasksIds, reviewer);
+        addApprovalTask(asanaTasksIds, reviewer, "Review");
       }
     }
 
@@ -235,7 +265,7 @@ export const run = async () => {
       if (is_approved_by_dev && !is_approved_by_qa) {
         QA_requestedReviewersObjs.forEach((reviewer: any) => {
           followers.push(reviewer?.asanaId);
-          addApprovalTask(asanaTasksIds, reviewer)
+          addApprovalTask(asanaTasksIds, reviewer, "Review");
         });
       }
 
@@ -244,7 +274,7 @@ export const run = async () => {
         moveToApprovedSection(asanaTasksIds);
       }
     }
-    
+
     // Call Asana Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
@@ -383,7 +413,8 @@ export const moveToApprovedSection = async (
 
 export const addApprovalTask = async (
   asanaTasksIds: Array<String>,
-  requestedReviewer: any
+  requestedReviewer: any,
+  taskName: String
 ) => {
   const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
   const tomorrow = new Date();
@@ -414,9 +445,16 @@ export const addApprovalTask = async (
         completed: false,
         due_on: tomorrow.toISOString().substring(0, 10),
         resource_subtype: "approval",
-        name: "Review",
+        name: taskName,
       },
     });
   }
 };
+
+function getApprovalTasksByOtto(asanaTasksIds: Array<String>, is_complete: boolean, assignee: any) {
+  throw new Error("Function not implemented.");
+};
+
 run();
+
+
