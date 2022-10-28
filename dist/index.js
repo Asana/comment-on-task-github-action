@@ -13345,7 +13345,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     });
                     continue;
                 }
-                addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
+                addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status);
             }
             return;
         }

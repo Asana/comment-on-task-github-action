@@ -131,7 +131,7 @@ export const run = async () => {
           continue;
         }
 
-        addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
+        addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status);
       }
       return;
     }
