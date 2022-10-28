@@ -105,7 +105,7 @@ export const run = async () => {
     // Get Arrows and Replace Them
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
-    if (commentBody.includes(">") && eventName !== "issue_comment") {
+    if (commentBody.includes(">") || commentBody.includes("<") && eventName !== "issue_comment") {
       commentBody = commentBody.replace(/>/g, "&rarr");
       commentBody = commentBody.replace(/</g, "&larr");
     }
