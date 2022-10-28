@@ -109,6 +109,9 @@ export const run = async () => {
       commentBody = commentBody.replace(/>|</g, "");
     }
 
+    console.log("commentBody", commentBody);
+    
+
     // Get Mentioned Users In Comment
     const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
     for (const mention of mentions) {

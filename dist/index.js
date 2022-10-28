@@ -13327,6 +13327,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (commentBody.includes(">") && eventName !== "issue_comment") {
             commentBody = commentBody.replace(/>|</g, "");
         }
+        console.log("commentBody", commentBody);
         // Get Mentioned Users In Comment
         const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
         for (const mention of mentions) {
