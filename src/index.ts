@@ -122,11 +122,11 @@ export const run = async () => {
     src="https://user-images.githubusercontent.com/62925891/198328542-530a97e1-ff95-48fd-9c86-b30f19036705.png">*/
 
     const images = commentBody?.match(
-      /\bhttps?:\/\/\S+/gi
+      /\bhttps?:\/\/\S+\b(\.png)\b/gi
     );
+
     console.log(images);
     
-
     // if (commentBody.includes(">") || commentBody.includes("<")){
     //   if (isReply){
     //     const lines = commentBody.split("\n");
