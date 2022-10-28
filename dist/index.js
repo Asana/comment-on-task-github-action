@@ -13324,9 +13324,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Arrows and Replace Them
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
-        if ((commentBody.includes(">") || commentBody.includes("<")) && eventName !== "issue_comment") {
-            commentBody = commentBody.replace(/>/g, "&rarr");
-            commentBody = commentBody.replace(/</g, "&#x2190;");
+        const isReply = commentBody.charAt(0) === ">";
+        if (commentBody.includes(">") || commentBody.includes("<")) {
+            if (isReply) {
+                const lines = commentBody.split("\n");
+                commentBody = lines.filter(function (line) {
+                    return line.indexOf(">") !== 0;
+                });
+                commentBody.shift();
+                commentBody = commentBody.join("");
+            }
+            else {
+                commentBody = commentBody.replace(/>/g, "");
+                commentBody = commentBody.replace(/</g, "");
+            }
         }
         console.log("commentBody", commentBody);
         // Get Mentioned Users In Comment
@@ -13482,13 +13493,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentText = "";
         switch (eventName) {
             case "issue_comment": {
-                if (commentBody.charAt(0) === ">") {
-                    const lines = commentBody.split("\n");
-                    const commentBodyLines = lines.filter(function (line) {
-                        return line.indexOf(">") !== 0;
-                    });
-                    commentBodyLines.shift();
-                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join("")} </body>`;
+                if (isReply) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a>:\n\n${commentBody} </body>`;
                 }
                 else {
                     commentText =

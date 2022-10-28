@@ -105,9 +105,22 @@ export const run = async () => {
     // Get Arrows and Replace Them
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
-    if ((commentBody.includes(">") || commentBody.includes("<")) && eventName !== "issue_comment") {
-      commentBody = commentBody.replace(/>/g, "&rarr");
-      commentBody = commentBody.replace(/</g, "&#x2190;");
+    const isReply = commentBody.charAt(0) === ">";
+
+    if (commentBody.includes(">") || commentBody.includes("<")){
+      if (isReply){
+        const lines = commentBody.split("\n");
+        commentBody = lines.filter(function (
+          line: string | string[]
+        ) {
+          return line.indexOf(">") !== 0;
+        });
+        commentBody.shift();
+        commentBody = commentBody.join("")
+      } else {
+        commentBody = commentBody.replace(/>/g, "");
+        commentBody = commentBody.replace(/</g, "");
+      }
     }
 
     console.log("commentBody", commentBody);
@@ -297,17 +310,8 @@ export const run = async () => {
     let commentText = "";
     switch (eventName) {
       case "issue_comment": {
-        if (commentBody.charAt(0) === ">") {
-          const lines = commentBody.split("\n");
-          const commentBodyLines = lines.filter(function (
-            line: string | string[]
-          ) {
-            return line.indexOf(">") !== 0;
-          });
-          commentBodyLines.shift();
-          commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a>:\n\n${commentBodyLines.join(
-            ""
-          )} </body>`;
+        if (isReply) {
+          commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a>:\n\n${commentBody} </body>`;
         } else {
           commentText =
             username === "otto-bot-git"
