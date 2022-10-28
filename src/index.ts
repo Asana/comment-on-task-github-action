@@ -106,7 +106,7 @@ export const run = async () => {
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     if (commentBody.includes(">") && eventName !== "issue_comment") {
-      commentBody = commentBody.replace(/>/g, "");
+      commentBody = commentBody.replace(/>|</g, "");
     }
 
     // Get Mentioned Users In Comment
