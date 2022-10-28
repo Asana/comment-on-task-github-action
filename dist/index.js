@@ -13337,7 +13337,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         alt="image"
         src="https://user-images.githubusercontent.com/62925891/198328542-530a97e1-ff95-48fd-9c86-b30f19036705.png">*/
         const images = commentBody === null || commentBody === void 0 ? void 0 : commentBody.match(/\bhttps?:\/\/\S+\b(\.png)\b/gi);
-        commentBody = commentBody.replace(/<img[\w\W]+?>/g, images[0]);
+        commentBody = commentBody.replace(/<img[\w\W]+?>/g, `<a href="${images[0]}"> Image </a>`);
         console.log(images);
         // if (commentBody.includes(">") || commentBody.includes("<")){
         //   if (isReply){

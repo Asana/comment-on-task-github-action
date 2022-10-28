@@ -125,7 +125,7 @@ export const run = async () => {
       /\bhttps?:\/\/\S+\b(\.png)\b/gi
     );
 
-    commentBody = commentBody.replace(/<img[\w\W]+?>/g, images[0]);
+    commentBody = commentBody.replace(/<img[\w\W]+?>/g, `<a href="${images[0]}"> Image </a>`);
 
     console.log(images);
     
