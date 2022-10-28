@@ -13347,6 +13347,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const pattern = `img[\\w\\W]+?${linkRegex}"`;
                 commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
             }
+            else if (commentBody.includes(`(${link})`)) {
+                const linkRegex = link.replace(/\//gi, "\\/");
+                const pattern = `\\[\\S+]\\(${linkRegex}\\)`;
+                commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+            }
             else {
                 commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
             }

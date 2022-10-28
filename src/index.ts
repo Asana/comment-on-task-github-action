@@ -101,13 +101,13 @@ export const run = async () => {
     for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
       followers.push(reviewer?.asanaId);
     }
-  
+
     // Get Arrows and Replace Them   
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const isReply = commentBody.charAt(0) === ">";
-    if (commentBody.includes(">") || commentBody.includes("<")){
-      if (isReply){
+    if (commentBody.includes(">") || commentBody.includes("<")) {
+      if (isReply) {
         const lines = commentBody.split("\n");
         commentBody = lines.filter(function (
           line: string | string[]
@@ -127,15 +127,19 @@ export const run = async () => {
       /\bhttps?:\/\/\S+\w/gi
     ) || [];
 
-    links.forEach((link:any) => {
-      if(commentBody.includes(`src="${link}"`)){
+    links.forEach((link: any) => {
+      if (commentBody.includes(`src="${link}"`)) {
         const linkRegex = link.replace(/\//gi, "\\/");
         const pattern = `img[\\w\\W]+?${linkRegex}"`
-        commentBody = commentBody.replace(new RegExp(pattern,'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+        commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+      } else if (commentBody.includes(`(${link})`)) {
+        const linkRegex = link.replace(/\//gi, "\\/");
+        const pattern = `\\[\\S+]\\(${linkRegex}\\)`;
+        commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
       } else {
         commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
       }
-    });    
+    });
 
     // Get Mentioned Users In Comment
     const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
