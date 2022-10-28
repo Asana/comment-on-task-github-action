@@ -102,26 +102,42 @@ export const run = async () => {
       followers.push(reviewer?.asanaId);
     }
 
+    // Get Images and Attach Them 
+    
     // Get Arrows and Replace Them
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
     const isReply = commentBody.charAt(0) === ">";
 
-    if (commentBody.includes(">") || commentBody.includes("<")){
-      if (isReply){
-        const lines = commentBody.split("\n");
-        commentBody = lines.filter(function (
-          line: string | string[]
-        ) {
-          return line.indexOf(">") !== 0;
-        });
-        commentBody.shift();
-        commentBody = commentBody.join("")
-      } else {
-        commentBody = commentBody.replace(/>/g, "");
-        commentBody = commentBody.replace(/</g, "");
-      }
-    }
+    /* <img
+    data-gid=”12345”
+    src=”https://s3.amazonaws.com/assets/123/Screenshot.png”
+    alt=”\nhttps://s3.amazonaws.com/assets/123/Screenshot.png”
+    style=”display:block;max-width: 100%; margin-left: auto;
+    margin-right: auto;” >*/
+
+    /* <img 
+    width="883" 
+    alt="image"
+    style=”display:block;max-width: 100%; margin-left: auto;
+    margin-right: auto;”
+    src="https://user-images.githubusercontent.com/62925891/198328542-530a97e1-ff95-48fd-9c86-b30f19036705.png">*/
+    
+    // if (commentBody.includes(">") || commentBody.includes("<")){
+    //   if (isReply){
+    //     const lines = commentBody.split("\n");
+    //     commentBody = lines.filter(function (
+    //       line: string | string[]
+    //     ) {
+    //       return line.indexOf(">") !== 0;
+    //     });
+    //     commentBody.shift();
+    //     commentBody = commentBody.join("")
+    //   } else {
+    //     commentBody = commentBody.replace(/>/g, "");
+    //     commentBody = commentBody.replace(/</g, "");
+    //   }
+    // }
 
     console.log("commentBody", commentBody);
     
