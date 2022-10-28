@@ -124,7 +124,7 @@ export const run = async () => {
 
     // Get Images/Links and Attach Them 
     const links = commentBody.match(
-      /\bhttps?:\/\/\S+\w/gi
+      /\bhttps?:\/\/\S+[\w|\/]/gi
     ) || [];
 
     links.forEach((link: any) => {

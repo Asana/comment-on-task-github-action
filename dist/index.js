@@ -13340,7 +13340,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Get Images/Links and Attach Them 
-        const links = commentBody.match(/\bhttps?:\/\/\S+\w/gi) || [];
+        const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
         links.forEach((link) => {
             if (commentBody.includes(`src="${link}"`)) {
                 const linkRegex = link.replace(/\//gi, "\\/");
