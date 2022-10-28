@@ -13322,39 +13322,35 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
             followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
         }
-        // Get Images and Attach Them 
-        // Get Arrows and Replace Them
+        // Get Arrows and Replace Them   
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
         const isReply = commentBody.charAt(0) === ">";
-        /* <img
-        data-gid=”12345”
-        src=”https://s3.amazonaws.com/assets/123/Screenshot.png”
-        alt=”\nhttps://s3.amazonaws.com/assets/123/Screenshot.png”
-        style=”display:block;max-width: 100%; margin-left: auto;
-        margin-right: auto;” >*/
-        /* <img
-        width="883"
-        alt="image"
-        src="https://user-images.githubusercontent.com/62925891/198328542-530a97e1-ff95-48fd-9c86-b30f19036705.png">*/
-        const images = commentBody === null || commentBody === void 0 ? void 0 : commentBody.match(/\bhttps?:\/\/\S+\b(\.png)\b/gi);
-        commentBody = commentBody.replace(/<img[\w\W]+?>/g, `<a href="${images[0]}"> Image </a>`);
-        console.log(images);
-        // if (commentBody.includes(">") || commentBody.includes("<")){
-        //   if (isReply){
-        //     const lines = commentBody.split("\n");
-        //     commentBody = lines.filter(function (
-        //       line: string | string[]
-        //     ) {
-        //       return line.indexOf(">") !== 0;
-        //     });
-        //     commentBody.shift();
-        //     commentBody = commentBody.join("")
-        //   } else {
-        //     commentBody = commentBody.replace(/>/g, "");
-        //     commentBody = commentBody.replace(/</g, "");
-        //   }
-        // }
-        console.log("commentBody", commentBody);
+        if (commentBody.includes(">") || commentBody.includes("<")) {
+            if (isReply) {
+                const lines = commentBody.split("\n");
+                commentBody = lines.filter(function (line) {
+                    return line.indexOf(">") !== 0;
+                });
+                commentBody.shift();
+                commentBody = commentBody.join("");
+            }
+            else {
+                commentBody = commentBody.replace(/>/g, "");
+                commentBody = commentBody.replace(/</g, "");
+            }
+        }
+        // Get Images/Links and Attach Them 
+        const links = commentBody.match(/\bhttps?:\/\/\S+\w/gi);
+        links.forEach((link) => {
+            if (commentBody.includes(`src="${link}"`)) {
+                const linkRegex = link.replace(/\//gi, "\\/");
+                const pattern = `img[\\w\\W]+?${linkRegex}"`;
+                commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+            }
+            else {
+                commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+            }
+        });
         // Get Mentioned Users In Comment
         const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
         for (const mention of mentions) {
