@@ -13376,7 +13376,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             else if (commentBody.includes(`(${link})`)) {
                 const linkRegex = link.replace(/\//gi, "\\/");
-                const pattern = `\\[\\S+]\\(${linkRegex}\\)`;
+                const pattern = `\\[(\\w|\\W)+]\\(${linkRegex}\\)`;
                 commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
             }
             else {

@@ -135,7 +135,7 @@ export const run = async () => {
       }
       return;
     }
-    
+
     // Get Arrows and Replace Them   
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
@@ -168,7 +168,7 @@ export const run = async () => {
         commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
       } else if (commentBody.includes(`(${link})`)) {
         const linkRegex = link.replace(/\//gi, "\\/");
-        const pattern = `\\[\\S+]\\(${linkRegex}\\)`;
+        const pattern = `\\[(\\w|\\W)+]\\(${linkRegex}\\)`;
         commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
       } else {
         commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
