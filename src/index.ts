@@ -63,7 +63,7 @@ export const run = async () => {
       action === "submitted" &&
       reviewState === "approved";
     const prSynchronize =
-      eventName === "pull_requestc" &&
+      eventName === "pull_request" &&
       action === "synchronize"
 
     // Store User That Triggered Job

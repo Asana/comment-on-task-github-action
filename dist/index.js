@@ -13295,7 +13295,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prApproved = eventName === "pull_request_review" &&
             action === "submitted" &&
             reviewState === "approved";
-        const prSynchronize = eventName === "pull_requestc" &&
+        const prSynchronize = eventName === "pull_request" &&
             action === "synchronize";
         // Store User That Triggered Job
         const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
