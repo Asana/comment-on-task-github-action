@@ -125,6 +125,8 @@ export const run = async () => {
       /\bhttps?:\/\/\S+\b(\.png)\b/gi
     );
 
+    commentBody = commentBody.replace(/<img\S+>/g, images[0]);
+
     console.log(images);
     
     // if (commentBody.includes(">") || commentBody.includes("<")){
