@@ -107,7 +107,7 @@ export const run = async () => {
       context.payload.comment?.body || context.payload.review?.body || "";
     if ((commentBody.includes(">") || commentBody.includes("<")) && eventName !== "issue_comment") {
       commentBody = commentBody.replace(/>/g, "&rarr");
-      commentBody = commentBody.replace(/</g, "&#8592");
+      commentBody = commentBody.replace(/</g, "&#x2190;");
     }
 
     console.log("commentBody", commentBody);

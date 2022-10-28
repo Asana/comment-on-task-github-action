@@ -13326,7 +13326,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
         if ((commentBody.includes(">") || commentBody.includes("<")) && eventName !== "issue_comment") {
             commentBody = commentBody.replace(/>/g, "&rarr");
-            commentBody = commentBody.replace(/</g, "&#8592");
+            commentBody = commentBody.replace(/</g, "&#x2190;");
         }
         console.log("commentBody", commentBody);
         // Get Mentioned Users In Comment
