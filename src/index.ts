@@ -171,6 +171,8 @@ export const run = async () => {
 
     // Check if Automated CI Testing
     if (prSynchronize) {
+      console.log("ENTERED");
+      
       for (const id of asanaTasksIds!) {
         const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
 

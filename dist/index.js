@@ -13379,6 +13379,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         })) || [];
         // Check if Automated CI Testing
         if (prSynchronize) {
+            console.log("ENTERED");
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
                 // If Found Update It, Else Create It
