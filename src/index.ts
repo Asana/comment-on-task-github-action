@@ -90,8 +90,8 @@ export const run = async () => {
       requestedReviewersObjs.push(reviewerObj);
     }
 
-    let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA");
-    let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV");
+    let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA") || [];
+    let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV") || [];
 
     // Add User to Followers
     const followersStatus = [];
@@ -125,7 +125,7 @@ export const run = async () => {
     // Get Images/Links and Attach Them 
     const links = commentBody.match(
       /\bhttps?:\/\/\S+\w/gi
-    );
+    ) || [];
 
     links.forEach((link:any) => {
       if(commentBody.includes(`src="${link}"`)){

@@ -13313,8 +13313,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
             requestedReviewersObjs.push(reviewerObj);
         }
-        let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "QA");
-        let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "DEV");
+        let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "QA") || [];
+        let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "DEV") || [];
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
@@ -13340,7 +13340,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Get Images/Links and Attach Them 
-        const links = commentBody.match(/\bhttps?:\/\/\S+\w/gi);
+        const links = commentBody.match(/\bhttps?:\/\/\S+\w/gi) || [];
         links.forEach((link) => {
             if (commentBody.includes(`src="${link}"`)) {
                 const linkRegex = link.replace(/\//gi, "\\/");
