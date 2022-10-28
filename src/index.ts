@@ -102,6 +102,40 @@ export const run = async () => {
       followers.push(reviewer?.asanaId);
     }
 
+    // Get Task IDs From PR Description
+    const asanaTasksLinks = pullRequestDescription?.match(
+      /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
+    );
+    const asanaTasksIds =
+      asanaTasksLinks?.map((link) => {
+        const linkArray = link.split("/");
+        if (isNaN(Number(linkArray[linkArray.length - 1]))) {
+          // Check If Link is Attached From Github or Asana
+          return linkArray[linkArray.length - 2];
+        }
+        return linkArray[linkArray.length - 1];
+      }) || [];
+
+    // Check if Automated CI Testing
+    if (prSynchronize) {
+      for (const id of asanaTasksIds!) {
+        const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
+
+        // If Found Update It, Else Create It
+        if (approvalSubtask) {
+          await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
+            data: {
+              approval_status: ci_status,
+            },
+          });
+          continue;
+        }
+
+        addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
+      }
+      return;
+    }
+    
     // Get Arrows and Replace Them   
     let commentBody =
       context.payload.comment?.body || context.payload.review?.body || "";
@@ -153,42 +187,6 @@ export const run = async () => {
       const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaUrlId!);
       const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj?.asanaName}</a>`;
       commentBody = commentBody.replace(mention, mentionHTML);
-    }
-
-    // Get Task IDs From PR Description
-    const asanaTasksLinks = pullRequestDescription?.match(
-      /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
-    );
-    const asanaTasksIds =
-      asanaTasksLinks?.map((link) => {
-        const linkArray = link.split("/");
-        if (isNaN(Number(linkArray[linkArray.length - 1]))) {
-          // Check If Link is Attached From Github or Asana
-          return linkArray[linkArray.length - 2];
-        }
-        return linkArray[linkArray.length - 1];
-      }) || [];
-
-    // Check if Automated CI Testing
-    if (prSynchronize) {
-      console.log("ENTERED");
-      
-      for (const id of asanaTasksIds!) {
-        const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
-
-        // If Found Update It, Else Create It
-        if (approvalSubtask) {
-          await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
-            data: {
-              approval_status: ci_status,
-            },
-          });
-          continue;
-        }
-
-        addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
-      }
-      return;
     }
 
     // Check if PR has Merge Conflicts

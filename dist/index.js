@@ -13322,6 +13322,33 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
             followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
         }
+        // Get Task IDs From PR Description
+        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
+        const asanaTasksIds = (asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
+            const linkArray = link.split("/");
+            if (isNaN(Number(linkArray[linkArray.length - 1]))) {
+                // Check If Link is Attached From Github or Asana
+                return linkArray[linkArray.length - 2];
+            }
+            return linkArray[linkArray.length - 1];
+        })) || [];
+        // Check if Automated CI Testing
+        if (prSynchronize) {
+            for (const id of asanaTasksIds) {
+                const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
+                // If Found Update It, Else Create It
+                if (approvalSubtask) {
+                    yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
+                        data: {
+                            approval_status: ci_status,
+                        },
+                    });
+                    continue;
+                }
+                addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
+            }
+            return;
+        }
         // Get Arrows and Replace Them   
         let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
         const isReply = commentBody.charAt(0) === ">";
@@ -13366,34 +13393,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaName}</a>`;
             commentBody = commentBody.replace(mention, mentionHTML);
-        }
-        // Get Task IDs From PR Description
-        const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
-        const asanaTasksIds = (asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
-            const linkArray = link.split("/");
-            if (isNaN(Number(linkArray[linkArray.length - 1]))) {
-                // Check If Link is Attached From Github or Asana
-                return linkArray[linkArray.length - 2];
-            }
-            return linkArray[linkArray.length - 1];
-        })) || [];
-        // Check if Automated CI Testing
-        if (prSynchronize) {
-            console.log("ENTERED");
-            for (const id of asanaTasksIds) {
-                const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
-                // If Found Update It, Else Create It
-                if (approvalSubtask) {
-                    yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
-                        data: {
-                            approval_status: ci_status,
-                        },
-                    });
-                    continue;
-                }
-                addApprovalTask(asanaTasksIds, ottoObj, "Automate CI Testing", ci_status);
-            }
-            return;
         }
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
