@@ -13328,12 +13328,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const isReply = commentBody.charAt(0) === ">";
         /* <img
         data-gid=”12345”
-    
-     >*/
+        src=”https://s3.amazonaws.com/assets/123/Screenshot.png”
+        alt=”\nhttps://s3.amazonaws.com/assets/123/Screenshot.png”
+        style=”display:block;max-width: 100%; margin-left: auto;
+        margin-right: auto;” >*/
         /* <img
+        width="883"
+        alt="image"
         src="https://user-images.githubusercontent.com/62925891/198328542-530a97e1-ff95-48fd-9c86-b30f19036705.png">*/
-        commentBody = commentBody.replace('width="883"', 'style=”display:block;max-width: 100%; margin-left: auto;margin-right: auto;”');
-        // commentBody = commentBody.replace('img', 'img data-gid="123"');
+        const images = commentBody === null || commentBody === void 0 ? void 0 : commentBody.match(/\bhttps?:\/\/\S+/gi);
+        console.log(images);
         // if (commentBody.includes(">") || commentBody.includes("<")){
         //   if (isReply){
         //     const lines = commentBody.split("\n");
