@@ -20,7 +20,7 @@
     "node": true,
     "es6": true,
     "jest/globals": true
-  }
+  },
   "@typescript-eslint/naming-convention": [
     "error",
     {
@@ -31,5 +31,5 @@
         "selector": "typeProperty",
         "format": null
     }
-]
+  ]
 }
