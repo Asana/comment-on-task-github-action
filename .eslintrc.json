@@ -21,4 +21,15 @@
     "es6": true,
     "jest/globals": true
   }
+  "@typescript-eslint/naming-convention": [
+    "error",
+    {
+        "selector": "default",
+        "format": ["camelCase"]
+    },
+    {
+        "selector": "typeProperty",
+        "format": null
+    }
+]
 }
