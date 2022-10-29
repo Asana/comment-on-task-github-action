@@ -14,7 +14,7 @@
     "i18n-text/no-en": "off",
     "filenames/match-regex": "off",
     "sort-imports": "off",
-    "camelcase": [1, {"properties": "never"}]
+    "camelcase": ["error", {"allow": ["aa_bb"]}]
   },
   "env": {
     "node": true,
