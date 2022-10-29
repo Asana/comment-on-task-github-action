@@ -14,22 +14,11 @@
     "i18n-text/no-en": "off",
     "filenames/match-regex": "off",
     "sort-imports": "off",
-    "camelcase": ["error", {"allow": ["aa_bb"]}]
+    "camelcase": [["error", {"allow": ["aa_bb"]}], [1, {"properties": "never"}]]
   },
   "env": {
     "node": true,
     "es6": true,
     "jest/globals": true
-  },
-  "@typescript-eslint/naming-convention": [
-    "error",
-    {
-        "selector": "default",
-        "format": ["camelCase"]
-    },
-    {
-        "selector": "typeProperty",
-        "format": null
-    }
-  ]
+  }
 }
