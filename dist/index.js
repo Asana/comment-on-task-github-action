@@ -13046,6 +13046,9 @@ __nccwpck_require__.r(__webpack_exports__);
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
   "addApprovalTask": () => (/* binding */ addApprovalTask),
+  "addRequestedReview": () => (/* binding */ addRequestedReview),
+  "deleteApprovalTasks": () => (/* binding */ deleteApprovalTasks),
+  "getAllApprovalSubtasks": () => (/* binding */ getAllApprovalSubtasks),
   "getApprovalSubtask": () => (/* binding */ getApprovalSubtask),
   "moveToApprovedSection": () => (/* binding */ moveToApprovedSection),
   "run": () => (/* binding */ run)
@@ -13297,6 +13300,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             reviewState === "approved";
         const prSynchronize = eventName === "pull_request" &&
             action === "synchronize";
+        const prPush = eventName === "push";
         // Store User That Triggered Job
         const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
             ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
@@ -13333,17 +13337,32 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             return linkArray[linkArray.length - 1];
         })) || [];
         // Check if Automated CI Testing
-        if (prSynchronize) {
+        if (prSynchronize || prPush) {
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
-                // If Found Update It, Else Create It
+                // Check If Subtask Found
                 if (approvalSubtask) {
+                    // Check If Subtask rejected -> approved
+                    if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
+                        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+                            addRequestedReview(asanaTasksIds, reviewer, ottoObj);
+                        }
+                    }
+                    // Check if Subtask approved -> rejected
+                    if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
+                        const approvalSubtasks = yield getAllApprovalSubtasks(asanaTasksIds, ottoObj);
+                        deleteApprovalTasks(approvalSubtasks);
+                    }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
                             approval_status: ci_status,
                         },
                     });
                     continue;
+                }
+                if (ci_status === "rejected") {
+                    const approvalSubtasks = yield getAllApprovalSubtasks(asanaTasksIds, ottoObj);
+                    deleteApprovalTasks(approvalSubtasks);
                 }
                 addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status);
             }
@@ -13412,14 +13431,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-                for (const id of asanaTasksIds) {
-                    const approvalSubtask = yield getApprovalSubtask(id, false, reviewer, ottoObj);
-                    // If Request Reviewer already has incomplete subtask
-                    if (approvalSubtask) {
-                        continue;
-                    }
-                    addApprovalTask(asanaTasksIds, reviewer, "Review", "pending");
-                }
+                addRequestedReview(asanaTasksIds, reviewer, ottoObj);
             }
         }
         if (prReviewSubmitted) {
@@ -13436,21 +13448,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Check If PR Closed/Merged OR Changes Requested
-        let approvalSubtasks = [];
         if (prClosedMerged || prReviewChangesRequested) {
             setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
-                // Get Approval Subtasks
-                for (const id of asanaTasksIds) {
-                    const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
-                    const subtasks = yield requests_asanaAxios.get(url);
-                    approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
-                        !subtask.completed &&
-                        subtask.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId));
-                }
-                // Delete Incomplete Approval Taks
-                for (const subtask of approvalSubtasks) {
-                    yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
-                }
+                const approvalSubtasks = yield getAllApprovalSubtasks(asanaTasksIds, ottoObj);
+                deleteApprovalTasks(approvalSubtasks);
             }), 60000);
         }
         // Check if PR Review Approved
@@ -13603,6 +13604,33 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         else
             (0,core.setFailed)("Unknown error");
     }
+});
+const addRequestedReview = (asanaTasksIds, reviewer, creator) => __awaiter(void 0, void 0, void 0, function* () {
+    for (const id of asanaTasksIds) {
+        const approvalSubtask = yield getApprovalSubtask(id, false, reviewer, creator);
+        // If Request Reviewer already has incomplete subtask
+        if (approvalSubtask) {
+            continue;
+        }
+        addApprovalTask(asanaTasksIds, reviewer, "Review", "pending");
+    }
+});
+const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void 0, function* () {
+    // Delete Approval Tasks
+    for (const subtask of approvalSubtasks) {
+        yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
+    }
+});
+const getAllApprovalSubtasks = (asanaTasksIds, creator) => __awaiter(void 0, void 0, void 0, function* () {
+    let approvalSubtasks = [];
+    for (const id of asanaTasksIds) {
+        const url = `${TASKS_URL}${id}${SUBTASKS_URL}`;
+        const subtasks = yield requests_asanaAxios.get(url);
+        approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
+            !subtask.completed &&
+            subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId));
+    }
+    return approvalSubtasks;
 });
 const moveToApprovedSection = (asanaTasksIds) => __awaiter(void 0, void 0, void 0, function* () {
     for (const task of asanaTasksIds) {
