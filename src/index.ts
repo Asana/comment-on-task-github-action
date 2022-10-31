@@ -229,6 +229,8 @@ export const run = async () => {
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+        console.log("reviewers", DEV_requestedReviewersObjs);
+        
         addRequestedReview(asanaTasksIds, reviewer, ottoObj);
       }
     }
