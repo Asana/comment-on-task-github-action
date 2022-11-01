@@ -13397,7 +13397,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             else if (commentBody.includes(`(${link})`)) {
                 const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
-                var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Attachment 🔗 `;
+                var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
             else {
