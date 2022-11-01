@@ -190,8 +190,8 @@ export const run = async () => {
         commentBody = commentBody.replace(imageRegex, `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
       } else if (commentBody.includes(`(${link})`)) {
         const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
-        var match = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Attachment 🔗 `;
-        commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${match[1]} 🔗 </a>`);
+        var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Attachment 🔗 `;
+        commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
       } else {
         commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
       }
