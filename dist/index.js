@@ -13388,19 +13388,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
         links.forEach((link) => {
+            const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
+            const capitalLinkSite = linkSite.charAt(0).toUpperCase() + linkSite.slice(1);
             if (commentBody.includes(`src="${link}"`)) {
-                const linkRegex = link.replace(/\//gi, "\\/");
-                const pattern = `img[\\w\\W]+?${linkRegex}"`;
-                commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
+                const imageRegex = new RegExp(`img[\\w\\W]+?${linkRegex}"`, 'gi');
+                commentBody = commentBody.replace(imageRegex, `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
             }
             else if (commentBody.includes(`(${link})`)) {
-                const linkRegex = link.replace(/\//gi, "\\/");
-                const pattern = `\\[(\\w|\\W)+]\\(${linkRegex}\\)`;
-                commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 ${linkSite} Attachment 🔗 </a>`);
+                const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
+                var match = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Attachment 🔗 `;
+                commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${match[1]} 🔗 </a>`);
             }
             else {
-                commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${linkSite} Attachment 🔗 </a>`);
+                commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
             }
         });
         // Get Mentioned Users In Comment
