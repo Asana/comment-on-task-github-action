@@ -182,16 +182,17 @@ export const run = async () => {
     ) || [];
 
     links.forEach((link: any) => {
+      const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
       if (commentBody.includes(`src="${link}"`)) {
         const linkRegex = link.replace(/\//gi, "\\/");
         const pattern = `img[\\w\\W]+?${linkRegex}"`
-        commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+        commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
       } else if (commentBody.includes(`(${link})`)) {
         const linkRegex = link.replace(/\//gi, "\\/");
         const pattern = `\\[(\\w|\\W)+]\\(${linkRegex}\\)`;
-        commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+        commentBody = commentBody.replace(new RegExp(pattern, 'gi'), `<a href="${link}"> 🔗 ${linkSite} Attachment 🔗 </a>`);
       } else {
-        commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 Attachment 🔗 </a>`);
+        commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${linkSite} Attachment 🔗 </a>`);
       }
     });
 
@@ -228,9 +229,7 @@ export const run = async () => {
 
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
-      for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-        console.log("reviewers", DEV_requestedReviewersObjs);
-        
+      for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {        
         addRequestedReview(asanaTasksIds, reviewer, ottoObj);
       }
     }
