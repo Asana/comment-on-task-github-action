@@ -139,6 +139,7 @@ export const run = async () => {
           if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
             const approvalSubtasks = await getAllApprovalSubtasks(asanaTasksIds, ottoObj);
             deleteApprovalTasks(approvalSubtasks);
+            moveTasksToSection(asanaTasksIds, '351348922863102');
           }
 
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
@@ -153,6 +154,7 @@ export const run = async () => {
         if (ci_status === "rejected") {
           const approvalSubtasks = await getAllApprovalSubtasks(asanaTasksIds, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
+          moveTasksToSection(asanaTasksIds, '351348922863102');
         }
         addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status, html_action_url);
       }
@@ -219,16 +221,10 @@ export const run = async () => {
       eventName === "issue_comment" &&
       username === "otto-bot-git" &&
       !commentBody.includes("Conflicts have been resolved");
+
     if (prMergeConflicts) {
       // Move Asana Task To Next Section
-      for (const task of asanaTasksIds!) {
-        const url = `${REQUESTS.SECTIONS_URL}351348922863102${REQUESTS.ADD_TASK_URL}`;
-        await asanaAxios.post(url, {
-          data: {
-            task,
-          },
-        });
-      }
+      moveTasksToSection(asanaTasksIds, '351348922863102');
     }
 
     // Check if Review Requested OR PR Ready For Review
@@ -307,7 +303,7 @@ export const run = async () => {
 
       // Check If Should Move To Approved
       if (is_approved_by_dev && is_approved_by_qa) {
-        moveToApprovedSection(asanaTasksIds);
+        moveTasksToSection(asanaTasksIds, '1202529262059895');
       }
     }
 
@@ -470,11 +466,12 @@ export const getAllApprovalSubtasks = async (
   return approvalSubtasks;
 }
 
-export const moveToApprovedSection = async (
-  asanaTasksIds: Array<String>
+export const moveTasksToSection = async (
+  asanaTasksIds: Array<String>,
+  section: String
 ) => {
   for (const task of asanaTasksIds!) {
-    const url = `${REQUESTS.SECTIONS_URL}1202529262059895${REQUESTS.ADD_TASK_URL}`;
+    const url = `${REQUESTS.SECTIONS_URL}${section}${REQUESTS.ADD_TASK_URL}`;
     await asanaAxios.post(url, {
       data: {
         task,

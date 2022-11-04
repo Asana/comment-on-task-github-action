@@ -13050,7 +13050,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   "deleteApprovalTasks": () => (/* binding */ deleteApprovalTasks),
   "getAllApprovalSubtasks": () => (/* binding */ getAllApprovalSubtasks),
   "getApprovalSubtask": () => (/* binding */ getApprovalSubtask),
-  "moveToApprovedSection": () => (/* binding */ moveToApprovedSection),
+  "moveTasksToSection": () => (/* binding */ moveTasksToSection),
   "run": () => (/* binding */ run)
 });
 
@@ -13354,6 +13354,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
                         const approvalSubtasks = yield getAllApprovalSubtasks(asanaTasksIds, ottoObj);
                         deleteApprovalTasks(approvalSubtasks);
+                        moveTasksToSection(asanaTasksIds, '351348922863102');
                     }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
@@ -13366,6 +13367,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (ci_status === "rejected") {
                     const approvalSubtasks = yield getAllApprovalSubtasks(asanaTasksIds, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
+                    moveTasksToSection(asanaTasksIds, '351348922863102');
                 }
                 addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status, html_action_url);
             }
@@ -13424,14 +13426,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             !commentBody.includes("Conflicts have been resolved");
         if (prMergeConflicts) {
             // Move Asana Task To Next Section
-            for (const task of asanaTasksIds) {
-                const url = `${SECTIONS_URL}351348922863102${ADD_TASK_URL}`;
-                yield requests_asanaAxios.post(url, {
-                    data: {
-                        task,
-                    },
-                });
-            }
+            moveTasksToSection(asanaTasksIds, '351348922863102');
         }
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
@@ -13498,7 +13493,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             // Check If Should Move To Approved
             if (is_approved_by_dev && is_approved_by_qa) {
-                moveToApprovedSection(asanaTasksIds);
+                moveTasksToSection(asanaTasksIds, '1202529262059895');
             }
         }
         // Call Asana Axios To Add Followers To the Tasks
@@ -13637,9 +13632,9 @@ const getAllApprovalSubtasks = (asanaTasksIds, creator) => __awaiter(void 0, voi
     }
     return approvalSubtasks;
 });
-const moveToApprovedSection = (asanaTasksIds) => __awaiter(void 0, void 0, void 0, function* () {
+const moveTasksToSection = (asanaTasksIds, section) => __awaiter(void 0, void 0, void 0, function* () {
     for (const task of asanaTasksIds) {
-        const url = `${SECTIONS_URL}1202529262059895${ADD_TASK_URL}`;
+        const url = `${SECTIONS_URL}${section}${ADD_TASK_URL}`;
         yield requests_asanaAxios.post(url, {
             data: {
                 task,
