@@ -139,7 +139,7 @@ export const run = async () => {
           if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
             const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
             deleteApprovalTasks(approvalSubtasks);
-            moveTasksToSection(id, '351348922863102');
+            moveTasksToSection(id, '351348922863102', '351348922863103');
           }
 
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
@@ -154,7 +154,7 @@ export const run = async () => {
         if (ci_status === "rejected") {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
-          moveTasksToSection(id, '351348922863102');
+          moveTasksToSection(id, '351348922863102', '351348922863103');
         }
         addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
       }
@@ -225,7 +225,7 @@ export const run = async () => {
     if (prMergeConflicts) {
       // Move Asana Task To Next Section
       for (const id of asanaTasksIds!) {
-        moveTasksToSection(id, '351348922863102');
+        moveTasksToSection(id, '351348922863102', '351348922863103');
       }
     }
 
@@ -464,14 +464,23 @@ export const getAllApprovalSubtasks = async (
 
 export const moveTasksToSection = async (
   id: String,
-  section: String
+  moveSection: String,
+  donotMoveSection?: String
 ) => {
-  const url = `${REQUESTS.SECTIONS_URL}${section}${REQUESTS.ADD_TASK_URL}`;
-  await asanaAxios.post(url, {
-    data: {
-      task: id,
-    },
-  });
+  const taskUrl = `${REQUESTS.TASKS_URL}${id}`;
+  const task = await asanaAxios.get(taskUrl).then((response) => response.data.data);
+
+  for (const membership of task.memberships) {
+    if(donotMoveSection && membership.section.gid === donotMoveSection){
+      continue;
+    }
+    const url = `${REQUESTS.SECTIONS_URL}${moveSection}${REQUESTS.ADD_TASK_URL}`;
+    await asanaAxios.post(url, {
+      data: {
+        task: id,
+      },
+    });
+  }
 };
 
 export const addApprovalTask = async (

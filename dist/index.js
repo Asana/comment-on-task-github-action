@@ -13354,7 +13354,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
                         const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                         deleteApprovalTasks(approvalSubtasks);
-                        moveTasksToSection(id, '351348922863102');
+                        moveTasksToSection(id, '351348922863102', '351348922863103');
                     }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
@@ -13367,7 +13367,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (ci_status === "rejected") {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
-                    moveTasksToSection(id, '351348922863102');
+                    moveTasksToSection(id, '351348922863102', '351348922863103');
                 }
                 addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
             }
@@ -13427,7 +13427,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prMergeConflicts) {
             // Move Asana Task To Next Section
             for (const id of asanaTasksIds) {
-                moveTasksToSection(id, '351348922863102');
+                moveTasksToSection(id, '351348922863102', '351348922863103');
             }
         }
         // Check if Review Requested OR PR Ready For Review
@@ -13631,13 +13631,20 @@ const getAllApprovalSubtasks = (id, creator) => __awaiter(void 0, void 0, void 0
         subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId));
     return approvalSubtasks;
 });
-const moveTasksToSection = (id, section) => __awaiter(void 0, void 0, void 0, function* () {
-    const url = `${SECTIONS_URL}${section}${ADD_TASK_URL}`;
-    yield requests_asanaAxios.post(url, {
-        data: {
-            task: id,
-        },
-    });
+const moveTasksToSection = (id, moveSection, donotMoveSection) => __awaiter(void 0, void 0, void 0, function* () {
+    const taskUrl = `${TASKS_URL}${id}`;
+    const task = yield requests_asanaAxios.get(taskUrl).then((response) => response.data.data);
+    for (const membership of task.memberships) {
+        if (donotMoveSection && membership.section.gid === donotMoveSection) {
+            continue;
+        }
+        const url = `${SECTIONS_URL}${moveSection}${ADD_TASK_URL}`;
+        yield requests_asanaAxios.post(url, {
+            data: {
+                task: id,
+            },
+        });
+    }
 });
 const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes) => __awaiter(void 0, void 0, void 0, function* () {
     const tomorrow = new Date();
