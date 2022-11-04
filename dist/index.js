@@ -13147,6 +13147,11 @@ axios_retry_default()(asanaAxios, {
 });
 /* harmony default export */ const requests_asanaAxios = (asanaAxios);
 
+;// CONCATENATED MODULE: ./src/constants/sections.ts
+const APPROVED = "1202529262059895";
+const NEXT = "351348922863102";
+const IN_PROGRESS = "351348922863103";
+
 ;// CONCATENATED MODULE: ./src/constants/users.ts
 const users = [
     {
@@ -13257,6 +13262,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -13354,7 +13360,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
                         const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                         deleteApprovalTasks(approvalSubtasks);
-                        moveTasksToSection(id, '351348922863102', '351348922863103');
+                        moveTasksToSection(id, NEXT, IN_PROGRESS);
                     }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
@@ -13367,7 +13373,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (ci_status === "rejected") {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
-                    moveTasksToSection(id, '351348922863102', '351348922863103');
+                    moveTasksToSection(id, NEXT, IN_PROGRESS);
                 }
                 addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
             }
@@ -13427,7 +13433,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prMergeConflicts) {
             // Move Asana Task To Next Section
             for (const id of asanaTasksIds) {
-                moveTasksToSection(id, '351348922863102', '351348922863103');
+                moveTasksToSection(id, NEXT, IN_PROGRESS);
             }
         }
         // Check if Review Requested OR PR Ready For Review
@@ -13495,7 +13501,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Check If Should Move To Approved
             if (is_approved_by_dev && is_approved_by_qa) {
                 for (const id of asanaTasksIds) {
-                    moveTasksToSection(id, '1202529262059895');
+                    moveTasksToSection(id, APPROVED);
                 }
             }
         }

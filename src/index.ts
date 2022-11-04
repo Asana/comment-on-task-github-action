@@ -4,6 +4,7 @@ import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
 import asanaAxios from "./requests/asanaAxios";
 import * as REQUESTS from "./constants/requests";
+import * as SECTIONS from "./constants/sections";
 import { users } from "./constants/users";
 import githubAxios from "./requests/githubAxios";
 
@@ -139,7 +140,7 @@ export const run = async () => {
           if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
             const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
             deleteApprovalTasks(approvalSubtasks);
-            moveTasksToSection(id, '351348922863102', '351348922863103');
+            moveTasksToSection(id, SECTIONS.NEXT, SECTIONS.IN_PROGRESS);
           }
 
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
@@ -154,7 +155,7 @@ export const run = async () => {
         if (ci_status === "rejected") {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
-          moveTasksToSection(id, '351348922863102', '351348922863103');
+          moveTasksToSection(id, SECTIONS.NEXT, SECTIONS.IN_PROGRESS);
         }
         addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
       }
@@ -225,7 +226,7 @@ export const run = async () => {
     if (prMergeConflicts) {
       // Move Asana Task To Next Section
       for (const id of asanaTasksIds!) {
-        moveTasksToSection(id, '351348922863102', '351348922863103');
+        moveTasksToSection(id, SECTIONS.NEXT, SECTIONS.IN_PROGRESS);
       }
     }
 
@@ -303,7 +304,7 @@ export const run = async () => {
       // Check If Should Move To Approved
       if (is_approved_by_dev && is_approved_by_qa) {
         for (const id of asanaTasksIds!) {
-          moveTasksToSection(id, '1202529262059895');
+          moveTasksToSection(id, SECTIONS.APPROVED);
         }
       }
     }

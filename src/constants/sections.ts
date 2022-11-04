@@ -1,0 +1,3 @@
+export const APPROVED = "1202529262059895";
+export const NEXT = "351348922863102";
+export const IN_PROGRESS = "351348922863103";
