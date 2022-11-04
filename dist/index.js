@@ -13097,7 +13097,7 @@ const ASANA_PAT = "asana-pat";
 const GITHUB_TOKEN = "github-token";
 const ALLOWED_PROJECTS = "allowed-projects";
 const BLOCKED_PROJECTS = "blocked-projects";
-const IS_CI_TESTING = "is-ci-testing";
+const ACTION_URL = "action-url";
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
 var axios = __nccwpck_require__(6545);
@@ -13107,7 +13107,7 @@ var axios_retry = __nccwpck_require__(9179);
 var axios_retry_default = /*#__PURE__*/__nccwpck_require__.n(axios_retry);
 ;// CONCATENATED MODULE: ./src/constants/requests.ts
 const BASE_URL = "https://github.integrations.asana.plus/custom/v1";
-const ACTION_URL = "actions/comment";
+const requests_ACTION_URL = "actions/comment";
 const RETRIES = 3;
 const RETRY_DELAY = 1000;
 const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
@@ -13270,6 +13270,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("context.payload", github.context.payload);
         // Store Constant Values
         const ci_status = (0,core.getInput)(COMMENT_TEXT);
+        const action_url = (0,core.getInput)(ACTION_URL);
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
         const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
@@ -13338,6 +13339,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         })) || [];
         // Check if Automated CI Testing
         if (prSynchronize || prPush) {
+            const html_action_url = `<a href='${action_url}'> Click Here To Investigate Action </a>`;
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
                 // Check If Subtask Found
@@ -13355,7 +13357,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
+                            // description
                             approval_status: ci_status,
+                            html_notes: html_action_url
                         },
                     });
                     continue;
@@ -13364,7 +13368,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     const approvalSubtasks = yield getAllApprovalSubtasks(asanaTasksIds, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
                 }
-                addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status);
+                addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status, html_action_url);
             }
             return;
         }
@@ -13644,7 +13648,7 @@ const moveToApprovedSection = (asanaTasksIds) => __awaiter(void 0, void 0, void 
         });
     }
 });
-const addApprovalTask = (asanaTaskId, requestedReviewer, taskName, approvalStatus) => __awaiter(void 0, void 0, void 0, function* () {
+const addApprovalTask = (asanaTaskId, requestedReviewer, taskName, approvalStatus, notes) => __awaiter(void 0, void 0, void 0, function* () {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     // Create Approval Subtasks For Requested Reviewer
@@ -13656,6 +13660,7 @@ const addApprovalTask = (asanaTaskId, requestedReviewer, taskName, approvalStatu
             due_on: tomorrow.toISOString().substring(0, 10),
             resource_subtype: "approval",
             name: taskName,
+            html_notes: notes ? notes : ""
         },
     });
 });

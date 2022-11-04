@@ -4,4 +4,4 @@ export const ASANA_PAT = "asana-pat";
 export const GITHUB_TOKEN = "github-token";
 export const ALLOWED_PROJECTS = "allowed-projects";
 export const BLOCKED_PROJECTS = "blocked-projects";
-export const IS_CI_TESTING = "is-ci-testing";
+export const ACTION_URL = "action-url";
