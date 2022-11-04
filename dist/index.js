@@ -13357,7 +13357,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
-                            // description
                             approval_status: ci_status,
                             html_notes: html_action_url
                         },

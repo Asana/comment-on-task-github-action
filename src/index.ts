@@ -22,6 +22,7 @@ export const run = async () => {
 
     // Store Constant Values
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
+    const action_url = getInput(INPUTS.ACTION_URL);
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
@@ -120,6 +121,7 @@ export const run = async () => {
 
     // Check if Automated CI Testing
     if (prSynchronize || prPush) {
+      const html_action_url = `<a href='${action_url}'> Click Here To Investigate Action </a>`
       for (const id of asanaTasksIds!) {
         const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
 
@@ -142,6 +144,7 @@ export const run = async () => {
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
             data: {
               approval_status: ci_status,
+              html_notes: html_action_url
             },
           });
           continue;
@@ -151,7 +154,7 @@ export const run = async () => {
           const approvalSubtasks = await getAllApprovalSubtasks(asanaTasksIds, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
         }
-        addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status);
+        addApprovalTask(asanaTasksIds, ottoObj, "Automated CI Testing", ci_status, html_action_url);
       }
       return;
     }
@@ -485,6 +488,7 @@ export const addApprovalTask = async (
   requestedReviewer: any,
   taskName: String,
   approvalStatus: String,
+  notes?: String,
 ) => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -498,6 +502,7 @@ export const addApprovalTask = async (
       due_on: tomorrow.toISOString().substring(0, 10),
       resource_subtype: "approval",
       name: taskName,
+      html_notes: notes? notes: ""
     },
   });
 };
