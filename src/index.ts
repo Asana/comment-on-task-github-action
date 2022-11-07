@@ -437,8 +437,6 @@ export const addRequestedReview = async (
 
   // If Request Reviewer already has incomplete subtask
   if (approvalSubtask) {
-    console.log("ENTERED??");
-    
     return;
   }
 
@@ -502,6 +500,10 @@ export const addApprovalTask = async (
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
+  console.log("TASK", id);
+  console.log("NOTES", notes);
+  
+  
   // Create Approval Subtasks For Requested Reviewer
   await asanaAxios.post(`${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`, {
     data: {

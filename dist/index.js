@@ -13635,7 +13635,6 @@ const addRequestedReview = (id, reviewer, creator) => __awaiter(void 0, void 0, 
     console.log("APPROVAL??", approvalSubtask);
     // If Request Reviewer already has incomplete subtask
     if (approvalSubtask) {
-        console.log("ENTERED??");
         return;
     }
     addApprovalTask(id, reviewer, "Review", "pending");
@@ -13673,6 +13672,8 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
 const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes) => __awaiter(void 0, void 0, void 0, function* () {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    console.log("TASK", id);
+    console.log("NOTES", notes);
     // Create Approval Subtasks For Requested Reviewer
     yield requests_asanaAxios.post(`${TASKS_URL}${id}${SUBTASKS_URL}`, {
         data: {
