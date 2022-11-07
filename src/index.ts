@@ -233,6 +233,9 @@ export const run = async () => {
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+        console.log("REVIEWERS DEV", DEV_requestedReviewersObjs);
+        console.log("REVIEWERS", context.payload.pull_request?.requested_reviewers);
+        
         for (const id of asanaTasksIds!) {
           addRequestedReview(id, reviewer, ottoObj);
         }

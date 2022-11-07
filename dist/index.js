@@ -13280,7 +13280,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13453,6 +13453,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+                console.log("REVIEWERS DEV", DEV_requestedReviewersObjs);
+                console.log("REVIEWERS", (_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.requested_reviewers);
                 for (const id of asanaTasksIds) {
                     addRequestedReview(id, reviewer, ottoObj);
                 }
@@ -13578,12 +13580,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
+                const path = (_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
-                if ((_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.in_reply_to_id) {
-                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
+                if ((_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.in_reply_to_id) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_2 = github.context.payload.comment) === null || _2 === void 0 ? void 0 : _2.original_line}):\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -13620,7 +13622,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
