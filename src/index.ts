@@ -140,7 +140,7 @@ export const run = async () => {
           if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
             const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
             deleteApprovalTasks(approvalSubtasks);
-            moveTasksToSection(id, SECTIONS.NEXT, SECTIONS.IN_PROGRESS);
+            moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
           }
 
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
@@ -155,7 +155,7 @@ export const run = async () => {
         if (ci_status === "rejected") {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
-          moveTasksToSection(id, SECTIONS.NEXT, SECTIONS.IN_PROGRESS);
+          moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
         }
         addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
       }
@@ -226,7 +226,7 @@ export const run = async () => {
     if (prMergeConflicts) {
       // Move Asana Task To Next Section
       for (const id of asanaTasksIds!) {
-        moveTasksToSection(id, SECTIONS.NEXT, SECTIONS.IN_PROGRESS);
+        moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
       }
     }
 
@@ -304,7 +304,7 @@ export const run = async () => {
       // Check If Should Move To Approved
       if (is_approved_by_dev && is_approved_by_qa) {
         for (const id of asanaTasksIds!) {
-          moveTasksToSection(id, SECTIONS.APPROVED);
+          moveTaskToSection(id, SECTIONS.APPROVED);
         }
       }
     }
@@ -463,16 +463,17 @@ export const getAllApprovalSubtasks = async (
   return approvalSubtasks;
 }
 
-export const moveTasksToSection = async (
+export const moveTaskToSection = async (
   id: String,
   moveSection: String,
-  donotMoveSection?: String
+  donotMoveSections?: Array<String>
 ) => {
   const taskUrl = `${REQUESTS.TASKS_URL}${id}`;
   const task = await asanaAxios.get(taskUrl).then((response) => response.data.data);
 
   for (const membership of task.memberships) {
-    if(donotMoveSection && membership.section.gid === donotMoveSection){
+
+    if(donotMoveSections &&  donotMoveSections.includes(membership.section.gid)){
       continue;
     }
     const url = `${REQUESTS.SECTIONS_URL}${moveSection}${REQUESTS.ADD_TASK_URL}`;
