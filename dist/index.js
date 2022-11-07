@@ -13050,7 +13050,7 @@ __nccwpck_require__.d(__webpack_exports__, {
   "deleteApprovalTasks": () => (/* binding */ deleteApprovalTasks),
   "getAllApprovalSubtasks": () => (/* binding */ getAllApprovalSubtasks),
   "getApprovalSubtask": () => (/* binding */ getApprovalSubtask),
-  "moveTasksToSection": () => (/* binding */ moveTasksToSection),
+  "moveTaskToSection": () => (/* binding */ moveTaskToSection),
   "run": () => (/* binding */ run)
 });
 
@@ -13151,6 +13151,20 @@ axios_retry_default()(asanaAxios, {
 const APPROVED = "1202529262059895";
 const NEXT = "351348922863102";
 const IN_PROGRESS = "351348922863103";
+const INBOX = "374545537066015";
+const RECURRING = "1145443240240505";
+const NEEDS_SPEC = "1182221016532889";
+const ROCKS = "1203112390521812";
+const SOON = "1133108222193460";
+const BUGS = "798327968721780";
+const BLOCKED = "1149700454839017";
+const TESTING_REVIEW = "414933337656831";
+const RELEASED_BETA = "1167592713071321";
+const RELEASED_PAID = "1166320284948731";
+const RELEASED_FREE = "1202428998858768";
+const UPDATE_DOC = "1179767514411153";
+const DONE = "351348922863104";
+const SOMEDAY = "1180496591528565";
 
 ;// CONCATENATED MODULE: ./src/constants/users.ts
 const users = [
@@ -13360,7 +13374,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
                         const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                         deleteApprovalTasks(approvalSubtasks);
-                        moveTasksToSection(id, NEXT, IN_PROGRESS);
+                        moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                     }
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
@@ -13373,7 +13387,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (ci_status === "rejected") {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
-                    moveTasksToSection(id, NEXT, IN_PROGRESS);
+                    moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                 }
                 addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
             }
@@ -13433,7 +13447,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prMergeConflicts) {
             // Move Asana Task To Next Section
             for (const id of asanaTasksIds) {
-                moveTasksToSection(id, NEXT, IN_PROGRESS);
+                moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
             }
         }
         // Check if Review Requested OR PR Ready For Review
@@ -13501,7 +13515,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Check If Should Move To Approved
             if (is_approved_by_dev && is_approved_by_qa) {
                 for (const id of asanaTasksIds) {
-                    moveTasksToSection(id, APPROVED);
+                    moveTaskToSection(id, APPROVED);
                 }
             }
         }
@@ -13637,11 +13651,11 @@ const getAllApprovalSubtasks = (id, creator) => __awaiter(void 0, void 0, void 0
         subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId));
     return approvalSubtasks;
 });
-const moveTasksToSection = (id, moveSection, donotMoveSection) => __awaiter(void 0, void 0, void 0, function* () {
+const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void 0, void 0, void 0, function* () {
     const taskUrl = `${TASKS_URL}${id}`;
     const task = yield requests_asanaAxios.get(taskUrl).then((response) => response.data.data);
     for (const membership of task.memberships) {
-        if (donotMoveSection && membership.section.gid === donotMoveSection) {
+        if (donotMoveSections && donotMoveSections.includes(membership.section.gid)) {
             continue;
         }
         const url = `${SECTIONS_URL}${moveSection}${ADD_TASK_URL}`;
