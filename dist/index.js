@@ -13280,7 +13280,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13453,8 +13453,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check if Review Requested OR PR Ready For Review
         if (prReviewRequested || prReadyForReview) {
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-                console.log("REVIEWERS DEV", DEV_requestedReviewersObjs);
-                console.log("REVIEWERS", (_y = github.context.payload.pull_request) === null || _y === void 0 ? void 0 : _y.requested_reviewers);
                 for (const id of asanaTasksIds) {
                     addRequestedReview(id, reviewer, ottoObj);
                 }
@@ -13580,12 +13578,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.path;
+                const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
-                if ((_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.in_reply_to_id) {
-                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_2 = github.context.payload.comment) === null || _2 === void 0 ? void 0 : _2.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
+                if ((_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.in_reply_to_id) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -13622,7 +13620,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
+            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
@@ -13632,7 +13630,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 const addRequestedReview = (id, reviewer, creator) => __awaiter(void 0, void 0, void 0, function* () {
     const approvalSubtask = yield getApprovalSubtask(id, false, reviewer, creator);
-    console.log("APPROVAL??", approvalSubtask);
     // If Request Reviewer already has incomplete subtask
     if (approvalSubtask) {
         return;
@@ -13672,8 +13669,6 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
 const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes) => __awaiter(void 0, void 0, void 0, function* () {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    console.log("TASK", id);
-    console.log("NOTES", notes);
     // Create Approval Subtasks For Requested Reviewer
     yield requests_asanaAxios.post(`${TASKS_URL}${id}${SUBTASKS_URL}`, {
         data: {
@@ -13683,7 +13678,7 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
             due_on: tomorrow.toISOString().substring(0, 10),
             resource_subtype: "approval",
             name: taskName,
-            html_notes: notes ? notes : "<body> Auto-generated </body>"
+            html_notes: notes ? notes : "<body> </body>"
         },
     });
 });

@@ -233,9 +233,6 @@ export const run = async () => {
     // Check if Review Requested OR PR Ready For Review
     if (prReviewRequested || prReadyForReview) {
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-        console.log("REVIEWERS DEV", DEV_requestedReviewersObjs);
-        console.log("REVIEWERS", context.payload.pull_request?.requested_reviewers);
-        
         for (const id of asanaTasksIds!) {
           addRequestedReview(id, reviewer, ottoObj);
         }
@@ -432,8 +429,6 @@ export const addRequestedReview = async (
   creator: any
 ) => {
   const approvalSubtask = await getApprovalSubtask(id, false, reviewer, creator);
-  console.log("APPROVAL??", approvalSubtask);
-  
 
   // If Request Reviewer already has incomplete subtask
   if (approvalSubtask) {
@@ -500,10 +495,6 @@ export const addApprovalTask = async (
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  console.log("TASK", id);
-  console.log("NOTES", notes);
-  
-  
   // Create Approval Subtasks For Requested Reviewer
   await asanaAxios.post(`${REQUESTS.TASKS_URL}${id}${REQUESTS.SUBTASKS_URL}`, {
     data: {
@@ -513,7 +504,7 @@ export const addApprovalTask = async (
       due_on: tomorrow.toISOString().substring(0, 10),
       resource_subtype: "approval",
       name: taskName,
-      html_notes: notes ? notes : "<body> Auto-generated </body>"
+      html_notes: notes ? notes : "<body> </body>"
     },
   });
 };
