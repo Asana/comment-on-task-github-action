@@ -513,7 +513,7 @@ export const addApprovalTask = async (
       due_on: tomorrow.toISOString().substring(0, 10),
       resource_subtype: "approval",
       name: taskName,
-      html_notes: notes ? notes : ""
+      html_notes: notes ? notes : "<body> </body>"
     },
   });
 };
