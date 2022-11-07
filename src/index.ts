@@ -432,6 +432,8 @@ export const addRequestedReview = async (
   creator: any
 ) => {
   const approvalSubtask = await getApprovalSubtask(id, false, reviewer, creator);
+  console.log("APPROVAL??", approvalSubtask);
+  
 
   // If Request Reviewer already has incomplete subtask
   if (approvalSubtask) {
