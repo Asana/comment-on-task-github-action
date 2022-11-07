@@ -13635,6 +13635,7 @@ const addRequestedReview = (id, reviewer, creator) => __awaiter(void 0, void 0, 
     console.log("APPROVAL??", approvalSubtask);
     // If Request Reviewer already has incomplete subtask
     if (approvalSubtask) {
+        console.log("ENTERED??");
         return;
     }
     addApprovalTask(id, reviewer, "Review", "pending");
