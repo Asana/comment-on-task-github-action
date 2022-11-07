@@ -13683,7 +13683,7 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
             due_on: tomorrow.toISOString().substring(0, 10),
             resource_subtype: "approval",
             name: taskName,
-            html_notes: notes ? notes : "<body> </body>"
+            html_notes: notes ? notes : "<body> Auto-generated </body>"
         },
     });
 });
