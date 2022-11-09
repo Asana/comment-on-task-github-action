@@ -525,7 +525,7 @@ export const getApprovalSubtask = async (
     (subtask: any) =>
       subtask.resource_subtype === "approval" &&
       subtask.completed === is_complete &&
-      subtask.assignee.gid === assignee?.asanaId &&
+      (subtask.assignee && subtask.assignee.gid === assignee?.asanaId) &&
       subtask.created_by.gid === creator?.asanaId
   );
 

@@ -13689,7 +13689,7 @@ const getApprovalSubtask = (asanaTaskId, is_complete, assignee, creator) => __aw
     console.log(subtasks.data.data);
     const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
         subtask.completed === is_complete &&
-        subtask.assignee.gid === (assignee === null || assignee === void 0 ? void 0 : assignee.asanaId) &&
+        (subtask.assignee && subtask.assignee.gid === (assignee === null || assignee === void 0 ? void 0 : assignee.asanaId)) &&
         subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId));
     return approvalSubtask;
 });
