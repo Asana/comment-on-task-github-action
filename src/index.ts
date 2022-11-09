@@ -153,6 +153,8 @@ export const run = async () => {
         }
 
         if (ci_status === "rejected") {
+          console.log("HERE");
+          
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
           moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);

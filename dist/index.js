@@ -13385,6 +13385,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     continue;
                 }
                 if (ci_status === "rejected") {
+                    console.log("HERE");
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
                     moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
