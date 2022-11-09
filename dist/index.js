@@ -13686,6 +13686,7 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
 const getApprovalSubtask = (asanaTaskId, is_complete, assignee, creator) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${TASKS_URL}${asanaTaskId}${SUBTASKS_URL}`;
     const subtasks = yield requests_asanaAxios.get(url);
+    console.log(subtasks.data.data);
     const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
         subtask.completed === is_complete &&
         subtask.assignee.gid === (assignee === null || assignee === void 0 ? void 0 : assignee.asanaId) &&
