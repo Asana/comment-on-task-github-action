@@ -231,7 +231,7 @@ export const run = async () => {
     }
 
     // Check if Review Requested OR PR Ready For Review
-    if (prReadyForReview) {
+    if (prReadyForReview || prReviewRequested) {
       setTimeout(function () {
         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
           for (const id of asanaTasksIds!) {
@@ -239,15 +239,17 @@ export const run = async () => {
           }
         }
       }
-        , 60000);
+        , 60000); // Wait 60 seconds
     }
 
     if (prReviewRequested) {
-      for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-        for (const id of asanaTasksIds!) {
-          addRequestedReview(id, reviewer, ottoObj);
+      setTimeout(function(){
+        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+          for (const id of asanaTasksIds!) {
+            addRequestedReview(id, reviewer, ottoObj);
+          }
         }
-      }
+      }, Math.floor(Math.random() * (60000 - 20000 + 1) + 20000)); // Wait 20-60 seconds
     }
 
     if (prReviewSubmitted) {
@@ -528,7 +530,6 @@ export const getApprovalSubtask = async (
 ) => {
   const url = `${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}`;
   const subtasks = await asanaAxios.get(url);
-  console.log(subtasks.data.data);
 
   const approvalSubtask = subtasks.data.data.find(
     (subtask: any) =>
