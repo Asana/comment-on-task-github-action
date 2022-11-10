@@ -13669,6 +13669,7 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
     const taskUrl = `${TASKS_URL}${id}`;
     const task = yield requests_asanaAxios.get(taskUrl).then((response) => response.data.data);
     for (const membership of task.memberships) {
+        // Check If Task Should Not Move
         if (donotMoveSections && donotMoveSections.includes(membership.section.name)) {
             continue;
         }
@@ -13678,7 +13679,7 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
         const sections = yield requests_asanaAxios.get(sectionsUrl).then((response) => response.data.data);
         // Get Section To Move Task To
         const section = sections.find((section) => section.name === moveSection);
-        // Get GID of Next
+        // Move Task
         const url = `${SECTIONS_URL}${section.gid}${ADD_TASK_URL}`;
         yield requests_asanaAxios.post(url, {
             data: {

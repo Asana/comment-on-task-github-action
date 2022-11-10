@@ -243,7 +243,7 @@ export const run = async () => {
     }
 
     if (prReviewRequested) {
-      setTimeout(function(){
+      setTimeout(function () {
         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
           for (const id of asanaTasksIds!) {
             addRequestedReview(id, reviewer, ottoObj);
@@ -481,15 +481,30 @@ export const moveTaskToSection = async (
   moveSection: String,
   donotMoveSections?: Array<String>
 ) => {
+  // Get Task
   const taskUrl = `${REQUESTS.TASKS_URL}${id}`;
   const task = await asanaAxios.get(taskUrl).then((response) => response.data.data);
 
   for (const membership of task.memberships) {
 
-    if (donotMoveSections && donotMoveSections.includes(membership.section.gid)) {
+    // Check If Task Should Not Move
+    if (donotMoveSections && donotMoveSections.includes(membership.section.name)) {
       continue;
     }
-    const url = `${REQUESTS.SECTIONS_URL}${moveSection}${REQUESTS.ADD_TASK_URL}`;
+
+    // Get Sections of Project
+    const projectId = membership.project.gid;
+    const sectionsUrl = `${REQUESTS.PROJECTS_URL}${projectId}${REQUESTS.SECTIONS_URL}`;
+    const sections = await asanaAxios.get(sectionsUrl).then((response) => response.data.data);
+
+    // Get Section To Move Task To
+    const section = sections.find(
+      (section: any) =>
+        section.name === moveSection
+    );
+
+    // Move Task
+    const url = `${REQUESTS.SECTIONS_URL}${section.gid}${REQUESTS.ADD_TASK_URL}`;
     await asanaAxios.post(url, {
       data: {
         task: id,
