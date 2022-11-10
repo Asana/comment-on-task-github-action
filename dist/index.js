@@ -13111,6 +13111,7 @@ const requests_ACTION_URL = "actions/comment";
 const RETRIES = 3;
 const RETRY_DELAY = 1000;
 const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
+const PROJECTS_URL = "/projects/";
 const TASKS_URL = "/tasks/";
 const SECTIONS_URL = "/sections/";
 const STORIES_URL = "/stories/";
@@ -13148,23 +13149,24 @@ axios_retry_default()(asanaAxios, {
 /* harmony default export */ const requests_asanaAxios = (asanaAxios);
 
 ;// CONCATENATED MODULE: ./src/constants/sections.ts
-const APPROVED = "1202529262059895";
-const NEXT = "351348922863102";
-const IN_PROGRESS = "351348922863103";
-const INBOX = "374545537066015";
-const RECURRING = "1145443240240505";
-const NEEDS_SPEC = "1182221016532889";
-const ROCKS = "1203112390521812";
-const SOON = "1133108222193460";
-const BUGS = "798327968721780";
-const BLOCKED = "1149700454839017";
-const TESTING_REVIEW = "414933337656831";
-const RELEASED_BETA = "1167592713071321";
-const RELEASED_PAID = "1166320284948731";
-const RELEASED_FREE = "1202428998858768";
-const UPDATE_DOC = "1179767514411153";
-const DONE = "351348922863104";
-const SOMEDAY = "1180496591528565";
+const INBOX = "Inbox (new ideas)";
+const RECURRING = "Recurring";
+const NEEDS_SPEC = "Needs Spec";
+const ROCKS = "Rocks";
+const SOON = "Soon";
+const BUGS = "Bugs 🙄🙁😦😢😭";
+const BLOCKED_WAITING = "Blocked / Waiting";
+const NEXT = "Next";
+const IN_PROGRESS = "In Progress";
+const TESTING_REVIEW = "Testing / Review";
+const APPROVED = "Approved";
+const RELEASED_BETA = "Released in Beta";
+const RELEASED_PAID = "Released (paid editions)";
+const RELEASED_FREE = "Released (free wp.org)";
+const UPDATE_WEB_DOC = "Update Website/Documentation";
+const PROMOTE_NOTIFY = "Promote / Notify";
+const DONE = "Done";
+const SOMEDAY = "Someday";
 
 ;// CONCATENATED MODULE: ./src/constants/users.ts
 const users = [
@@ -13663,13 +13665,21 @@ const getAllApprovalSubtasks = (id, creator) => __awaiter(void 0, void 0, void 0
     return approvalSubtasks;
 });
 const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get Task
     const taskUrl = `${TASKS_URL}${id}`;
     const task = yield requests_asanaAxios.get(taskUrl).then((response) => response.data.data);
     for (const membership of task.memberships) {
-        if (donotMoveSections && donotMoveSections.includes(membership.section.gid)) {
+        if (donotMoveSections && donotMoveSections.includes(membership.section.name)) {
             continue;
         }
-        const url = `${SECTIONS_URL}${moveSection}${ADD_TASK_URL}`;
+        // Get Sections of Project
+        const projectId = membership.project.gid;
+        const sectionsUrl = `${PROJECTS_URL}${projectId}${SECTIONS_URL}`;
+        const sections = yield requests_asanaAxios.get(sectionsUrl).then((response) => response.data.data);
+        // Get Section To Move Task To
+        const section = sections.find((section) => section.name === moveSection);
+        // Get GID of Next
+        const url = `${SECTIONS_URL}${section.gid}${ADD_TASK_URL}`;
         yield requests_asanaAxios.post(url, {
             data: {
                 task: id,

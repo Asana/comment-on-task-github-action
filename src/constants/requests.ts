@@ -3,6 +3,7 @@ export const ACTION_URL = "actions/comment";
 export const RETRIES = 3;
 export const RETRY_DELAY = 1000;
 export const BASE_ASANA_URL = "https://app.asana.com/api/1.0";
+export const PROJECTS_URL = "/projects/";
 export const TASKS_URL = "/tasks/";
 export const SECTIONS_URL = "/sections/";
 export const STORIES_URL = "/stories/";
