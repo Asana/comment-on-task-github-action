@@ -13385,7 +13385,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     continue;
                 }
                 if (ci_status === "rejected") {
-                    console.log("HERE");
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
                     moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
@@ -13452,7 +13451,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Check if Review Requested OR PR Ready For Review
-        if (prReviewRequested || prReadyForReview) {
+        if (prReadyForReview) {
+            setTimeout(function () {
+                for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+                    for (const id of asanaTasksIds) {
+                        addRequestedReview(id, reviewer, ottoObj);
+                    }
+                }
+            }, 60000);
+        }
+        if (prReviewRequested) {
             for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
                 for (const id of asanaTasksIds) {
                     addRequestedReview(id, reviewer, ottoObj);

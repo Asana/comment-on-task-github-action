@@ -153,8 +153,6 @@ export const run = async () => {
         }
 
         if (ci_status === "rejected") {
-          console.log("HERE");
-          
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
           moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
@@ -233,7 +231,18 @@ export const run = async () => {
     }
 
     // Check if Review Requested OR PR Ready For Review
-    if (prReviewRequested || prReadyForReview) {
+    if (prReadyForReview) {
+      setTimeout(function () {
+        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+          for (const id of asanaTasksIds!) {
+            addRequestedReview(id, reviewer, ottoObj);
+          }
+        }
+      }
+        , 60000);
+    }
+
+    if (prReviewRequested) {
       for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
         for (const id of asanaTasksIds!) {
           addRequestedReview(id, reviewer, ottoObj);
@@ -475,7 +484,7 @@ export const moveTaskToSection = async (
 
   for (const membership of task.memberships) {
 
-    if(donotMoveSections &&  donotMoveSections.includes(membership.section.gid)){
+    if (donotMoveSections && donotMoveSections.includes(membership.section.gid)) {
       continue;
     }
     const url = `${REQUESTS.SECTIONS_URL}${moveSection}${REQUESTS.ADD_TASK_URL}`;
@@ -520,7 +529,7 @@ export const getApprovalSubtask = async (
   const url = `${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}`;
   const subtasks = await asanaAxios.get(url);
   console.log(subtasks.data.data);
-  
+
   const approvalSubtask = subtasks.data.data.find(
     (subtask: any) =>
       subtask.resource_subtype === "approval" &&
