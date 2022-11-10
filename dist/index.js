@@ -13458,7 +13458,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         addRequestedReview(id, reviewer, ottoObj);
                     }
                 }
-            }, 60000); // Wait 60 seconds
+            }, 30000); // Wait 30 seconds
         }
         if (prReviewRequested) {
             setTimeout(function () {
@@ -13467,7 +13467,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         addRequestedReview(id, reviewer, ottoObj);
                     }
                 }
-            }, Math.floor(Math.random() * (60000 - 20000 + 1) + 20000)); // Wait 20-60 seconds
+            }, Math.floor(Math.random() * (40000 - 15000 + 1) + 20000)); // Wait 15-40 seconds
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
