@@ -230,17 +230,17 @@ export const run = async () => {
       }
     }
 
-    // Check if Review Requested OR PR Ready For Review
-    if (prReadyForReview) {
-      setTimeout(function () {
-        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-          for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj);
-          }
-        }
-      }
-        , 30000); // Wait 30 seconds
-    }
+//     // Check if Review Requested OR PR Ready For Review
+//     if (prReadyForReview) {
+//       setTimeout(function () {
+//         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+//           for (const id of asanaTasksIds!) {
+//             addRequestedReview(id, reviewer, ottoObj);
+//           }
+//         }
+//       }
+//         , 30000); // Wait 30 seconds
+//     }
 
     if (prReviewRequested) {
       setTimeout(function () {
