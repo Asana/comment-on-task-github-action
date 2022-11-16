@@ -1,13 +1,13 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
 import { getInput } from "@actions/core";
-import { GITHUB_TOKEN } from "../constants/inputs";
+import { GITHUB_PAT } from "../constants/inputs";
 import * as REQUESTS from "../constants/requests";
 
 const githubAxios = axios.create({
   baseURL: REQUESTS.BASE_GITHUB_URL,
   headers: {
-    Authorization: `Bearer ${getInput(GITHUB_TOKEN)}`,
+    Authorization: `Bearer ${getInput(GITHUB_PAT)}`,
   },
 });
 
