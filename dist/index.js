@@ -13094,7 +13094,7 @@ const isAxiosError = (e) => e.isAxiosError;
 const COMMENT_TEXT = "comment-text";
 const ASANA_SECRET = "asana-secret";
 const ASANA_PAT = "asana-pat";
-const GITHUB_TOKEN = "github-token";
+const GITHUB_PAT = "github-pat";
 const ALLOWED_PROJECTS = "allowed-projects";
 const BLOCKED_PROJECTS = "blocked-projects";
 const ACTION_URL = "action-url";
@@ -13244,7 +13244,7 @@ const users = [
 const githubAxios = axios_default().create({
     baseURL: BASE_GITHUB_URL,
     headers: {
-        Authorization: `Bearer ${(0,core.getInput)(GITHUB_TOKEN)}`,
+        Authorization: `Bearer ${(0,core.getInput)(GITHUB_PAT)}`,
     },
 });
 axios_retry_default()(githubAxios, {
@@ -13452,16 +13452,17 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
             }
         }
-        // Check if Review Requested OR PR Ready For Review
-        if (prReadyForReview || prReviewRequested) {
-            setTimeout(function () {
-                for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-                    for (const id of asanaTasksIds) {
-                        addRequestedReview(id, reviewer, ottoObj);
-                    }
-                }
-            }, 30000); // Wait 30 seconds
-        }
+        //     // Check if Review Requested OR PR Ready For Review
+        //     if (prReadyForReview) {
+        //       setTimeout(function () {
+        //         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+        //           for (const id of asanaTasksIds!) {
+        //             addRequestedReview(id, reviewer, ottoObj);
+        //           }
+        //         }
+        //       }
+        //         , 30000); // Wait 30 seconds
+        //     }
         if (prReviewRequested) {
             setTimeout(function () {
                 for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
@@ -13567,10 +13568,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a>:\n\n${commentBody} </body>`;
                         break;
                     case "approved":
-                        if (!github.context.payload.review.body) {
+                        if (!commentBody) {
                             return;
                         }
-                        commentText = `<body> ${userHTML} approved with the following <a href="${commentUrl}">comment</a>:\n\n${github.context.payload.review.body} </body>`;
+                        commentText = `<body> ${userHTML} approved with the following <a href="${commentUrl}">comment</a>:\n\n${commentBody} </body>`;
                         break;
                     default:
                         commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userHTML} </body>`;

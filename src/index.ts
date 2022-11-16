@@ -357,10 +357,10 @@ export const run = async () => {
             commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a>:\n\n${commentBody} </body>`;
             break;
           case "approved":
-            if (!context.payload.review.body) {
+            if (!commentBody) {
               return;
             }
-            commentText = `<body> ${userHTML} approved with the following <a href="${commentUrl}">comment</a>:\n\n${context.payload.review.body} </body>`;
+            commentText = `<body> ${userHTML} approved with the following <a href="${commentUrl}">comment</a>:\n\n${commentBody} </body>`;
             break;
           default:
             commentText = `<body> <a href="${commentUrl}">PR #${pullRequestId}</a> is ${reviewState} by ${userHTML} </body>`;
