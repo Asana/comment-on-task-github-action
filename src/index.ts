@@ -96,13 +96,14 @@ export const run = async () => {
 
     let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "QA") || [];
     let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "DEV") || [];
+    let PEER_DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer: any) => reviewer.team === "PEER_DEV") || [];
 
     // Add User to Followers
     const followersStatus = [];
     const followers = [userObj?.asanaId];
 
     // Add Requested Reviewers to Followers
-    for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+    for (const reviewer of !PEER_DEV_requestedReviewersObjs.length? (!DEV_requestedReviewersObjs.length? QA_requestedReviewersObjs:DEV_requestedReviewersObjs):PEER_DEV_requestedReviewersObjs) {
       followers.push(reviewer?.asanaId);
     }
 
@@ -131,7 +132,7 @@ export const run = async () => {
 
           // Check If Subtask rejected -> approved
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
-            for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+            for (const reviewer of !PEER_DEV_requestedReviewersObjs.length? (!DEV_requestedReviewersObjs.length? QA_requestedReviewersObjs:DEV_requestedReviewersObjs):PEER_DEV_requestedReviewersObjs) {
               addRequestedReview(id, reviewer, ottoObj);
             }
           }
@@ -244,7 +245,7 @@ export const run = async () => {
 
     if (prReviewRequested) {
       setTimeout(function () {
-        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+        for (const reviewer of !PEER_DEV_requestedReviewersObjs.length? (!DEV_requestedReviewersObjs.length? QA_requestedReviewersObjs:DEV_requestedReviewersObjs):PEER_DEV_requestedReviewersObjs) {
           for (const id of asanaTasksIds!) {
             addRequestedReview(id, reviewer, ottoObj);
           }
@@ -285,6 +286,7 @@ export const run = async () => {
 
       let is_approved_by_qa = true;
       let is_approved_by_dev = true;
+      let is_approved_by_peer = true;
 
       // Get All Users With Approved Review
       const usersApproved: String[] = [];
@@ -300,12 +302,22 @@ export const run = async () => {
         const username = reviewer.githubName;
         const team = reviewer.team;
         if (!usersApproved.includes(username)) {
-          team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false;
+          team === "PEER" ? is_approved_by_peer = false: (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
         }
       });
 
+      // Check If Should Create DEV Tasks
+      if (is_approved_by_peer && !is_approved_by_dev) {
+        DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
+          followers.push(reviewer?.asanaId);
+          for (const id of asanaTasksIds!) {
+            addRequestedReview(id, reviewer, ottoObj);
+          }
+        });
+      }
+
       // Check If Should Create QA Tasks
-      if (is_approved_by_dev && !is_approved_by_qa) {
+      if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
         QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
           followers.push(reviewer?.asanaId);
           for (const id of asanaTasksIds!) {
@@ -315,7 +327,7 @@ export const run = async () => {
       }
 
       // Check If Should Move To Approved
-      if (is_approved_by_dev && is_approved_by_qa) {
+      if (is_approved_by_peer && is_approved_by_dev && is_approved_by_qa) {
         for (const id of asanaTasksIds!) {
           moveTaskToSection(id, SECTIONS.APPROVED);
         }
