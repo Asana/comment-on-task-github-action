@@ -13203,28 +13203,28 @@ const users = [
         asanaUrlId: "1202258098000877",
         asanaName: "Mariam El Zaatari",
         githubName: "MariamElZaatari",
-        team: "DEV",
+        team: "PEER_DEV",
     },
     {
         asanaId: "1202393076412167",
         asanaUrlId: "1202395095687177",
         asanaName: "Amin Abdulkhalek",
         githubName: "aminabdulkhalek",
-        team: "DEV",
+        team: "PEER_DEV",
     },
     {
         asanaId: "1202852151625813",
         asanaUrlId: "1202852821241548",
         asanaName: "Hamze Ammar",
         githubName: "Hamze-Ammar",
-        team: "DEV",
+        team: "PEER_DEV",
     },
     {
         asanaId: "1202852209355924",
         asanaUrlId: "1202852825308828",
         asanaName: "Hsein Bitar",
         githubName: "hsein-bitar",
-        team: "DEV",
+        team: "PEER_DEV",
     },
     {
         asanaId: "1202470392325800",
@@ -13342,11 +13342,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         let QA_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "QA") || [];
         let DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "DEV") || [];
+        let PEER_DEV_requestedReviewersObjs = requestedReviewersObjs.filter((reviewer) => reviewer.team === "PEER_DEV") || [];
         // Add User to Followers
         const followersStatus = [];
         const followers = [userObj === null || userObj === void 0 ? void 0 : userObj.asanaId];
         // Add Requested Reviewers to Followers
-        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+        for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
             followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
         }
         // Get Task IDs From PR Description
@@ -13368,7 +13369,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (approvalSubtask) {
                     // Check If Subtask rejected -> approved
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
-                        for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+                        for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                             addRequestedReview(id, reviewer, ottoObj);
                         }
                     }
@@ -13465,7 +13466,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         //     }
         if (prReviewRequested) {
             setTimeout(function () {
-                for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
+                for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                     for (const id of asanaTasksIds) {
                         addRequestedReview(id, reviewer, ottoObj);
                     }
@@ -13501,6 +13502,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
             let is_approved_by_qa = true;
             let is_approved_by_dev = true;
+            let is_approved_by_peer = true;
             // Get All Users With Approved Review
             const usersApproved = [];
             for (let i = 0; i < reviews.length; i++) {
@@ -13514,11 +13516,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const username = reviewer.githubName;
                 const team = reviewer.team;
                 if (!usersApproved.includes(username)) {
-                    team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false;
+                    team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
                 }
             });
+            // Check If Should Create DEV Tasks
+            if (is_approved_by_peer && !is_approved_by_dev) {
+                DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
+                    followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
+                    for (const id of asanaTasksIds) {
+                        addRequestedReview(id, reviewer, ottoObj);
+                    }
+                }));
+            }
             // Check If Should Create QA Tasks
-            if (is_approved_by_dev && !is_approved_by_qa) {
+            if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
                 QA_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
                     followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
                     for (const id of asanaTasksIds) {
@@ -13527,7 +13538,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }));
             }
             // Check If Should Move To Approved
-            if (is_approved_by_dev && is_approved_by_qa) {
+            if (is_approved_by_peer && is_approved_by_dev && is_approved_by_qa) {
                 for (const id of asanaTasksIds) {
                     moveTaskToSection(id, APPROVED);
                 }
