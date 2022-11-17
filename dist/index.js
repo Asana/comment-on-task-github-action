@@ -13282,7 +13282,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -13314,9 +13314,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             !((_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.draft) &&
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" &&
-            (action === "ready_for_review" ||
-                ((action === "opened" || action === "edited") &&
-                    !((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.draft)));
+            action === "ready_for_review";
         const prReviewSubmitted = eventName === "pull_request_review" && action === "submitted";
         const prApproved = eventName === "pull_request_review" &&
             action === "submitted" &&
@@ -13325,16 +13323,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             action === "synchronize";
         const prPush = eventName === "push";
         // Store User That Triggered Job
-        const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
-            ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
-            ((_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login);
+        const username = ((_r = github.context.payload.comment) === null || _r === void 0 ? void 0 : _r.user.login) ||
+            ((_s = github.context.payload.review) === null || _s === void 0 ? void 0 : _s.user.login) ||
+            ((_t = github.context.payload.sender) === null || _t === void 0 ? void 0 : _t.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         const userHTML = `<a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a>`;
         // Store Otto
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
-        const requestedReviewers = ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) || [];
+        const requestedReviewers = ((_u = github.context.payload.pull_request) === null || _u === void 0 ? void 0 : _u.requested_reviewers) || [];
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
@@ -13397,7 +13395,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         // Get Arrows and Replace Them   
-        let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
+        let commentBody = ((_v = github.context.payload.comment) === null || _v === void 0 ? void 0 : _v.body) || ((_w = github.context.payload.review) === null || _w === void 0 ? void 0 : _w.body) || "";
         const isReply = commentBody.charAt(0) === ">";
         if (commentBody.includes(">") || commentBody.includes("<")) {
             if (isReply) {
@@ -13453,18 +13451,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
             }
         }
-        //     // Check if Review Requested OR PR Ready For Review
-        //     if (prReadyForReview) {
-        //       setTimeout(function () {
-        //         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-        //           for (const id of asanaTasksIds!) {
-        //             addRequestedReview(id, reviewer, ottoObj);
-        //           }
-        //         }
-        //       }
-        //         , 30000); // Wait 30 seconds
-        //     }
         if (prReviewRequested) {
+            for (const id of asanaTasksIds) {
+                moveTaskToSection(id, TESTING_REVIEW);
+            }
             setTimeout(function () {
                 for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                     for (const id of asanaTasksIds) {
@@ -13492,6 +13482,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
+                    moveTaskToSection(id, prClosedMerged ? RELEASED_BETA : NEXT);
                 }
             }), 60000);
         }
@@ -13603,12 +13594,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
+                const path = (_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
-                if ((_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.in_reply_to_id) {
-                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.original_line}):\n\n${commentBody} </body>`;
+                if ((_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.in_reply_to_id) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -13645,7 +13636,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            console.log(((_1 = error.response) === null || _1 === void 0 ? void 0 : _1.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);

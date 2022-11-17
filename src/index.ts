@@ -55,9 +55,7 @@ export const run = async () => {
       action === "review_requested";
     const prReadyForReview =
       eventName === "pull_request" &&
-      (action === "ready_for_review" ||
-        ((action === "opened" || action === "edited") &&
-          !context.payload.pull_request?.draft));
+      action === "ready_for_review";
     const prReviewSubmitted =
       eventName === "pull_request_review" && action === "submitted";
     const prApproved =
@@ -103,7 +101,7 @@ export const run = async () => {
     const followers = [userObj?.asanaId];
 
     // Add Requested Reviewers to Followers
-    for (const reviewer of !PEER_DEV_requestedReviewersObjs.length? (!DEV_requestedReviewersObjs.length? QA_requestedReviewersObjs:DEV_requestedReviewersObjs):PEER_DEV_requestedReviewersObjs) {
+    for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
       followers.push(reviewer?.asanaId);
     }
 
@@ -132,7 +130,7 @@ export const run = async () => {
 
           // Check If Subtask rejected -> approved
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
-            for (const reviewer of !PEER_DEV_requestedReviewersObjs.length? (!DEV_requestedReviewersObjs.length? QA_requestedReviewersObjs:DEV_requestedReviewersObjs):PEER_DEV_requestedReviewersObjs) {
+            for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
               addRequestedReview(id, reviewer, ottoObj);
             }
           }
@@ -231,21 +229,12 @@ export const run = async () => {
       }
     }
 
-//     // Check if Review Requested OR PR Ready For Review
-//     if (prReadyForReview) {
-//       setTimeout(function () {
-//         for (const reviewer of !DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) {
-//           for (const id of asanaTasksIds!) {
-//             addRequestedReview(id, reviewer, ottoObj);
-//           }
-//         }
-//       }
-//         , 30000); // Wait 30 seconds
-//     }
-
     if (prReviewRequested) {
+      for (const id of asanaTasksIds!) {
+        moveTaskToSection(id, SECTIONS.TESTING_REVIEW);
+      }
       setTimeout(function () {
-        for (const reviewer of !PEER_DEV_requestedReviewersObjs.length? (!DEV_requestedReviewersObjs.length? QA_requestedReviewersObjs:DEV_requestedReviewersObjs):PEER_DEV_requestedReviewersObjs) {
+        for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
           for (const id of asanaTasksIds!) {
             addRequestedReview(id, reviewer, ottoObj);
           }
@@ -274,6 +263,7 @@ export const run = async () => {
         for (const id of asanaTasksIds!) {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
+          moveTaskToSection(id, prClosedMerged ? SECTIONS.RELEASED_BETA : SECTIONS.NEXT);
         }
       }, 60000);
     }
@@ -302,7 +292,7 @@ export const run = async () => {
         const username = reviewer.githubName;
         const team = reviewer.team;
         if (!usersApproved.includes(username)) {
-          team === "PEER" ? is_approved_by_peer = false: (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
+          team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
         }
       });
 
