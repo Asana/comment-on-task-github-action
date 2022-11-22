@@ -261,9 +261,11 @@ export const run = async () => {
     if (prClosedMerged || prReviewChangesRequested) {
       setTimeout(async () => {
         for (const id of asanaTasksIds!) {
+          console.log("ERROR 1");
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
+          console.log("ERROR 2");
           deleteApprovalTasks(approvalSubtasks);
-          console.log("ENTERED");
+          console.log("ERROR 3");
           moveTaskToSection(id, prClosedMerged ? SECTIONS.RELEASED_BETA : SECTIONS.NEXT);
         }
       }, 60000);

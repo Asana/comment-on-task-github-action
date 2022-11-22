@@ -13480,9 +13480,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prClosedMerged || prReviewChangesRequested) {
             setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
+                    console.log("ERROR 1");
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
+                    console.log("ERROR 2");
                     deleteApprovalTasks(approvalSubtasks);
-                    console.log("ENTERED");
+                    console.log("ERROR 3");
                     moveTaskToSection(id, prClosedMerged ? RELEASED_BETA : NEXT);
                 }
             }), 60000);
