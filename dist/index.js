@@ -13667,7 +13667,7 @@ const getAllApprovalSubtasks = (id, creator) => __awaiter(void 0, void 0, void 0
     const subtasks = yield requests_asanaAxios.get(url);
     approvalSubtasks = subtasks.data.data.filter((subtask) => subtask.resource_subtype === "approval" &&
         !subtask.completed &&
-        subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId));
+        (subtask.created_by && subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId)));
     return approvalSubtasks;
 });
 const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void 0, void 0, void 0, function* () {
