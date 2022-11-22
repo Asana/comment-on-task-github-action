@@ -13482,6 +13482,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
+                    console.log("ENTERED");
                     moveTaskToSection(id, prClosedMerged ? RELEASED_BETA : NEXT);
                 }
             }), 60000);
@@ -13671,6 +13672,8 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
     // Get Task
     const taskUrl = `${TASKS_URL}${id}`;
     const task = yield requests_asanaAxios.get(taskUrl).then((response) => response.data.data);
+    console.log(task.memberships);
+    console.log(moveSection);
     for (const membership of task.memberships) {
         // Check If Task Should Not Move
         if (donotMoveSections && donotMoveSections.includes(membership.section.name)) {

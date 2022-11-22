@@ -263,6 +263,7 @@ export const run = async () => {
         for (const id of asanaTasksIds!) {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
+          console.log("ENTERED");
           moveTaskToSection(id, prClosedMerged ? SECTIONS.RELEASED_BETA : SECTIONS.NEXT);
         }
       }, 60000);
@@ -487,6 +488,8 @@ export const moveTaskToSection = async (
   const taskUrl = `${REQUESTS.TASKS_URL}${id}`;
   const task = await asanaAxios.get(taskUrl).then((response) => response.data.data);
 
+  console.log(task.memberships);
+  console.log(moveSection);
   for (const membership of task.memberships) {
 
     // Check If Task Should Not Move
