@@ -13480,11 +13480,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (prClosedMerged || prReviewChangesRequested) {
             setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
-                    console.log("ERROR 1");
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
-                    console.log("ERROR 2");
                     deleteApprovalTasks(approvalSubtasks);
-                    console.log("ERROR 3");
                     moveTaskToSection(id, prClosedMerged ? RELEASED_BETA : NEXT);
                 }
             }), 60000);
@@ -13681,11 +13678,15 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
         }
         // Get Sections of Project
         console.log(membership.project);
+        console.log("ERROR 1");
         const projectId = membership.project.gid;
         const sectionsUrl = `${PROJECTS_URL}${projectId}${SECTIONS_URL}`;
         const sections = yield requests_asanaAxios.get(sectionsUrl).then((response) => response.data.data);
+        console.log("ERROR 2");
         // Get Section To Move Task To
         const section = sections.find((section) => section.name === moveSection);
+        console.log(sections);
+        console.log(section);
         // Move Task
         const url = `${SECTIONS_URL}${section.gid}${ADD_TASK_URL}`;
         yield requests_asanaAxios.post(url, {
@@ -13693,6 +13694,7 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
                 task: id,
             },
         });
+        console.log("ERROR 3");
     }
 });
 const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes) => __awaiter(void 0, void 0, void 0, function* () {

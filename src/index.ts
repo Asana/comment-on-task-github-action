@@ -261,11 +261,8 @@ export const run = async () => {
     if (prClosedMerged || prReviewChangesRequested) {
       setTimeout(async () => {
         for (const id of asanaTasksIds!) {
-          console.log("ERROR 1");
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
-          console.log("ERROR 2");
           deleteApprovalTasks(approvalSubtasks);
-          console.log("ERROR 3");
           moveTaskToSection(id, prClosedMerged ? SECTIONS.RELEASED_BETA : SECTIONS.NEXT);
         }
       }, 60000);
@@ -499,16 +496,21 @@ export const moveTaskToSection = async (
 
     // Get Sections of Project
     console.log(membership.project);
+    console.log("ERROR 1");
+
     const projectId = membership.project.gid;
     const sectionsUrl = `${REQUESTS.PROJECTS_URL}${projectId}${REQUESTS.SECTIONS_URL}`;
     const sections = await asanaAxios.get(sectionsUrl).then((response) => response.data.data);
+    console.log("ERROR 2");
 
     // Get Section To Move Task To
     const section = sections.find(
       (section: any) =>
         section.name === moveSection
     );
-
+    console.log(sections);
+    console.log(section);
+    
     // Move Task
     const url = `${REQUESTS.SECTIONS_URL}${section.gid}${REQUESTS.ADD_TASK_URL}`;
     await asanaAxios.post(url, {
@@ -516,6 +518,7 @@ export const moveTaskToSection = async (
         task: id,
       },
     });
+    console.log("ERROR 3");
   }
 };
 
