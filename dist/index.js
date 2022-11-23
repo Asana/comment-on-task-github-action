@@ -13614,7 +13614,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (action === "edited") {
                 let comments = yield requests_asanaAxios.get(url);
                 const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
-                    comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId) &&
+                    (comment.created_by && comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId)) &&
                     comment.text.includes(commentUrl));
                 commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
                     data: {
@@ -13674,14 +13674,13 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
     // Get Task
     const taskUrl = `${TASKS_URL}${id}`;
     const task = yield requests_asanaAxios.get(taskUrl).then((response) => response.data.data);
-    console.log(task.memberships);
-    console.log(moveSection);
     for (const membership of task.memberships) {
         // Check If Task Should Not Move
         if (donotMoveSections && donotMoveSections.includes(membership.section.name)) {
             continue;
         }
         // Get Sections of Project
+        console.log(membership.project);
         const projectId = membership.project.gid;
         const sectionsUrl = `${PROJECTS_URL}${projectId}${SECTIONS_URL}`;
         const sections = yield requests_asanaAxios.get(sectionsUrl).then((response) => response.data.data);

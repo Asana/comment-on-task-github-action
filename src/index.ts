@@ -407,7 +407,7 @@ export const run = async () => {
         const comment = comments.data.data.find(
           (comment: any) =>
             comment.resource_subtype === "comment_added" &&
-            comment.created_by.gid === ottoObj?.asanaId &&
+            (comment.created_by && comment.created_by.gid === ottoObj?.asanaId) &&
             comment.text.includes(commentUrl)
         );
         commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
@@ -490,8 +490,6 @@ export const moveTaskToSection = async (
   const taskUrl = `${REQUESTS.TASKS_URL}${id}`;
   const task = await asanaAxios.get(taskUrl).then((response) => response.data.data);
 
-  console.log(task.memberships);
-  console.log(moveSection);
   for (const membership of task.memberships) {
 
     // Check If Task Should Not Move
@@ -500,6 +498,7 @@ export const moveTaskToSection = async (
     }
 
     // Get Sections of Project
+    console.log(membership.project);
     const projectId = membership.project.gid;
     const sectionsUrl = `${REQUESTS.PROJECTS_URL}${projectId}${REQUESTS.SECTIONS_URL}`;
     const sections = await asanaAxios.get(sectionsUrl).then((response) => response.data.data);
