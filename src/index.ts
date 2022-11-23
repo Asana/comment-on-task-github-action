@@ -495,30 +495,25 @@ export const moveTaskToSection = async (
     }
 
     // Get Sections of Project
-    console.log(membership.project);
-    console.log("ERROR 1");
-
     const projectId = membership.project.gid;
     const sectionsUrl = `${REQUESTS.PROJECTS_URL}${projectId}${REQUESTS.SECTIONS_URL}`;
     const sections = await asanaAxios.get(sectionsUrl).then((response) => response.data.data);
-    console.log("ERROR 2");
 
     // Get Section To Move Task To
     const section = sections.find(
       (section: any) =>
         section.name === moveSection
     );
-    console.log(sections);
-    console.log(section);
     
     // Move Task
-    const url = `${REQUESTS.SECTIONS_URL}${section.gid}${REQUESTS.ADD_TASK_URL}`;
-    await asanaAxios.post(url, {
-      data: {
-        task: id,
-      },
-    });
-    console.log("ERROR 3");
+    if(section){
+      const url = `${REQUESTS.SECTIONS_URL}${section.gid}${REQUESTS.ADD_TASK_URL}`;
+      await asanaAxios.post(url, {
+        data: {
+          task: id,
+        },
+      });
+    }
   }
 };
 

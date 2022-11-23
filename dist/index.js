@@ -13677,24 +13677,20 @@ const moveTaskToSection = (id, moveSection, donotMoveSections) => __awaiter(void
             continue;
         }
         // Get Sections of Project
-        console.log(membership.project);
-        console.log("ERROR 1");
         const projectId = membership.project.gid;
         const sectionsUrl = `${PROJECTS_URL}${projectId}${SECTIONS_URL}`;
         const sections = yield requests_asanaAxios.get(sectionsUrl).then((response) => response.data.data);
-        console.log("ERROR 2");
         // Get Section To Move Task To
         const section = sections.find((section) => section.name === moveSection);
-        console.log(sections);
-        console.log(section);
         // Move Task
-        const url = `${SECTIONS_URL}${section.gid}${ADD_TASK_URL}`;
-        yield requests_asanaAxios.post(url, {
-            data: {
-                task: id,
-            },
-        });
-        console.log("ERROR 3");
+        if (section) {
+            const url = `${SECTIONS_URL}${section.gid}${ADD_TASK_URL}`;
+            yield requests_asanaAxios.post(url, {
+                data: {
+                    task: id,
+                },
+            });
+        }
     }
 });
 const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes) => __awaiter(void 0, void 0, void 0, function* () {
