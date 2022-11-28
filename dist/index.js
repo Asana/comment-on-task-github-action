@@ -13485,7 +13485,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 });
-            }, 10000); // Timeout 10 seconds in case another job is still creating tasks
+            }, 20000); // Timeout 20 seconds in case another job is still creating tasks
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {

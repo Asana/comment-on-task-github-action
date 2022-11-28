@@ -264,7 +264,7 @@ export const run = async () => {
           }
         }
 
-      }, 10000) // Timeout 10 seconds in case another job is still creating tasks
+      }, 20000) // Timeout 20 seconds in case another job is still creating tasks
     }
 
     if (prReviewSubmitted) {
