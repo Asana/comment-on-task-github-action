@@ -229,17 +229,32 @@ export const run = async () => {
       }
     }
 
-    if (prReviewRequested) {
+    if (prReviewRequested || prReadyForReview) {
+      // Move Tasks to Testing Review
       for (const id of asanaTasksIds!) {
         moveTaskToSection(id, SECTIONS.TESTING_REVIEW);
       }
-      setTimeout(function () {
-        for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
-          for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj);
-          }
+      // Create Approval Tasks For Reviewers
+      for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
+        for (const id of asanaTasksIds!) {
+          addRequestedReview(id, reviewer, ottoObj);
         }
-      }, Math.floor(Math.random() * (40000 - 15000 + 1) + 20000)); // Wait 15-40 seconds
+      }
+    }
+
+    if (prReadyForReview) {
+      setTimeout(async function () {
+        // Get All Approval Tasks
+        for (const id of asanaTasksIds!) {
+          const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
+          console.log("APPROVAL SUBTASKS", approvalSubtasks);
+          // Get Duplicates
+
+          // Delete Duplicates
+          // deleteApprovalTasks(duplicateApprovalSubtasks);
+        }
+
+      }, 10000) // Timeout 10 seconds in case review requested is still creating tasks
     }
 
     if (prReviewSubmitted) {
@@ -504,9 +519,9 @@ export const moveTaskToSection = async (
       (section: any) =>
         section.name === moveSection
     );
-    
+
     // Move Task
-    if(section){
+    if (section) {
       const url = `${REQUESTS.SECTIONS_URL}${section.gid}${REQUESTS.ADD_TASK_URL}`;
       await asanaAxios.post(url, {
         data: {

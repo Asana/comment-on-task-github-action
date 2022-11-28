@@ -13451,17 +13451,31 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
             }
         }
-        if (prReviewRequested) {
+        if (prReviewRequested || prReadyForReview) {
+            // Move Tasks to Testing Review
             for (const id of asanaTasksIds) {
                 moveTaskToSection(id, TESTING_REVIEW);
             }
-            setTimeout(function () {
-                for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
-                    for (const id of asanaTasksIds) {
-                        addRequestedReview(id, reviewer, ottoObj);
-                    }
+            // Create Approval Tasks For Reviewers
+            for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
+                for (const id of asanaTasksIds) {
+                    addRequestedReview(id, reviewer, ottoObj);
                 }
-            }, Math.floor(Math.random() * (40000 - 15000 + 1) + 20000)); // Wait 15-40 seconds
+            }
+        }
+        if (prReadyForReview) {
+            setTimeout(function () {
+                return __awaiter(this, void 0, void 0, function* () {
+                    // Get All Approval Tasks
+                    for (const id of asanaTasksIds) {
+                        const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
+                        console.log("APPROVAL SUBTASKS", approvalSubtasks);
+                        // Get Duplicates
+                        // Delete Duplicates
+                        // deleteApprovalTasks(duplicateApprovalSubtasks);
+                    }
+                });
+            }, 10000); // Timeout 10 seconds in case review requested is still creating tasks
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
