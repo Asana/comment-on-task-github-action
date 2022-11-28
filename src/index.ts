@@ -240,9 +240,7 @@ export const run = async () => {
           addRequestedReview(id, reviewer, ottoObj);
         }
       }
-    }
 
-    if (prReadyForReview) {
       setTimeout(async function () {
         for (const id of asanaTasksIds!) {
           // Get Duplicate Approval Tasks
@@ -266,7 +264,7 @@ export const run = async () => {
           }
         }
 
-      }, 10000) // Timeout 10 seconds in case review requested is still creating tasks
+      }, 10000) // Timeout 10 seconds in case another job is still creating tasks
     }
 
     if (prReviewSubmitted) {

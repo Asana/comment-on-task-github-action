@@ -13462,8 +13462,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     addRequestedReview(id, reviewer, ottoObj);
                 }
             }
-        }
-        if (prReadyForReview) {
             setTimeout(function () {
                 return __awaiter(this, void 0, void 0, function* () {
                     for (const id of asanaTasksIds) {
@@ -13487,7 +13485,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 });
-            }, 10000); // Timeout 10 seconds in case review requested is still creating tasks
+            }, 10000); // Timeout 10 seconds in case another job is still creating tasks
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
