@@ -13462,6 +13462,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     addRequestedReview(id, reviewer, ottoObj);
                 }
             }
+            // Delete Duplicate Tasks
             setTimeout(function () {
                 return __awaiter(this, void 0, void 0, function* () {
                     for (const id of asanaTasksIds) {
@@ -13478,7 +13479,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                             }
                             return counter;
                         }, {});
-                        // Delete Duplicates
+                        // Delete Approval Tasks
                         const duplicateApprovalSubtasks = approvalSubtasks.filter((subtask) => isDuplicate[subtask.gid]);
                         if (duplicateApprovalSubtasks.length > 0) {
                             deleteApprovalTasks(duplicateApprovalSubtasks);

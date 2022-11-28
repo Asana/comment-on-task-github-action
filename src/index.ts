@@ -241,6 +241,7 @@ export const run = async () => {
         }
       }
 
+      // Delete Duplicate Tasks
       setTimeout(async function () {
         for (const id of asanaTasksIds!) {
           // Get Duplicate Approval Tasks
@@ -257,7 +258,7 @@ export const run = async () => {
             return counter;
           }, {});
 
-          // Delete Duplicates
+          // Delete Approval Tasks
           const duplicateApprovalSubtasks = approvalSubtasks.filter((subtask: any) => isDuplicate[subtask.gid])
           if(duplicateApprovalSubtasks.length > 0){
             deleteApprovalTasks(duplicateApprovalSubtasks);
