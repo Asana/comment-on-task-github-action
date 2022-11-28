@@ -244,14 +244,26 @@ export const run = async () => {
 
     if (prReadyForReview) {
       setTimeout(async function () {
-        // Get All Approval Tasks
         for (const id of asanaTasksIds!) {
+          // Get Duplicate Approval Tasks
+          const isDuplicate: any = [];
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
-          console.log("APPROVAL SUBTASKS", approvalSubtasks);
-          // Get Duplicates
+          approvalSubtasks.reduce((counter: any, subtask: any) => {
+            isDuplicate[subtask.gid] = false
+            if (!subtask.completed) {
+              counter[subtask.assignee.gid] = ++counter[subtask.assignee.gid] || 0;
+            }
+            if (counter[subtask.assignee.gid] > 0) {
+              isDuplicate[subtask.gid] = true
+            }
+            return counter;
+          }, {});
 
           // Delete Duplicates
-          // deleteApprovalTasks(duplicateApprovalSubtasks);
+          const duplicateApprovalSubtasks = approvalSubtasks.filter((subtask: any) => isDuplicate[subtask.gid])
+          if(duplicateApprovalSubtasks.length > 0){
+            deleteApprovalTasks(duplicateApprovalSubtasks);
+          }
         }
 
       }, 10000) // Timeout 10 seconds in case review requested is still creating tasks
