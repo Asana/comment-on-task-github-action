@@ -13678,9 +13678,22 @@ const addRequestedReview = (id, reviewer, creator) => __awaiter(void 0, void 0, 
     addApprovalTask(id, reviewer, "Review", "pending");
 });
 const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void 0, function* () {
+    var _2;
     // Delete Approval Tasks
     for (const subtask of approvalSubtasks) {
-        yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
+        try {
+            yield requests_asanaAxios.delete(`${TASKS_URL}${subtask.gid}`);
+        }
+        catch (error) {
+            if (isAxiosError(error)) {
+                console.log(error.response);
+                console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            }
+            if (error instanceof Error)
+                (0,core.setFailed)(error.message);
+            else
+                (0,core.setFailed)("Unknown error");
+        }
     }
 });
 const getAllApprovalSubtasks = (id, creator) => __awaiter(void 0, void 0, void 0, function* () {

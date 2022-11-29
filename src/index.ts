@@ -484,7 +484,16 @@ export const deleteApprovalTasks = async (
 ) => {
   // Delete Approval Tasks
   for (const subtask of approvalSubtasks) {
-    await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
+    try {
+      await asanaAxios.delete(`${REQUESTS.TASKS_URL}${subtask.gid}`);
+    } catch (error) {
+      if (utils.isAxiosError(error)) {
+        console.log(error.response);
+        console.log(error.response?.data || "Unknown error");
+      }
+      if (error instanceof Error) setFailed(error.message);
+      else setFailed("Unknown error");
+    }
   }
 }
 
