@@ -13377,8 +13377,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         deleteApprovalTasks(approvalSubtasks);
                         moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                     }
+                    const today = new Date();
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
+                            due_on: today.toISOString().substring(0, 10),
                             approval_status: ci_status,
                             html_notes: html_action_url
                         },

@@ -142,8 +142,11 @@ export const run = async () => {
             moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
           }
 
+          const today = new Date();
+
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
             data: {
+              due_on: today.toISOString().substring(0, 10),
               approval_status: ci_status,
               html_notes: html_action_url
             },
@@ -260,7 +263,7 @@ export const run = async () => {
 
           // Delete Approval Tasks
           const duplicateApprovalSubtasks = approvalSubtasks.filter((subtask: any) => isDuplicate[subtask.gid])
-          if(duplicateApprovalSubtasks.length > 0){
+          if (duplicateApprovalSubtasks.length > 0) {
             deleteApprovalTasks(duplicateApprovalSubtasks);
           }
         }
