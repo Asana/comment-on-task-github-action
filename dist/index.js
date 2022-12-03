@@ -13531,7 +13531,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     usersRequested.add(reviewerObj);
                 }
             }
-            console.log("usersRequested", usersRequested);
             // Get All Users With Approved Review
             const usersApproved = new Set();
             for (let i = 0; i < reviews.length; i++) {
@@ -13540,8 +13539,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     usersApproved.add(review.user.login);
                 }
             }
-            console.log("usersApproved", usersApproved);
-            console.log("reviews", reviews);
             // Check if PEER/QA/DEV Reviewers Approved
             usersRequested.forEach((reviewer) => {
                 const username = reviewer.githubName;
@@ -13550,10 +13547,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
                 }
             });
-            console.log("is_approved_by_peer", is_approved_by_peer);
-            console.log("is_approved_by_dev", is_approved_by_dev);
-            console.log("is_approved_by_qa", is_approved_by_qa);
-            throw new Error("my error message");
             // Check If Should Create DEV Tasks
             if (is_approved_by_peer && !is_approved_by_dev) {
                 DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
