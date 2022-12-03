@@ -317,7 +317,7 @@ export const run = async () => {
       }
 
       console.log("usersApproved", usersApproved);
-      console.log("requestedReviewersObjs", requestedReviewersObjs);
+      console.log("requestedReviewersObjs", reviews);
       // Check if PEER/QA/DEV Reviewers Approved
       requestedReviewersObjs.forEach((reviewer: any) => {
         const username = reviewer.githubName;

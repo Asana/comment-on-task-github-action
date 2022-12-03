@@ -13530,7 +13530,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
             console.log("usersApproved", usersApproved);
-            console.log("requestedReviewersObjs", requestedReviewersObjs);
+            console.log("requestedReviewersObjs", reviews);
             // Check if PEER/QA/DEV Reviewers Approved
             requestedReviewersObjs.forEach((reviewer) => {
                 const username = reviewer.githubName;
