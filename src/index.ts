@@ -312,6 +312,7 @@ export const run = async () => {
       for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
         if(review.state !== "COMMENTED" || review.state !== "DISMISSED"){
+          console.log(review.state);
           usersRequested.add(review.user.login);
         }
       }
