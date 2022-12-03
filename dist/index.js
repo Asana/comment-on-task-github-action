@@ -13521,6 +13521,15 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let is_approved_by_qa = true;
             let is_approved_by_dev = true;
             let is_approved_by_peer = true;
+            // Get All Users Review Requested
+            const usersRequested = [];
+            for (let i = 0; i < reviews.length; i++) {
+                const review = reviews[i];
+                if (review.state !== "COMMENTED" || review.state !== "DISMISSED") {
+                    usersRequested.push(review.user.login);
+                }
+            }
+            console.log("usersRequested", usersRequested);
             // Get All Users With Approved Review
             const usersApproved = [];
             for (let i = 0; i < reviews.length; i++) {
@@ -13530,7 +13539,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
             console.log("usersApproved", usersApproved);
-            console.log("requestedReviewersObjs", reviews);
+            console.log("reviews", reviews);
             // Check if PEER/QA/DEV Reviewers Approved
             requestedReviewersObjs.forEach((reviewer) => {
                 const username = reviewer.githubName;

@@ -307,6 +307,16 @@ export const run = async () => {
       let is_approved_by_dev = true;
       let is_approved_by_peer = true;
 
+      // Get All Users Review Requested
+      const usersRequested: String[] = [];
+      for (let i = 0; i < reviews.length; i++) {
+        const review = reviews[i];
+        if(review.state !== "COMMENTED" || review.state !== "DISMISSED"){
+          usersRequested.push(review.user.login);
+        }
+      }
+
+      console.log("usersRequested", usersRequested);
       // Get All Users With Approved Review
       const usersApproved: String[] = [];
       for (let i = 0; i < reviews.length; i++) {
@@ -317,7 +327,7 @@ export const run = async () => {
       }
 
       console.log("usersApproved", usersApproved);
-      console.log("requestedReviewersObjs", reviews);
+      console.log("reviews", reviews);
       // Check if PEER/QA/DEV Reviewers Approved
       requestedReviewersObjs.forEach((reviewer: any) => {
         const username = reviewer.githubName;
