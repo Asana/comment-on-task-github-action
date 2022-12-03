@@ -13529,7 +13529,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     usersApproved.push(review.user.login);
                 }
             }
-            // Check if QA/DEV Reviewers Approved
+            console.log("usersApproved", usersApproved);
+            console.log("requestedReviewersObjs", requestedReviewersObjs);
+            // Check if PEER/QA/DEV Reviewers Approved
             requestedReviewersObjs.forEach((reviewer) => {
                 const username = reviewer.githubName;
                 const team = reviewer.team;
@@ -13537,6 +13539,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
                 }
             });
+            throw new Error("my error message");
             // Check If Should Create DEV Tasks
             if (is_approved_by_peer && !is_approved_by_dev) {
                 DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {

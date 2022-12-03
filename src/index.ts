@@ -316,7 +316,9 @@ export const run = async () => {
         }
       }
 
-      // Check if QA/DEV Reviewers Approved
+      console.log("usersApproved", usersApproved);
+      console.log("requestedReviewersObjs", requestedReviewersObjs);
+      // Check if PEER/QA/DEV Reviewers Approved
       requestedReviewersObjs.forEach((reviewer: any) => {
         const username = reviewer.githubName;
         const team = reviewer.team;
@@ -324,7 +326,8 @@ export const run = async () => {
           team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
         }
       });
-
+      
+      throw new Error("my error message"); 
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
