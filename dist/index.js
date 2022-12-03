@@ -13522,20 +13522,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let is_approved_by_dev = true;
             let is_approved_by_peer = true;
             // Get All Users Review Requested
-            const usersRequested = [];
+            const usersRequested = new Set();
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
                 if (review.state !== "COMMENTED" || review.state !== "DISMISSED") {
-                    usersRequested.push(review.user.login);
+                    usersRequested.add(review.user.login);
                 }
             }
             console.log("usersRequested", usersRequested);
             // Get All Users With Approved Review
-            const usersApproved = [];
+            const usersApproved = new Set();
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
                 if (review.state === "APPROVED") {
-                    usersApproved.push(review.user.login);
+                    usersApproved.add(review.user.login);
                 }
             }
             console.log("usersApproved", usersApproved);
@@ -13544,7 +13544,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             requestedReviewersObjs.forEach((reviewer) => {
                 const username = reviewer.githubName;
                 const team = reviewer.team;
-                if (!usersApproved.includes(username)) {
+                if (!usersApproved.has(username)) {
                     team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
                 }
             });
