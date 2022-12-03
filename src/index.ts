@@ -308,12 +308,13 @@ export const run = async () => {
       let is_approved_by_peer = true;
 
       // Get All Users Review Requested
-      const usersRequested = new Set<string>();
+      const usersRequested = new Set<any>();
       for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
+        const githubName = review.user.login;
+        const reviewerObj = users.find((user) => user.githubName === githubName);
         if(review.state !== "COMMENTED" && review.state !== "DISMISSED"){
-          console.log(review.state);
-          usersRequested.add(review.user.login);
+          usersRequested.add(reviewerObj);
         }
       }
 
@@ -329,8 +330,10 @@ export const run = async () => {
 
       console.log("usersApproved", usersApproved);
       console.log("reviews", reviews);
+      
+
       // Check if PEER/QA/DEV Reviewers Approved
-      requestedReviewersObjs.forEach((reviewer: any) => {
+      usersRequested.forEach((reviewer: any) => {
         const username = reviewer.githubName;
         const team = reviewer.team;
         if (!usersApproved.has(username)) {
@@ -338,6 +341,9 @@ export const run = async () => {
         }
       });
       
+      console.log("is_approved_by_peer", is_approved_by_peer);
+      console.log("is_approved_by_dev", is_approved_by_dev);
+      console.log("is_approved_by_qa", is_approved_by_qa);
       throw new Error("my error message"); 
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
