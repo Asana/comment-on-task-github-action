@@ -327,9 +327,10 @@ export const run = async () => {
           usersApproved.add(review.user.login);
         }
       }
-
-      console.log("usersApproved",usersApproved);
+      requestedReviewersObjs
+      console.log("requestedReviewersObjs",requestedReviewersObjs);
       console.log("usersRequested",usersRequested);
+      console.log("usersApproved",usersApproved);
       // Check if PEER/QA/DEV Reviewers Approved
       usersRequested.forEach((reviewer: any) => {
         const username = reviewer.githubName;
