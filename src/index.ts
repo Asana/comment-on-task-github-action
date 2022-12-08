@@ -336,6 +336,10 @@ export const run = async () => {
         }
       });
  
+      console.log("is_approved_by_qa",is_approved_by_qa);
+      console.log("is_approved_by_dev",is_approved_by_dev);
+      console.log("is_approved_by_peer",is_approved_by_peer);
+      throw new Error("message here");
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
