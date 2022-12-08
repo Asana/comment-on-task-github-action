@@ -13523,6 +13523,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let is_approved_by_peer = true;
             // Get All Users Review Requested
             const usersRequested = new Set();
+            console.log(reviews);
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
                 const githubName = review.user.login;

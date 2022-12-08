@@ -309,6 +309,7 @@ export const run = async () => {
 
       // Get All Users Review Requested
       const usersRequested = new Set<any>();
+      console.log(reviews);
       for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
         const githubName = review.user.login;
