@@ -307,9 +307,8 @@ export const run = async () => {
       let is_approved_by_dev = true;
       let is_approved_by_peer = true;
 
-      // Get All Users Review Requested
+      // Get All Users with Submitted Reviews
       const usersRequested = new Set<any>();
-      console.log(reviews);
       for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
         const githubName = review.user.login;
@@ -319,6 +318,9 @@ export const run = async () => {
         }
       }
 
+      // Get All Users with No Submitted Reviews
+      requestedReviewersObjs.forEach((reviewer:any) => usersRequested.add(reviewer));
+
       // Get All Users With Approved Review
       const usersApproved = new Set<string>();
       for (let i = 0; i < reviews.length; i++) {
@@ -327,10 +329,8 @@ export const run = async () => {
           usersApproved.add(review.user.login);
         }
       }
-      requestedReviewersObjs
-      console.log("requestedReviewersObjs",requestedReviewersObjs);
       console.log("usersRequested",usersRequested);
-      console.log("usersApproved",usersApproved);
+
       // Check if PEER/QA/DEV Reviewers Approved
       usersRequested.forEach((reviewer: any) => {
         const username = reviewer.githubName;
@@ -341,9 +341,9 @@ export const run = async () => {
         }
       });
  
-      // console.log("is_approved_by_qa",is_approved_by_qa);
-      // console.log("is_approved_by_dev",is_approved_by_dev);
-      // console.log("is_approved_by_peer",is_approved_by_peer);
+      console.log("is_approved_by_qa",is_approved_by_qa);
+      console.log("is_approved_by_dev",is_approved_by_dev);
+      console.log("is_approved_by_peer",is_approved_by_peer);
       throw new Error("message here");
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
