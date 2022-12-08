@@ -330,7 +330,7 @@ export const run = async () => {
         }
       }
 
-      console.log("requestedReviewersObjs", requestedReviewersObjs);
+      console.log("requestedReviewersObjs", requestedReviewers);
 
       // Get All Users With Changes Reviews
       const usersChanges = new Set<string>();
