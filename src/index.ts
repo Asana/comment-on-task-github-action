@@ -321,6 +321,7 @@ export const run = async () => {
       // Get All Users with No Submitted Reviews
       requestedReviewersObjs.forEach((reviewer:any) => usersRequested.add(reviewer));
 
+
       // Get All Users With Approved Review
       const usersApproved = new Set<string>();
       for (let i = 0; i < reviews.length; i++) {
@@ -329,6 +330,9 @@ export const run = async () => {
           usersApproved.add(review.user.login);
         }
       }
+
+      console.log("usersRequested",usersRequested);
+      console.log("usersApproved",usersApproved);
 
       // Check if PEER/QA/DEV Reviewers Approved
       usersRequested.forEach((reviewer: any) => {
@@ -340,6 +344,10 @@ export const run = async () => {
         }
       });
  
+      console.log("is_approved_by_qa",is_approved_by_qa);
+      console.log("is_approved_by_dev",is_approved_by_dev);
+      console.log("is_approved_by_peer",is_approved_by_peer);
+      throw new Error("message");
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
