@@ -337,11 +337,16 @@ export const run = async () => {
         const githubName = review.user.login;
         const reviewerObj = users.find((user) => user.githubName === githubName);
         //if did not approve and not pending and changes requested
+        console.log("githubName", githubName);
+        console.log("pending", requestedReviewersObjs.includes(reviewerObj));
+        console.log("approved", usersApproved.has(githubName));
+        console.log("changes requested", review.state === "CHANGES_REQUESTED");
         if (!usersApproved.has(githubName) && !requestedReviewersObjs.includes(reviewerObj) && review.state === "CHANGES_REQUESTED") {
           usersChanges.add(review.user.login);
         }
       }
 
+      throw new Error("eerror")
       console.log("usersRequested", usersRequested);
       console.log("usersApproved", usersApproved);
       console.log("usersChanges", usersChanges);
