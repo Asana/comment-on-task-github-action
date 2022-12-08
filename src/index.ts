@@ -313,14 +313,13 @@ export const run = async () => {
         const review = reviews[i];
         const githubName = review.user.login;
         const reviewerObj = users.find((user) => user.githubName === githubName);
-        if(review.state !== "COMMENTED" && review.state !== "DISMISSED"){
+        if (review.state !== "COMMENTED" && review.state !== "DISMISSED") {
           usersRequested.add(reviewerObj);
         }
       }
 
       // Get All Users with No Submitted Reviews
-      requestedReviewersObjs.forEach((reviewer:any) => usersRequested.add(reviewer));
-
+      requestedReviewersObjs.forEach((reviewer: any) => usersRequested.add(reviewer));
 
       // Get All Users With Approved Review
       const usersApproved = new Set<string>();
@@ -331,29 +330,39 @@ export const run = async () => {
         }
       }
 
-      console.log("usersRequested",usersRequested);
-      console.log("usersApproved",usersApproved);
+      // Get All Users With Changes Reviews
+      const usersChanges = new Set<string>();
+      for (let i = 0; i < reviews.length; i++) {
+        const review = reviews[i];
+        const githubName = review.user.login;
+        const reviewerObj = users.find((user) => user.githubName === githubName);
+        //if did not approve and not pending and changes requested
+        if (!usersApproved.has(githubName) && !requestedReviewersObjs.includes(reviewerObj) && review.state === "CHANGES_REQUESTED") {
+          usersChanges.add(review.user.login);
+        }
+      }
+
+      console.log("usersRequested", usersRequested);
+      console.log("usersApproved", usersApproved);
+      console.log("usersChanges", usersChanges);
 
       // Check if PEER/QA/DEV Reviewers Approved
       usersRequested.forEach((reviewer: any) => {
         const username = reviewer.githubName;
         const team = reviewer.team;
         if (!usersApproved.has(username)) {
-          console.log("not approved username",username);
           team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
         }
       });
- 
-      console.log("is_approved_by_qa",is_approved_by_qa);
-      console.log("is_approved_by_dev",is_approved_by_dev);
-      console.log("is_approved_by_peer",is_approved_by_peer);
-      throw new Error("message");
+
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
-          followers.push(reviewer?.asanaId);
-          for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj);
+          if (!usersChanges.has(reviewer.githubName)) {
+            followers.push(reviewer?.asanaId);
+            for (const id of asanaTasksIds!) {
+              addRequestedReview(id, reviewer, ottoObj);
+            }
           }
         });
       }
@@ -361,9 +370,11 @@ export const run = async () => {
       // Check If Should Create QA Tasks
       if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
         QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
-          followers.push(reviewer?.asanaId);
-          for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj);
+          if (!usersChanges.has(reviewer.githubName)) {
+            followers.push(reviewer?.asanaId);
+            for (const id of asanaTasksIds!) {
+              addRequestedReview(id, reviewer, ottoObj);
+            }
           }
         });
       }
