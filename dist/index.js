@@ -13541,26 +13541,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     usersApproved.add(review.user.login);
                 }
             }
-            console.log("requestedReviewersObjs", requestedReviewers);
-            // Get All Users With Changes Reviews
-            const usersChanges = new Set();
-            for (let i = 0; i < reviews.length; i++) {
-                const review = reviews[i];
-                const githubName = review.user.login;
-                const reviewerObj = users.find((user) => user.githubName === githubName);
-                //if did not approve and not pending and changes requested
-                console.log("githubName", githubName);
-                console.log("pending", requestedReviewersObjs.includes(reviewerObj));
-                console.log("approved", usersApproved.has(githubName));
-                console.log("changes requested", review.state === "CHANGES_REQUESTED");
-                if (!usersApproved.has(githubName) && !requestedReviewersObjs.includes(reviewerObj) && review.state === "CHANGES_REQUESTED") {
-                    usersChanges.add(review.user.login);
-                }
-            }
-            throw new Error("eerror");
-            console.log("usersRequested", usersRequested);
-            console.log("usersApproved", usersApproved);
-            console.log("usersChanges", usersChanges);
             // Check if PEER/QA/DEV Reviewers Approved
             usersRequested.forEach((reviewer) => {
                 const username = reviewer.githubName;
@@ -13572,22 +13552,18 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Check If Should Create DEV Tasks
             if (is_approved_by_peer && !is_approved_by_dev) {
                 DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
-                    if (!usersChanges.has(reviewer.githubName)) {
-                        followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
-                        for (const id of asanaTasksIds) {
-                            addRequestedReview(id, reviewer, ottoObj);
-                        }
+                    followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
+                    for (const id of asanaTasksIds) {
+                        addRequestedReview(id, reviewer, ottoObj);
                     }
                 }));
             }
             // Check If Should Create QA Tasks
             if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
                 QA_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
-                    if (!usersChanges.has(reviewer.githubName)) {
-                        followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
-                        for (const id of asanaTasksIds) {
-                            addRequestedReview(id, reviewer, ottoObj);
-                        }
+                    followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
+                    for (const id of asanaTasksIds) {
+                        addRequestedReview(id, reviewer, ottoObj);
                     }
                 }));
             }
