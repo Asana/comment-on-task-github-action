@@ -24,7 +24,7 @@ export const run = async () => {
     // Store Constant Values
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
     const action_url = getInput(INPUTS.ACTION_URL);
-    const pr_description = getInput(INPUTS.PR_DESCRIPTION);
+    const new_pr_description = getInput(INPUTS.PR_DESCRIPTION);
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
@@ -126,21 +126,21 @@ export const run = async () => {
       if (ci_status === "edit_pr_description" && pullRequestId == 540) {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
-        let body = await githubAxios.get(githubUrl).then((response) => response.data);
+        let data = await githubAxios.get(githubUrl).then((response) => response.data);
 
         // pullRequestDescription
-        if (body.includes("A list of unique sandbox sites was created")) {
-          console.log(body)
+        if (data.body.includes("A list of unique sandbox sites was created")) {
+          console.log(data)
           throw new Error("HELLO");
-          body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, pr_description);
-          console.log("new body");
-          console.log(body);
+          data = data.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
+          console.log("new data");
+          console.log(data);
         } else {
-          body = body.concat("\n\n" + pr_description)
+          data = data.concat("\n\n" + new_pr_description)
         }
 
         await githubAxios.patch(githubUrl, {
-          body
+          body: data.body
         });
 
       }

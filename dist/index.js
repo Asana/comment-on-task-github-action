@@ -13294,7 +13294,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Store Constant Values
         const ci_status = (0,core.getInput)(COMMENT_TEXT);
         const action_url = (0,core.getInput)(ACTION_URL);
-        const pr_description = (0,core.getInput)(PR_DESCRIPTION);
+        const new_pr_description = (0,core.getInput)(PR_DESCRIPTION);
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
         const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
@@ -13365,20 +13365,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (ci_status === "edit_pr_description" && pullRequestId == 540) {
                 // Retrieve Body of PR
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
-                let body = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
+                let data = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
                 // pullRequestDescription
-                if (body.includes("A list of unique sandbox sites was created")) {
-                    console.log(body);
+                if (data.body.includes("A list of unique sandbox sites was created")) {
+                    console.log(data);
                     throw new Error("HELLO");
-                    body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, pr_description);
-                    console.log("new body");
-                    console.log(body);
+                    data = data.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
+                    console.log("new data");
+                    console.log(data);
                 }
                 else {
-                    body = body.concat("\n\n" + pr_description);
+                    data = data.concat("\n\n" + new_pr_description);
                 }
                 yield requests_githubAxios.patch(githubUrl, {
-                    body
+                    body: data.body
                 });
             }
             const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
