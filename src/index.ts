@@ -24,6 +24,7 @@ export const run = async () => {
     // Store Constant Values
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
     const action_url = getInput(INPUTS.ACTION_URL);
+    const pr_description = getInput(INPUTS.PR_DESCRIPTION);
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
@@ -121,6 +122,21 @@ export const run = async () => {
 
     // Check if Automated CI Testing
     if (prSynchronize || prPush) {
+
+      if (ci_status === "edit_pr_description") {
+        // Retrieve Body of PR
+        const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
+        const body = await githubAxios.get(githubUrl).then((response) => response.data.body);
+        console.log("pr_description");
+        console.log(pr_description);
+        await githubAxios.patch(githubUrl, {
+          data: {
+            body: body.concat("\n updated body")
+          },
+        });
+        return;
+      }
+
       const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`
       for (const id of asanaTasksIds!) {
         const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
@@ -342,20 +358,20 @@ export const run = async () => {
       // Check If Should Create DEV Tasks
       if (is_approved_by_peer && !is_approved_by_dev) {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
-            followers.push(reviewer?.asanaId);
-            for (const id of asanaTasksIds!) {
-              addRequestedReview(id, reviewer, ottoObj);
-            }
+          followers.push(reviewer?.asanaId);
+          for (const id of asanaTasksIds!) {
+            addRequestedReview(id, reviewer, ottoObj);
+          }
         });
       }
 
       // Check If Should Create QA Tasks
       if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
         QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
-            followers.push(reviewer?.asanaId);
-            for (const id of asanaTasksIds!) {
-              addRequestedReview(id, reviewer, ottoObj);
-            }
+          followers.push(reviewer?.asanaId);
+          for (const id of asanaTasksIds!) {
+            addRequestedReview(id, reviewer, ottoObj);
+          }
         });
       }
 
