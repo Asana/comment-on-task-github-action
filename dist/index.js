@@ -13369,9 +13369,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 console.log("body");
                 console.log(body);
                 yield requests_githubAxios.patch(githubUrl, {
-                    data: {
-                        body: "HELLO"
-                    },
+                    body: "HELLO"
                 });
                 throw new Error("HELLO");
             }

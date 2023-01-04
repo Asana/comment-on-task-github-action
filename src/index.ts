@@ -130,9 +130,7 @@ export const run = async () => {
         console.log("body");
         console.log(body);
         await githubAxios.patch(githubUrl, {
-          data: {
-            body: "HELLO"
-          },
+          body: "HELLO"
         });
         throw new Error("HELLO");
       }
