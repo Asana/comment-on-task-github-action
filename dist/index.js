@@ -13365,21 +13365,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (ci_status === "edit_pr_description" && pullRequestId == 540) {
                 // Retrieve Body of PR
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
-                let data = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
+                let body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
                 // pullRequestDescription
-                if (data.body.includes("A list of unique sandbox sites was created")) {
-                    console.log(data);
-                    throw new Error("HELLO");
-                    data = data.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
-                    console.log("new data");
-                    console.log(data);
+                if (body.includes("A list of unique sandbox sites was created")) {
+                    body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
+                    console.log("new body");
+                    console.log(body);
                 }
                 else {
-                    data = data.concat("\n\n" + new_pr_description);
+                    body = body.concat("\n\n" + new_pr_description);
                 }
                 yield requests_githubAxios.patch(githubUrl, {
-                    body: data.body
+                    body
                 });
+                throw new Error("HELLO");
             }
             const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
             for (const id of asanaTasksIds) {
