@@ -136,7 +136,7 @@ export const run = async () => {
           console.log("match");
           console.log(match);
 
-          body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
+          body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n/ig, new_pr_description);
         } else {
           body = body.concat("\n\n" + new_pr_description)
         }
