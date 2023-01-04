@@ -138,6 +138,7 @@ export const run = async () => {
         await githubAxios.patch(githubUrl, {
           body
         });
+        return;
       }
 
       const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`

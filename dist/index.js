@@ -13376,6 +13376,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 yield requests_githubAxios.patch(githubUrl, {
                     body
                 });
+                return;
             }
             const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
             for (const id of asanaTasksIds) {
