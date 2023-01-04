@@ -127,12 +127,16 @@ export const run = async () => {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         let body = await githubAxios.get(githubUrl).then((response) => response.data.body);
-        let data = await githubAxios.get(githubUrl).then((response) => response.data);
-        console.log(data)
 
         // pullRequestDescription
         if (body.includes("A list of unique sandbox sites was created")) {
-          body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n/ig, new_pr_description);
+          const match = body.match(
+            /A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n/ig
+          );
+          console.log("match");
+          console.log(match);
+
+          body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
         } else {
           body = body.concat("\n\n" + new_pr_description)
         }
