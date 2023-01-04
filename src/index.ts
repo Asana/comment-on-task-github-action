@@ -127,8 +127,8 @@ export const run = async () => {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         const body = await githubAxios.get(githubUrl).then((response) => response.data.body);
-        console.log("pr_description");
-        console.log(pr_description);
+        console.log("body");
+        console.log(body);
         await githubAxios.patch(githubUrl, {
           data: {
             body: "HELLO"

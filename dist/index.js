@@ -13366,8 +13366,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Retrieve Body of PR
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
                 const body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
-                console.log("pr_description");
-                console.log(pr_description);
+                console.log("body");
+                console.log(body);
                 yield requests_githubAxios.patch(githubUrl, {
                     data: {
                         body: "HELLO"
