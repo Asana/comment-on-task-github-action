@@ -13373,8 +13373,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         body: "HELLO"
                     },
                 });
-                console.log("HELLO");
-                return;
+                throw new Error("HELLO");
             }
             const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
             for (const id of asanaTasksIds) {
