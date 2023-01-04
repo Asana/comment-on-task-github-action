@@ -127,6 +127,8 @@ export const run = async () => {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         let body = await githubAxios.get(githubUrl).then((response) => response.data.body);
+        let data = await githubAxios.get(githubUrl).then((response) => response.data);
+        console.log(data)
 
         // pullRequestDescription
         if (body.includes("A list of unique sandbox sites was created")) {

@@ -13366,6 +13366,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Retrieve Body of PR
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
                 let body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
+                let data = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
+                console.log(data);
                 // pullRequestDescription
                 if (body.includes("A list of unique sandbox sites was created")) {
                     const match = body.match(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig);
