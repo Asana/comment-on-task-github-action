@@ -13368,19 +13368,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 let body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
                 // pullRequestDescription
                 if (body.includes("A list of unique sandbox sites was created")) {
-                    const match = body.match(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig);
-                    console.log("match");
-                    console.log(match);
                     body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig, new_pr_description);
                 }
                 else {
                     body = body.concat("\n\n" + new_pr_description);
                 }
-                console.log(body);
                 yield requests_githubAxios.patch(githubUrl, {
                     body
                 });
-                throw new Error("HELLO");
             }
             const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
             for (const id of asanaTasksIds) {
