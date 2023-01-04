@@ -13365,9 +13365,15 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (ci_status === "edit_pr_description" && pullRequestId == 540) {
                 // Retrieve Body of PR
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
-                const body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
+                let body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
+                if (body.includes("A list of unique sandbox sites was created")) {
+                    body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig, pr_description);
+                }
+                else {
+                    body = body.concat("\n\n" + pr_description);
+                }
                 yield requests_githubAxios.patch(githubUrl, {
-                    body: body.concat(pr_description)
+                    body
                 });
                 throw new Error("HELLO");
             }
