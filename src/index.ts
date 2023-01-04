@@ -131,7 +131,7 @@ export const run = async () => {
         // pullRequestDescription
         if (body.includes("A list of unique sandbox sites was created")) {
           const match = body.match(
-            /A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n/ig
+            /A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig
           );
           console.log("match");
           console.log(match);
@@ -141,6 +141,7 @@ export const run = async () => {
           body = body.concat("\n\n" + new_pr_description)
         }
         
+        console.log(body)
         await githubAxios.patch(githubUrl, {
           body
         });
