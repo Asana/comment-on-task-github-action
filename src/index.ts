@@ -123,7 +123,7 @@ export const run = async () => {
     // Check if Automated CI Testing
     if (prSynchronize || prPush) {
 
-      if (ci_status === "edit_pr_description") {
+      if (ci_status === "edit_pr_description" && pullRequestId == 540) {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         const body = await githubAxios.get(githubUrl).then((response) => response.data.body);
