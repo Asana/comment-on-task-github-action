@@ -13367,7 +13367,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
                 let body = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
                 if (body.includes("A list of unique sandbox sites was created")) {
-                    body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig, pr_description);
+                    body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, pr_description);
                 }
                 else {
                     body = body.concat("\n\n" + pr_description);
