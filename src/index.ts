@@ -22,9 +22,10 @@ export const run = async () => {
     console.log("context.payload", context.payload);
 
     // Store Constant Values
+    const today = new Date();
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
     const action_url = getInput(INPUTS.ACTION_URL);
-    const new_pr_description = getInput(INPUTS.PR_DESCRIPTION);
+    const new_pr_description = `${today} \n ${getInput(INPUTS.PR_DESCRIPTION)}`;
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
@@ -126,13 +127,12 @@ export const run = async () => {
       if (ci_status === "edit_pr_description" && pullRequestId == 540) {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
-        let body = await githubAxios.get(githubUrl).then((response) => response.data.body);
+        let body = "";
 
-        // pullRequestDescription
-        if (body.includes("A list of unique sandbox sites was created")) {
-          body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig, new_pr_description);
+        if (pullRequestDescription?.includes("A list of unique sandbox sites was created")) {
+          body = pullRequestDescription.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig, new_pr_description);
         } else {
-          body = body.concat("\n\n" + new_pr_description)
+          body = pullRequestDescription?.concat("\n\n" + new_pr_description) || ""
         }
         
         await githubAxios.patch(githubUrl, {
@@ -160,8 +160,6 @@ export const run = async () => {
             deleteApprovalTasks(approvalSubtasks);
             moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
           }
-
-          const today = new Date();
 
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
             data: {
