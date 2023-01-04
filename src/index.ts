@@ -124,10 +124,9 @@ export const run = async () => {
     // Check if Automated CI Testing
     if (prSynchronize || prPush) {
 
-      if (ci_status === "edit_pr_description" && pullRequestId == 540) {
+      if (ci_status === "edit_pr_description") {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
-        let pullRequestDescription = await githubAxios.get(githubUrl).then( (response )=> response.data.body);
         let body = "";
 
         if (pullRequestDescription?.includes("A list of unique sandbox sites was created")) {
