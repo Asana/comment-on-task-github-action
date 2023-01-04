@@ -126,11 +126,13 @@ export const run = async () => {
       if (ci_status === "edit_pr_description" && pullRequestId == 540) {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
-        let body = await githubAxios.get(githubUrl).then((response) => response.data.body);
+        let body = await githubAxios.get(githubUrl).then((response) => response.data);
 
         // pullRequestDescription
         if (body.includes("A list of unique sandbox sites was created")) {
-          body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/g, pr_description);
+          console.log(body)
+          throw new Error("HELLO");
+          body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, pr_description);
           console.log("new body");
           console.log(body);
         } else {
@@ -141,7 +143,6 @@ export const run = async () => {
           body
         });
 
-        throw new Error("HELLO");
       }
 
       const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`
