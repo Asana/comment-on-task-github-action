@@ -13295,7 +13295,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const today = new Date();
         const ci_status = (0,core.getInput)(COMMENT_TEXT);
         const action_url = (0,core.getInput)(ACTION_URL);
-        const new_pr_description = `${today} \n ${(0,core.getInput)(PR_DESCRIPTION)}`;
+        const new_pr_description = `${today.toDateString()} \n ${(0,core.getInput)(PR_DESCRIPTION)}`;
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
         const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);

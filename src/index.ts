@@ -25,7 +25,7 @@ export const run = async () => {
     const today = new Date();
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
     const action_url = getInput(INPUTS.ACTION_URL);
-    const new_pr_description = `${today} \n ${getInput(INPUTS.PR_DESCRIPTION)}`;
+    const new_pr_description = `${today.toDateString()} \n ${getInput(INPUTS.PR_DESCRIPTION)}`;
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
