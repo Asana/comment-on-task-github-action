@@ -13295,7 +13295,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const today = new Date();
         const ci_status = (0,core.getInput)(COMMENT_TEXT);
         const action_url = (0,core.getInput)(ACTION_URL);
-        const new_pr_description = `## ${today.toDateString()} ## \n ${(0,core.getInput)(PR_DESCRIPTION)}`;
+        const todayArray = today.toISOString().split('T');
+        const timeArray = todayArray[1].split(':');
+        const formattedDate = todayArray[0] + " " + timeArray[0] + ":" + timeArray[1] + " UTC";
+        const new_pr_description = `## CI/QA Testing Sandbox (${formattedDate}) ## \n ${(0,core.getInput)(PR_DESCRIPTION)}`;
         const mentionUrl = "https://app.asana.com/0/";
         const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
         const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
@@ -13369,7 +13372,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 let pullRequestDescription = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
                 let body = "";
                 if (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.includes("A list of unique sandbox sites was created")) {
-                    body = pullRequestDescription.replace(/## (Sun|Mon|Tue|Wed|Thu|Fri|Sat)(.|\n|\r)*A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases./ig, new_pr_description);
+                    body = pullRequestDescription.replace(/## CI\/QA Testing Sandbox(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview release zip files./ig, new_pr_description);
                 }
                 else {
                     body = (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.concat("\n\n" + new_pr_description)) || "";
