@@ -130,7 +130,7 @@ export const run = async () => {
 
         // pullRequestDescription
         if (body.includes("A list of unique sandbox sites was created")) {
-          body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, pr_description);
+          body = body.replace(/A list of unique sandbox sites was created(.|\n)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/g, pr_description);
           console.log("new body");
           console.log(body);
         } else {
