@@ -130,6 +130,12 @@ export const run = async () => {
 
         // pullRequestDescription
         if (body.includes("A list of unique sandbox sites was created")) {
+          const match = body.match(
+            /A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig
+          );
+          console.log("match");
+          console.log(match);
+
           body = body.replace(/A list of unique sandbox sites was created(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview releases.\n\<\/details\>/ig, new_pr_description);
           console.log("new body");
           console.log(body);
