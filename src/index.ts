@@ -131,9 +131,10 @@ export const run = async () => {
         console.log(pr_description);
         await githubAxios.patch(githubUrl, {
           data: {
-            body: body.concat("\n updated body")
+            body: "HELLO"
           },
         });
+        console.log("HELLO");
         return;
       }
 

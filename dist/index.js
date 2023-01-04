@@ -13370,9 +13370,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(pr_description);
                 yield requests_githubAxios.patch(githubUrl, {
                     data: {
-                        body: body.concat("\n updated body")
+                        body: "HELLO"
                     },
                 });
+                console.log("HELLO");
                 return;
             }
             const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
