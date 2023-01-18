@@ -3,7 +3,7 @@ description: 'Check pull request description for specific Asana task URLs and po
 author: Asana
 branding:
   icon: circle
-  color: green
+  color: red
 inputs:
   asana-secret:
     description: 'The Asana secret for the action. Read more about how to generate this secret at https://github.com/Asana/create-app-attachment-github-action#step-2-set-up-a-repository-secret-for-the-secret-token'
