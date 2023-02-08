@@ -1,4 +1,4 @@
-import { getInput, setFailed } from "@actions/core";
+import { getInput, setFailed, setOutput } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
@@ -486,6 +486,12 @@ export const run = async () => {
         });
       }
     }
+
+    setOutput(`event`, eventName);
+    setOutput(`action`, action);
+    setOutput(`followersStatus`, followersStatus);
+    setOutput("commentStatus", commentResult.status);
+    setOutput("comment", commentText);
 
   } catch (error) {
     if (utils.isAxiosError(error)) {

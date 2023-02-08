@@ -15596,6 +15596,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 });
             }
         }
+        (0,core.setOutput)(`event`, eventName);
+        (0,core.setOutput)(`action`, action);
+        (0,core.setOutput)(`followersStatus`, followersStatus);
+        (0,core.setOutput)("commentStatus", commentResult.status);
+        (0,core.setOutput)("comment", commentText);
     }
     catch (error) {
         if (isAxiosError(error)) {
