@@ -1,4 +1,4 @@
-import { getInput, setFailed, setOutput } from "@actions/core";
+import { getInput, setFailed } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
@@ -497,14 +497,6 @@ export const run = async () => {
   }
 };
 
-// export const setOutput(name, value) {
-//   const filePath = process.env['GITHUB_OUTPUT'] || '';
-//   if (filePath) {
-//       return file_command_1.issueFileCommand('OUTPUT', file_command_1.prepareKeyValueMessage(name, value));
-//   }
-//   process.stdout.write(os.EOL);
-//   command_1.issueCommand('set-output', { name }, utils_1.toCommandValue(value));
-// }
 export const addRequestedReview = async (
   id: String,
   reviewer: any,

@@ -15608,14 +15608,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setFailed)("Unknown error");
     }
 });
-// export const setOutput(name, value) {
-//   const filePath = process.env['GITHUB_OUTPUT'] || '';
-//   if (filePath) {
-//       return file_command_1.issueFileCommand('OUTPUT', file_command_1.prepareKeyValueMessage(name, value));
-//   }
-//   process.stdout.write(os.EOL);
-//   command_1.issueCommand('set-output', { name }, utils_1.toCommandValue(value));
-// }
 const addRequestedReview = (id, reviewer, creator) => __awaiter(void 0, void 0, void 0, function* () {
     const approvalSubtask = yield getApprovalSubtask(id, false, reviewer, creator);
     // If Request Reviewer already has incomplete subtask
