@@ -487,12 +487,6 @@ export const run = async () => {
       }
     }
 
-    setOutput(`event`, eventName);
-    setOutput(`action`, action);
-
-    setOutput(`followersStatus`, followersStatus);
-    setOutput("commentStatus", commentResult.status);
-    setOutput("comment", commentText);
   } catch (error) {
     if (utils.isAxiosError(error)) {
       console.log(error.response);
@@ -503,6 +497,14 @@ export const run = async () => {
   }
 };
 
+// export const setOutput(name, value) {
+//   const filePath = process.env['GITHUB_OUTPUT'] || '';
+//   if (filePath) {
+//       return file_command_1.issueFileCommand('OUTPUT', file_command_1.prepareKeyValueMessage(name, value));
+//   }
+//   process.stdout.write(os.EOL);
+//   command_1.issueCommand('set-output', { name }, utils_1.toCommandValue(value));
+// }
 export const addRequestedReview = async (
   id: String,
   reviewer: any,
