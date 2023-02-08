@@ -5,6 +5,14 @@ branding:
   icon: circle
   color: green
 inputs:
+  github-pat:
+    description: 'The GitHub personal access token for the action.'
+    required: false
+    default: ''
+  asana-pat:
+    description: 'The Asana personal access token for the action.'
+    required: false
+    default: ''
   asana-secret:
     description: 'The Asana secret for the action. Read more about how to generate this secret at https://github.com/Asana/create-app-attachment-github-action#step-2-set-up-a-repository-secret-for-the-secret-token'
     required: true
