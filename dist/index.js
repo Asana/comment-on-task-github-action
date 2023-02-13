@@ -15596,15 +15596,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Prepare Comment Text for SetOutput Command
-        if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
-            commentText = commentText.replace(/\(/g, "\\(");
-            commentText = commentText.replace(/\)/g, "\\)");
-            commentText = commentText.replace(/\</g, "\\<");
-            commentText = commentText.replace(/\>/g, "\\>");
-            commentText = commentText.replace(/\"/g, "");
-            commentText = commentText.replace(/\'/g, "");
-            console.log(commentText);
-        }
+        commentText = commentText.replace(/\(/g, "\\(");
+        commentText = commentText.replace(/\)/g, "\\)");
+        commentText = commentText.replace(/\</g, "\\<");
+        commentText = commentText.replace(/\>/g, "\\>");
+        commentText = commentText.replace(/\"/g, "");
+        commentText = commentText.replace(/\'/g, "");
         (0,core.setOutput)(`event`, eventName);
         (0,core.setOutput)(`action`, action);
         (0,core.setOutput)(`followersStatus`, followersStatus);
