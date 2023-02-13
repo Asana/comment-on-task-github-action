@@ -204,13 +204,14 @@ export const run = async () => {
         commentBody = commentBody.replace(/>/g, "");
         commentBody = commentBody.replace(/</g, "");
       }
+
+      if(pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
+        commentBody = commentBody.replace(/>/g, "");
+        commentBody = commentBody.replace(/</g, "");
+      }
     }
 
-    if(pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
-      console.log(commentBody);
-      // throw console.error("STOP");
-      
-    }
+
     // https://github.com/nsquared-team/blinkmetrics-app/pull/133
     // Get Images/Links and Attach Them 
     const links = commentBody.match(
