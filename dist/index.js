@@ -15345,6 +15345,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         if (pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
             console.log(commentBody);
+            throw console.error("STOP");
         }
         // https://github.com/nsquared-team/blinkmetrics-app/pull/133
         // Get Images/Links and Attach Them 
