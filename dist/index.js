@@ -15599,6 +15599,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
             commentText = commentText.replace(/\(/g, "\\(");
             commentText = commentText.replace(/\)/g, "\\)");
+            commentText = commentText.replace(/\</g, "\\<");
+            commentText = commentText.replace(/\>/g, "\\>");
             console.log(commentText);
         }
         (0,core.setOutput)(`event`, eventName);

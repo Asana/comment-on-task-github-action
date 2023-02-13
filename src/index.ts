@@ -492,6 +492,8 @@ export const run = async () => {
     if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
       commentText = commentText.replace(/\(/g, "\\(");
       commentText = commentText.replace(/\)/g, "\\)");
+      commentText = commentText.replace(/\</g, "\\<");
+      commentText = commentText.replace(/\>/g, "\\>");
       console.log(commentText);
     }
 
