@@ -492,6 +492,9 @@ export const run = async () => {
     setOutput(`action`, action);
     setOutput(`followersStatus`, followersStatus);
     setOutput("commentStatus", commentResult.status);
+    if(pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
+      console.log(commentText);
+    }
     setOutput("comment", commentText);
 
   } catch (error) {
