@@ -208,7 +208,7 @@ export const run = async () => {
 
     if(pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
       console.log(commentBody);
-      throw console.error("STOP");
+      // throw console.error("STOP");
       
     }
     // https://github.com/nsquared-team/blinkmetrics-app/pull/133
