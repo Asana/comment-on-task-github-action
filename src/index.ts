@@ -494,6 +494,8 @@ export const run = async () => {
       commentText = commentText.replace(/\)/g, "\\)");
       commentText = commentText.replace(/\</g, "\\<");
       commentText = commentText.replace(/\>/g, "\\>");
+      commentText = commentText.replace(/\"/g, "");
+      commentText = commentText.replace(/\'/g, "");
       console.log(commentText);
     }
 
