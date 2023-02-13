@@ -15343,6 +15343,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody = commentBody.replace(/</g, "");
             }
         }
+        if (pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
+            console.log(commentBody);
+        }
+        // https://github.com/nsquared-team/blinkmetrics-app/pull/133
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
         links.forEach((link) => {

@@ -206,6 +206,10 @@ export const run = async () => {
       }
     }
 
+    if(pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
+      console.log(commentBody);
+    }
+    // https://github.com/nsquared-team/blinkmetrics-app/pull/133
     // Get Images/Links and Attach Them 
     const links = commentBody.match(
       /\bhttps?:\/\/\S+[\w|\/]/gi
