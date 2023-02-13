@@ -15338,14 +15338,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody.shift();
                 commentBody = commentBody.join("");
             }
-            else {
-                commentBody = commentBody.replace(/>/g, "");
-                commentBody = commentBody.replace(/</g, "");
-            }
-            if (pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
-                commentBody = commentBody.replace(/>/g, "");
-                commentBody = commentBody.replace(/</g, "");
-            }
+            commentBody = commentBody.replace(/>/g, "");
+            commentBody = commentBody.replace(/</g, "");
         }
         // https://github.com/nsquared-team/blinkmetrics-app/pull/133
         // Get Images/Links and Attach Them 

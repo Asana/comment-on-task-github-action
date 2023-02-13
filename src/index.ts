@@ -27,7 +27,7 @@ export const run = async () => {
     const action_url = getInput(INPUTS.ACTION_URL);
     const todayArray = today.toISOString().split('T')
     const timeArray = todayArray[1].split(':')
-    const formattedDate = todayArray[0]+" " + timeArray[0] + ":" + timeArray[1] + " UTC"
+    const formattedDate = todayArray[0] + " " + timeArray[0] + ":" + timeArray[1] + " UTC"
     const new_pr_description = `## CI/QA Testing Sandbox (${formattedDate}) ## \n ${getInput(INPUTS.PR_DESCRIPTION)}`;
     const mentionUrl = "https://app.asana.com/0/";
     const repoName = context.payload.repository?.full_name;
@@ -138,7 +138,7 @@ export const run = async () => {
         } else {
           body = pullRequestDescription?.concat("\n\n" + new_pr_description) || ""
         }
-        
+
         await githubAxios.patch(githubUrl, {
           body
         });
@@ -200,15 +200,9 @@ export const run = async () => {
         });
         commentBody.shift();
         commentBody = commentBody.join("")
-      } else {
-        commentBody = commentBody.replace(/>/g, "");
-        commentBody = commentBody.replace(/</g, "");
       }
-
-      if(pullRequestURL == 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
-        commentBody = commentBody.replace(/>/g, "");
-        commentBody = commentBody.replace(/</g, "");
-      }
+      commentBody = commentBody.replace(/>/g, "");
+      commentBody = commentBody.replace(/</g, "");
     }
 
 
