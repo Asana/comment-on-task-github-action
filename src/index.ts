@@ -488,13 +488,17 @@ export const run = async () => {
       }
     }
 
+    // Prepare Comment Text for SetOutput Command
+    if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
+      commentText = commentText.replace('(', '\(');
+      commentText = commentText.replace(')', '\)');
+      console.log(commentText);
+    }
+
     setOutput(`event`, eventName);
     setOutput(`action`, action);
     setOutput(`followersStatus`, followersStatus);
     setOutput("commentStatus", commentResult.status);
-    if(pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133'){
-      console.log(commentText);
-    }
     setOutput("comment", commentText);
 
   } catch (error) {
