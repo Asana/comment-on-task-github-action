@@ -490,8 +490,8 @@ export const run = async () => {
 
     // Prepare Comment Text for SetOutput Command
     if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/133') {
-      commentText = commentText.replace('(', '\(');
-      commentText = commentText.replace(')', '\)');
+      commentText = commentText.replace(/\(/g, "\\(");
+      commentText = commentText.replace(/\)/g, "\\)");
       console.log(commentText);
     }
 
