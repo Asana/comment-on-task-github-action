@@ -239,7 +239,9 @@ export const run = async () => {
         (user) => user.githubName === mention.substring(1, mention.length)
       );
       // Add to Followers
-      followers.push(mentionUserObj?.asanaId);
+      if(mentionUserObj){
+        followers.push(mentionUserObj.asanaId);
+      }
       // Add To Comment
       const mentionUserUrl = mentionUrl.concat(mentionUserObj?.asanaUrlId!);
       const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj?.asanaName}</a>`;
@@ -247,6 +249,7 @@ export const run = async () => {
     }
 
     if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
+      console.log(followers);
       throw new Error('STOP');
     }
     // Check if PR has Merge Conflicts
