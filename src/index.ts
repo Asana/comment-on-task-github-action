@@ -109,10 +109,7 @@ export const run = async () => {
     for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
       followers.push(reviewer?.asanaId);
     }
-    if(pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132'){
-      console.log(followers);
-      throw new Error('STOP');
-    }
+
     // Get Task IDs From PR Description
     const asanaTasksLinks = pullRequestDescription?.match(
       /\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi
@@ -245,6 +242,10 @@ export const run = async () => {
       commentBody = commentBody.replace(mention, mentionHTML);
     }
 
+    if(pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132'){
+      console.log(followers);
+      throw new Error('STOP');
+    }
     // Check if PR has Merge Conflicts
     const prMergeConflicts =
       eventName === "issue_comment" &&

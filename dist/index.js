@@ -15263,10 +15263,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
             followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
         }
-        if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
-            console.log(followers);
-            throw new Error('STOP');
-        }
         // Get Task IDs From PR Description
         const asanaTasksLinks = pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.match(/\bhttps?:\/\/\b(app\.asana\.com)\b\S+/gi);
         const asanaTasksIds = (asanaTasksLinks === null || asanaTasksLinks === void 0 ? void 0 : asanaTasksLinks.map((link) => {
@@ -15375,6 +15371,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaName}</a>`;
             commentBody = commentBody.replace(mention, mentionHTML);
+        }
+        if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
+            console.log(followers);
+            throw new Error('STOP');
         }
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
