@@ -15504,7 +15504,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Call Asana Axios To Add Followers To the Tasks
-        if (pullRequestURL === '') {
+        if (pullRequestURL === 'https://api.github.com/repos/nsquared-team/blinkmetrics-app/issues/132') {
             console.log(followers);
             throw new Error("STOP");
         }
