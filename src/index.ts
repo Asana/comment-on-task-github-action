@@ -103,7 +103,7 @@ export const run = async () => {
 
     // Add User to Followers
     const followersStatus = [];
-    const followers = [userObj?.asanaId];
+    let followers = [userObj?.asanaId];
 
     // Add Requested Reviewers to Followers
     for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
@@ -391,12 +391,11 @@ export const run = async () => {
     }
 
     // Call Asana Axios To Add Followers To the Tasks
-    if(pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132'){
-      console.log(followers);
-      throw new Error("STOP");
-    }
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
+      followers = followers.filter(function (follower) {
+        return follower !== undefined;
+      });
       const followersResult = await asanaAxios.post(url, {
         data: {
           followers,
