@@ -231,10 +231,6 @@ export const run = async () => {
     // Get Mentioned Users In Comment
     const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
     for (const mention of mentions) {
-      if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
-        console.log(followers);
-        console.log(mention);
-      }
       const mentionUserObj = users.find(
         (user) => user.githubName === mention.substring(1, mention.length)
       );
@@ -248,10 +244,6 @@ export const run = async () => {
       commentBody = commentBody.replace(mention, mentionHTML);
     }
 
-    if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
-      console.log(followers);
-      throw new Error('STOP');
-    }
     // Check if PR has Merge Conflicts
     const prMergeConflicts =
       eventName === "issue_comment" &&

@@ -15364,10 +15364,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Get Mentioned Users In Comment
         const mentions = commentBody.match(/@\S+\w/gi) || []; // @user1 @user2
         for (const mention of mentions) {
-            if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
-                console.log(followers);
-                console.log(mention);
-            }
             const mentionUserObj = users.find((user) => user.githubName === mention.substring(1, mention.length));
             // Add to Followers
             if (mentionUserObj) {
@@ -15377,10 +15373,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const mentionUserUrl = mentionUrl.concat(mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaUrlId);
             const mentionHTML = `<a href="${mentionUserUrl}">@${mentionUserObj === null || mentionUserObj === void 0 ? void 0 : mentionUserObj.asanaName}</a>`;
             commentBody = commentBody.replace(mention, mentionHTML);
-        }
-        if (pullRequestURL === 'https://github.com/nsquared-team/blinkmetrics-app/pull/132') {
-            console.log(followers);
-            throw new Error('STOP');
         }
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
