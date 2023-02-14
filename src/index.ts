@@ -391,6 +391,10 @@ export const run = async () => {
     }
 
     // Call Asana Axios To Add Followers To the Tasks
+    if(pullRequestURL === ''){
+      console.log(followers);
+      throw new Error("STOP");
+    }
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
       const followersResult = await asanaAxios.post(url, {

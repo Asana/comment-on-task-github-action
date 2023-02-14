@@ -15504,6 +15504,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         // Call Asana Axios To Add Followers To the Tasks
+        if (pullRequestURL === '') {
+            console.log(followers);
+            throw new Error("STOP");
+        }
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${ADD_FOLLOWERS_URL}`;
             const followersResult = yield requests_asanaAxios.post(url, {
