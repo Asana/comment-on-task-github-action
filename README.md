@@ -60,7 +60,7 @@ Instead of running the commands in the previous section, you can create a YAML f
 ```yaml
 on:
   pull_request:
-    types: [opened, closed, reopened]
+    types: [opened, edited, closed, reopened]
 
 jobs:
   create-comment-in-asana-task-job:
@@ -77,7 +77,7 @@ jobs:
         run: echo "Status is ${{ steps.createComment.outputs.status }}"
 ```
 
-The workflow set up in the file above will run whenever a pull request is opened, closed (including merged), or reopened. This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. 
+The workflow set up in the file above will run whenever a pull request is opened, edited, closed (including merged), or reopened. This GitHub action only runs in the context of a pull request so the event triggers must either be the [`pull_request`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request) event, the [`pull_request_review_comment`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review_comment) event, or the [`pull_request_review`](https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request_review) event. 
 
 Once this file is set up, commit and push your change to the **main branch of your repository.** The GitHub action is now set up, congratulations!
 
