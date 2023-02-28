@@ -15470,6 +15470,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const review = reviews[i];
                 if (pullRequestId === 652) {
                     console.log(review);
+                    throw new Error("HELLO");
                 }
                 const timestamp = review.submitted_at;
                 if (review.state === "APPROVED") { // add timestamp
