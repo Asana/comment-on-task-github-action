@@ -15468,7 +15468,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 }
-                console.log(latest_reviews.filter((n) => n));
+                latest_reviews = latest_reviews.filter((n) => n);
+                console.log(requestedReviewersObjs);
                 throw new Error("HELLO");
             }
             // Get All Users with Submitted Reviews
@@ -15481,20 +15482,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     usersRequested.add(reviewerObj);
                 }
             }
-            if (pullRequestId === 652) {
-                console.log("USERS THAT SUBMITTED REVIEWS");
-                console.log(usersRequested);
-                console.log("USERS THAT ARE REQUESTED");
-                console.log(requestedReviewersObjs);
-                // throw new Error("HELLO");
-            }
             // Get All Users with No Submitted Reviews
             requestedReviewersObjs.forEach((reviewer) => usersRequested.add(reviewer));
-            if (pullRequestId === 652) {
-                console.log("USERS THAT SUBMITTED REVIEWS AND NOT SUBMTTED");
-                console.log(requestedReviewersObjs);
-                throw new Error("HELLO");
-            }
             // Get All Users With Approved Review
             const usersApproved = new Set();
             for (let i = 0; i < reviews.length; i++) {

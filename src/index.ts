@@ -349,7 +349,8 @@ export const run = async () => {
           }
         }
 
-        console.log(latest_reviews.filter((n:any) => n));
+        latest_reviews = latest_reviews.filter((n:any) => n)
+        console.log(requestedReviewersObjs);
         throw new Error("HELLO")
       }
 
@@ -364,22 +365,8 @@ export const run = async () => {
         }
       }
 
-      if (pullRequestId === 652) {
-        console.log("USERS THAT SUBMITTED REVIEWS");
-        console.log(usersRequested);
-        console.log("USERS THAT ARE REQUESTED");
-        console.log(requestedReviewersObjs);
-        // throw new Error("HELLO");
-      }
-
       // Get All Users with No Submitted Reviews
       requestedReviewersObjs.forEach((reviewer: any) => usersRequested.add(reviewer));
-
-      if (pullRequestId === 652) {
-        console.log("USERS THAT SUBMITTED REVIEWS AND NOT SUBMTTED");
-        console.log(requestedReviewersObjs);
-        throw new Error("HELLO");
-      }
 
       // Get All Users With Approved Review
       const usersApproved = new Set<string>();
