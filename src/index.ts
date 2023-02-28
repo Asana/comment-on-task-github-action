@@ -356,10 +356,13 @@ export const run = async () => {
         // Remove Empty Items
         latest_reviews = latest_reviews.filter((n: any) => n)
 
+        console.log(latest_reviews);
+
         // Add Pending Reviews
         for (let i = 0; i < requestedReviewersObjs.length; i++) {
           const reviewer = requestedReviewersObjs[i];
           const githubName = reviewer.githubName;
+
           latest_reviews[githubName] = {
             state: "PENDING",
             timestamp: null,
