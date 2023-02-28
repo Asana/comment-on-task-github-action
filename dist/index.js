@@ -15495,6 +15495,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 latest_reviews.forEach((review) => {
                     const team = review.info.team;
                     const state = review.state;
+                    console.log(team);
+                    console.log(state);
                     if (state !== "APPROVED") {
                         team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
                     }
