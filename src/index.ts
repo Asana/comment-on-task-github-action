@@ -379,15 +379,14 @@ export const run = async () => {
         }
 
         // Check if PEER/QA/DEV Reviewers Approved
-        latest_reviews.forEach((review: any) => {
+        for (let i = 0; i < latest_reviews.length; i++) {
+          const review = latest_reviews[i]
           const team = review.info.team;
           const state = review.state;
-          console.log(team);
-          console.log(state);
           if(state !== "APPROVED") {
             team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
           }
-        });
+        };
 
         console.log("is_approved_by_qa")
         console.log(is_approved_by_qa)
