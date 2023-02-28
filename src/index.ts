@@ -351,7 +351,7 @@ export const run = async () => {
       for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
         if(pullRequestId === 652){
-          console.log(review);
+          console.log(review.submitted_at);
           throw new Error("HELLO");
         }
         const timestamp = review.submitted_at;
