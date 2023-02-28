@@ -380,8 +380,8 @@ export const run = async () => {
 
         console.log(latest_reviews.length)
         // Check if PEER/QA/DEV Reviewers Approved
-        for (let i = 0; i < latest_reviews.length; i++) {
-          const review = latest_reviews[i]
+        for (var reviewer in latest_reviews) {
+          const review = latest_reviews[reviewer]
           const team = review.info.team;
           const state = review.state;
           console.log(state)
