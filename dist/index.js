@@ -15474,6 +15474,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Remove Empty Items
                 latest_reviews = latest_reviews.filter((n) => n);
                 console.log(latest_reviews);
+                console.log(requestedReviewersObjs);
                 // Add Pending Reviews
                 for (let i = 0; i < requestedReviewersObjs.length; i++) {
                     const reviewer = requestedReviewersObjs[i];

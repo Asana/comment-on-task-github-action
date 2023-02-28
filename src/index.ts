@@ -357,6 +357,7 @@ export const run = async () => {
         latest_reviews = latest_reviews.filter((n: any) => n)
 
         console.log(latest_reviews);
+        console.log(requestedReviewersObjs);
 
         // Add Pending Reviews
         for (let i = 0; i < requestedReviewersObjs.length; i++) {
