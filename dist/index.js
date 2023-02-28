@@ -15479,16 +15479,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     const reviewerObj = users.find((user) => user.githubName === reviewer.login);
                     temp_requestedReviewersObjs.push(reviewerObj);
                 }
+                console.log(latest_reviews);
                 console.log(requested_reviewers);
                 // Add Pending Reviews
                 for (let i = 0; i < temp_requestedReviewersObjs.length; i++) {
                     const reviewer = temp_requestedReviewersObjs[i];
                     const githubName = reviewer.githubName;
-                    latest_reviews[githubName] = {
-                        state: "PENDING",
-                        timestamp: null,
-                        info: reviewer
-                    };
+                    if (!latest_reviews[githubName]) {
+                        latest_reviews[githubName] = {
+                            state: "PENDING",
+                            timestamp: null,
+                            info: reviewer
+                        };
+                    }
                 }
                 // // Check if PEER/QA/DEV Reviewers Approved
                 // usersRequested.forEach((reviewer: any) => {
