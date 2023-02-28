@@ -369,7 +369,7 @@ export const run = async () => {
           const reviewer = temp_requestedReviewersObjs[i];
           const githubName = reviewer.githubName;
 
-          if (!latest_reviews[githubName]) {
+          if (!latest_reviews[githubName] || latest_reviews[githubName].state !== "APPROVED") {
             latest_reviews[githubName] = {
               state: "PENDING",
               timestamp: null,
