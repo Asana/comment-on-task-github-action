@@ -356,11 +356,18 @@ export const run = async () => {
         // Retrieve All Requested Reviewers of PR
         let githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         const requested_reviewers = await githubAxios.get(githubUrl).then((response) => response.data.requested_reviewers);
+        let temp_requestedReviewersObjs: any = [];
+        for (const reviewer of requestedReviewers) {
+          const reviewerObj = users.find(
+            (user) => user.githubName === reviewer.login
+          );
+          temp_requestedReviewersObjs.push(reviewerObj);
+        }
 
         console.log(requested_reviewers);
         // Add Pending Reviews
-        for (let i = 0; i < requestedReviewersObjs.length; i++) {
-          const reviewer = requestedReviewersObjs[i];
+        for (let i = 0; i < temp_requestedReviewersObjs.length; i++) {
+          const reviewer = temp_requestedReviewersObjs[i];
           const githubName = reviewer.githubName;
 
           latest_reviews[githubName] = {

@@ -15474,10 +15474,15 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Retrieve All Requested Reviewers of PR
                 let githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
                 const requested_reviewers = yield requests_githubAxios.get(githubUrl).then((response) => response.data.requested_reviewers);
+                let temp_requestedReviewersObjs = [];
+                for (const reviewer of requestedReviewers) {
+                    const reviewerObj = users.find((user) => user.githubName === reviewer.login);
+                    temp_requestedReviewersObjs.push(reviewerObj);
+                }
                 console.log(requested_reviewers);
                 // Add Pending Reviews
-                for (let i = 0; i < requestedReviewersObjs.length; i++) {
-                    const reviewer = requestedReviewersObjs[i];
+                for (let i = 0; i < temp_requestedReviewersObjs.length; i++) {
+                    const reviewer = temp_requestedReviewersObjs[i];
                     const githubName = reviewer.githubName;
                     latest_reviews[githubName] = {
                         state: "PENDING",
