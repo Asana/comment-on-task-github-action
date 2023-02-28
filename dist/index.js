@@ -15491,6 +15491,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         };
                     }
                 }
+                console.log(latest_reviews.length);
                 // Check if PEER/QA/DEV Reviewers Approved
                 for (let i = 0; i < latest_reviews.length; i++) {
                     const review = latest_reviews[i];
