@@ -332,6 +332,25 @@ export const run = async () => {
       let is_approved_by_dev = true;
       let is_approved_by_peer = true;
 
+      if (pullRequestId === 652) {
+        let latest_reviews = <any>[];
+        for (let i = 0; i < reviews.length; i++) {
+          const review = reviews[i];
+          const reviewer = review.user.id
+          const state = review.state;
+          const timestamp = review.submitted_at;
+          if (state === "CHANGES_REQUESTED" || state === "APPROVED") {
+            if (!latest_reviews.reviewer || latest_reviews.reviewer.timestamp < timestamp) {
+              latest_reviews.reviewer.state = state
+              latest_reviews.reviewer.timestamp = timestamp
+            }
+          }
+        }
+
+        console.log(latest_reviews);
+        throw new Error("HELLO")
+      }
+
       // Get All Users with Submitted Reviews
       const usersRequested = new Set<any>();
       for (let i = 0; i < reviews.length; i++) {
