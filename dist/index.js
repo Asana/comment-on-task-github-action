@@ -15454,24 +15454,44 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let is_approved_by_peer = true;
             if (pullRequestId === 652) {
                 let latest_reviews = [];
+                // Get Latest Reviews
                 for (let i = 0; i < reviews.length; i++) {
                     const review = reviews[i];
-                    const reviewer = review.user.id;
+                    const githubName = review.user.login;
                     const state = review.state;
                     const timestamp = review.submitted_at;
+                    const reviewerObj = users.find((user) => user.githubName === githubName);
                     if (state === "CHANGES_REQUESTED" || state === "APPROVED") {
-                        if (!latest_reviews[reviewer] || latest_reviews[reviewer].timestamp < timestamp) {
-                            latest_reviews[reviewer] = {
+                        if (!latest_reviews[githubName] || latest_reviews[githubName].timestamp < timestamp) {
+                            latest_reviews[githubName] = {
                                 state,
-                                timestamp
+                                timestamp,
+                                info: reviewerObj
                             };
                         }
                     }
                 }
+                // Remove Empty Items
                 latest_reviews = latest_reviews.filter((n) => n);
-                // for (let i = 0; i < requestedReviewersObjs.length; i++) {
-                // }
-                console.log(requestedReviewers);
+                // Add Pending Reviews
+                for (let i = 0; i < requestedReviewersObjs.length; i++) {
+                    const reviewer = requestedReviewersObjs[i];
+                    const githubName = reviewer.githubName;
+                    latest_reviews[githubName] = {
+                        state: "PENDING",
+                        timestamp: null,
+                        info: reviewer
+                    };
+                }
+                // // Check if PEER/QA/DEV Reviewers Approved
+                // usersRequested.forEach((reviewer: any) => {
+                //   const username = reviewer.githubName;
+                //   const team = reviewer.team;
+                //   if (!usersApproved.has(username)) {
+                //     team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
+                //   }
+                // });
+                console.log(latest_reviews);
                 throw new Error("HELLO");
             }
             // Get All Users with Submitted Reviews
