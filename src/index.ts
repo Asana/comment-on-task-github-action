@@ -369,7 +369,7 @@ export const run = async () => {
           const reviewer = temp_requestedReviewersObjs[i];
           const githubName = reviewer.githubName;
 
-          if(!latest_reviews[githubName]){
+          if (!latest_reviews[githubName]) {
             latest_reviews[githubName] = {
               state: "PENDING",
               timestamp: null,
@@ -378,7 +378,6 @@ export const run = async () => {
           }
         }
 
-        console.log(latest_reviews.length)
         // Check if PEER/QA/DEV Reviewers Approved
         for (var reviewer in latest_reviews) {
           const review = latest_reviews[reviewer]
@@ -386,17 +385,41 @@ export const run = async () => {
           const state = review.state;
           console.log(state)
           console.log(team)
-          if(state !== "APPROVED") {
+          if (state !== "APPROVED") {
             team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
           }
         };
 
-        console.log("is_approved_by_qa")
-        console.log(is_approved_by_qa)
-        console.log("is_approved_by_dev")
-        console.log(is_approved_by_dev)
-        console.log("is_approved_by_peer")
-        console.log(is_approved_by_peer)
+        // Check If Should Create DEV Tasks
+        if (is_approved_by_peer && !is_approved_by_dev) {
+          console.log("SHOULD CREATE DEV")
+          DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
+            followers.push(reviewer?.asanaId);
+            for (const id of asanaTasksIds!) {
+              addRequestedReview(id, reviewer, ottoObj);
+            }
+          });
+        }
+
+        // Check If Should Create QA Tasks
+        if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
+          console.log("SHOULD CREATE QA")
+          QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
+            followers.push(reviewer?.asanaId);
+            for (const id of asanaTasksIds!) {
+              addRequestedReview(id, reviewer, ottoObj);
+            }
+          });
+        }
+
+        // Check If Should Move To Approved
+        if (is_approved_by_peer && is_approved_by_dev && is_approved_by_qa) {
+          console.log("SHOULD MOVE")
+          for (const id of asanaTasksIds!) {
+            moveTaskToSection(id, SECTIONS.APPROVED);
+          }
+        }
+
         console.log(latest_reviews);
         throw new Error("HELLO")
       }

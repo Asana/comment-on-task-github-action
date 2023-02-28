@@ -15491,7 +15491,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         };
                     }
                 }
-                console.log(latest_reviews.length);
                 // Check if PEER/QA/DEV Reviewers Approved
                 for (var reviewer in latest_reviews) {
                     const review = latest_reviews[reviewer];
@@ -15504,12 +15503,33 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     }
                 }
                 ;
-                console.log("is_approved_by_qa");
-                console.log(is_approved_by_qa);
-                console.log("is_approved_by_dev");
-                console.log(is_approved_by_dev);
-                console.log("is_approved_by_peer");
-                console.log(is_approved_by_peer);
+                // Check If Should Create DEV Tasks
+                if (is_approved_by_peer && !is_approved_by_dev) {
+                    console.log("SHOULD CREATE DEV");
+                    DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
+                        followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
+                        for (const id of asanaTasksIds) {
+                            addRequestedReview(id, reviewer, ottoObj);
+                        }
+                    }));
+                }
+                // Check If Should Create QA Tasks
+                if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
+                    console.log("SHOULD CREATE QA");
+                    QA_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
+                        followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
+                        for (const id of asanaTasksIds) {
+                            addRequestedReview(id, reviewer, ottoObj);
+                        }
+                    }));
+                }
+                // Check If Should Move To Approved
+                if (is_approved_by_peer && is_approved_by_dev && is_approved_by_qa) {
+                    console.log("SHOULD MOVE");
+                    for (const id of asanaTasksIds) {
+                        moveTaskToSection(id, APPROVED);
+                    }
+                }
                 console.log(latest_reviews);
                 throw new Error("HELLO");
             }
