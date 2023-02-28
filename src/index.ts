@@ -341,8 +341,10 @@ export const run = async () => {
           const timestamp = review.submitted_at;
           if (state === "CHANGES_REQUESTED" || state === "APPROVED") {
             if (!latest_reviews[reviewer] || latest_reviews[reviewer].timestamp < timestamp) {
-              latest_reviews[reviewer].state = state
-              latest_reviews[reviewer].timestamp = timestamp
+              latest_reviews[reviewer] = {
+                state,
+                timestamp
+              }
             }
           }
         }
