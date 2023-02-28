@@ -15468,7 +15468,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const usersApproved = new Set();
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
-                if (review.state === "APPROVED") {
+                if (pullRequestId === 652) {
+                    console.log(review);
+                }
+                const timestamp = review.submitted_at;
+                if (review.state === "APPROVED") { // add timestamp
                     usersApproved.add(review.user.login);
                 }
             }
