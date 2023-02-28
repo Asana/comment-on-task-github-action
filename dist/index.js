@@ -15468,7 +15468,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 }
-                console.log(latest_reviews);
+                console.log(latest_reviews.filter((n) => n));
                 throw new Error("HELLO");
             }
             // Get All Users with Submitted Reviews

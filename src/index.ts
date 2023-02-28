@@ -349,7 +349,7 @@ export const run = async () => {
           }
         }
 
-        console.log(latest_reviews);
+        console.log(latest_reviews.filter((n:any) => n));
         throw new Error("HELLO")
       }
 
