@@ -350,7 +350,10 @@ export const run = async () => {
         }
 
         latest_reviews = latest_reviews.filter((n:any) => n)
-        console.log(requestedReviewersObjs);
+        // for (let i = 0; i < requestedReviewersObjs.length; i++) {
+
+        // }
+        console.log(requestedReviewers);
         throw new Error("HELLO")
       }
 
