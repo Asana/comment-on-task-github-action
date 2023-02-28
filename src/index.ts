@@ -346,6 +346,7 @@ export const run = async () => {
       if (pullRequestId === 652) {
         console.log("USERS THAT SUBMITTED REVIEWS");
         console.log(usersRequested);
+        console.log("USERS THAT ARE REQUESTED");
         console.log(requestedReviewersObjs);
         // throw new Error("HELLO");
       }
