@@ -354,7 +354,7 @@ export const run = async () => {
         }
 
         // Remove Empty Items
-        latest_reviews = latest_reviews.filter((n: any) => n)
+        // latest_reviews = latest_reviews.filter((n: any) => n)
 
         console.log(latest_reviews);
         console.log(requestedReviewersObjs);

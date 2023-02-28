@@ -15472,7 +15472,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     }
                 }
                 // Remove Empty Items
-                latest_reviews = latest_reviews.filter((n) => n);
+                // latest_reviews = latest_reviews.filter((n: any) => n)
                 console.log(latest_reviews);
                 console.log(requestedReviewersObjs);
                 // Add Pending Reviews
