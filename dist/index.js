@@ -15479,8 +15479,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     const reviewerObj = users.find((user) => user.githubName === reviewer.login);
                     temp_requestedReviewersObjs.push(reviewerObj);
                 }
-                console.log(latest_reviews);
-                console.log(requested_reviewers);
                 // Add Pending Reviews
                 for (let i = 0; i < temp_requestedReviewersObjs.length; i++) {
                     const reviewer = temp_requestedReviewersObjs[i];
@@ -15493,14 +15491,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         };
                     }
                 }
-                // // Check if PEER/QA/DEV Reviewers Approved
-                // usersRequested.forEach((reviewer: any) => {
-                //   const username = reviewer.githubName;
-                //   const team = reviewer.team;
-                //   if (!usersApproved.has(username)) {
-                //     team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
-                //   }
-                // });
+                // Check if PEER/QA/DEV Reviewers Approved
+                latest_reviews.forEach((review) => {
+                    const team = review.info.team;
+                    const state = review.state;
+                    if (state !== "APPROVED") {
+                        team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
+                    }
+                });
+                console.log("is_approved_by_qa");
+                console.log(is_approved_by_qa);
+                console.log("is_approved_by_dev");
+                console.log(is_approved_by_dev);
+                console.log("is_approved_by_peer");
+                console.log(is_approved_by_peer);
                 console.log(latest_reviews);
                 throw new Error("HELLO");
             }
