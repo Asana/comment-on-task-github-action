@@ -15462,16 +15462,23 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     usersRequested.add(reviewerObj);
                 }
             }
+            if (pullRequestId === 652) {
+                console.log("USERS THAT SUBMITTED REVIEWS");
+                console.log(usersRequested);
+                console.log(requestedReviewersObjs);
+                // throw new Error("HELLO");
+            }
             // Get All Users with No Submitted Reviews
             requestedReviewersObjs.forEach((reviewer) => usersRequested.add(reviewer));
+            if (pullRequestId === 652) {
+                console.log("USERS THAT SUBMITTED REVIEWS AND NOT SUBMTTED");
+                console.log(requestedReviewersObjs);
+                throw new Error("HELLO");
+            }
             // Get All Users With Approved Review
             const usersApproved = new Set();
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
-                if (pullRequestId === 652) {
-                    console.log(review.submitted_at);
-                    throw new Error("HELLO");
-                }
                 const timestamp = review.submitted_at;
                 if (review.state === "APPROVED") { // add timestamp
                     usersApproved.add(review.user.login);

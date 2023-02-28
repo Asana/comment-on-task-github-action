@@ -235,7 +235,7 @@ export const run = async () => {
         (user) => user.githubName === mention.substring(1, mention.length)
       );
       // Add to Followers
-      if(mentionUserObj){
+      if (mentionUserObj) {
         followers.push(mentionUserObj.asanaId);
       }
       // Add To Comment
@@ -343,17 +343,26 @@ export const run = async () => {
         }
       }
 
+      if (pullRequestId === 652) {
+        console.log("USERS THAT SUBMITTED REVIEWS");
+        console.log(usersRequested);
+        console.log(requestedReviewersObjs);
+        // throw new Error("HELLO");
+      }
+
       // Get All Users with No Submitted Reviews
       requestedReviewersObjs.forEach((reviewer: any) => usersRequested.add(reviewer));
+
+      if (pullRequestId === 652) {
+        console.log("USERS THAT SUBMITTED REVIEWS AND NOT SUBMTTED");
+        console.log(requestedReviewersObjs);
+        throw new Error("HELLO");
+      }
 
       // Get All Users With Approved Review
       const usersApproved = new Set<string>();
       for (let i = 0; i < reviews.length; i++) {
         const review = reviews[i];
-        if(pullRequestId === 652){
-          console.log(review.submitted_at);
-          throw new Error("HELLO");
-        }
         const timestamp = review.submitted_at;
         if (review.state === "APPROVED") { // add timestamp
           usersApproved.add(review.user.login);
