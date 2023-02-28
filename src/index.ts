@@ -353,12 +353,11 @@ export const run = async () => {
           }
         }
 
-        // Remove Empty Items
-        // latest_reviews = latest_reviews.filter((n: any) => n)
+        // Retrieve All Requested Reviewers of PR
+        let githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
+        const requested_reviewers = await githubAxios.get(githubUrl).then((response) => response.data.requested_reviewers);
 
-        console.log(latest_reviews);
-        console.log(requestedReviewersObjs);
-
+        console.log(requested_reviewers);
         // Add Pending Reviews
         for (let i = 0; i < requestedReviewersObjs.length; i++) {
           const reviewer = requestedReviewersObjs[i];

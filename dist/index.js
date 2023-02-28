@@ -15471,10 +15471,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         }
                     }
                 }
-                // Remove Empty Items
-                // latest_reviews = latest_reviews.filter((n: any) => n)
-                console.log(latest_reviews);
-                console.log(requestedReviewersObjs);
+                // Retrieve All Requested Reviewers of PR
+                let githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
+                const requested_reviewers = yield requests_githubAxios.get(githubUrl).then((response) => response.data.requested_reviewers);
+                console.log(requested_reviewers);
                 // Add Pending Reviews
                 for (let i = 0; i < requestedReviewersObjs.length; i++) {
                     const reviewer = requestedReviewersObjs[i];
