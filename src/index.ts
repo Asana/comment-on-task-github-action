@@ -228,6 +228,8 @@ export const run = async () => {
       } else {
         console.log("capitalLinkSite")
         console.log(capitalLinkSite)
+        console.log("LINK")
+        console.log(link)
         commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
       }
     });
