@@ -15452,116 +15452,46 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             let is_approved_by_qa = true;
             let is_approved_by_dev = true;
             let is_approved_by_peer = true;
-            if (pullRequestId === 652) {
-                let latest_reviews = [];
-                // Get Latest Reviews
-                for (let i = 0; i < reviews.length; i++) {
-                    const review = reviews[i];
-                    const githubName = review.user.login;
-                    const state = review.state;
-                    const timestamp = review.submitted_at;
-                    const reviewerObj = users.find((user) => user.githubName === githubName);
-                    if (state === "CHANGES_REQUESTED" || state === "APPROVED") {
-                        if (!latest_reviews[githubName] || latest_reviews[githubName].timestamp < timestamp) {
-                            latest_reviews[githubName] = {
-                                state,
-                                timestamp,
-                                info: reviewerObj
-                            };
-                        }
-                    }
-                }
-                // Retrieve All Requested Reviewers of PR
-                let githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
-                const requested_reviewers = yield requests_githubAxios.get(githubUrl).then((response) => response.data.requested_reviewers);
-                let temp_requestedReviewersObjs = [];
-                for (const reviewer of requestedReviewers) {
-                    const reviewerObj = users.find((user) => user.githubName === reviewer.login);
-                    temp_requestedReviewersObjs.push(reviewerObj);
-                }
-                // Add Pending Reviews
-                for (let i = 0; i < temp_requestedReviewersObjs.length; i++) {
-                    const reviewer = temp_requestedReviewersObjs[i];
-                    const githubName = reviewer.githubName;
-                    if (!latest_reviews[githubName] || latest_reviews[githubName].state !== "APPROVED") {
-                        latest_reviews[githubName] = {
-                            state: "PENDING",
-                            timestamp: null,
-                            info: reviewer
-                        };
-                    }
-                }
-                // Check if PEER/QA/DEV Reviewers Approved
-                for (var reviewer in latest_reviews) {
-                    const review = latest_reviews[reviewer];
-                    const team = review.info.team;
-                    const state = review.state;
-                    console.log(state);
-                    console.log(team);
-                    if (state !== "APPROVED") {
-                        team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
-                    }
-                }
-                ;
-                // Check If Should Create DEV Tasks
-                if (is_approved_by_peer && !is_approved_by_dev) {
-                    console.log("SHOULD CREATE DEV");
-                    DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
-                        followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
-                        for (const id of asanaTasksIds) {
-                            addRequestedReview(id, reviewer, ottoObj);
-                        }
-                    }));
-                }
-                // Check If Should Create QA Tasks
-                if (is_approved_by_peer && is_approved_by_dev && !is_approved_by_qa) {
-                    console.log("SHOULD CREATE QA");
-                    QA_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
-                        followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
-                        for (const id of asanaTasksIds) {
-                            addRequestedReview(id, reviewer, ottoObj);
-                        }
-                    }));
-                }
-                // Check If Should Move To Approved
-                if (is_approved_by_peer && is_approved_by_dev && is_approved_by_qa) {
-                    console.log("SHOULD MOVE");
-                    for (const id of asanaTasksIds) {
-                        moveTaskToSection(id, APPROVED);
-                    }
-                }
-                console.log(latest_reviews);
-                throw new Error("HELLO");
-            }
-            // Get All Users with Submitted Reviews
-            const usersRequested = new Set();
+            // Get Latest Reviews
+            let latest_reviews = [];
             for (let i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
                 const githubName = review.user.login;
+                const state = review.state;
+                const timestamp = review.submitted_at;
                 const reviewerObj = users.find((user) => user.githubName === githubName);
-                if (review.state !== "COMMENTED" && review.state !== "DISMISSED") {
-                    usersRequested.add(reviewerObj);
+                if (state === "CHANGES_REQUESTED" || state === "APPROVED") {
+                    if (!latest_reviews[githubName] || latest_reviews[githubName].timestamp < timestamp) {
+                        latest_reviews[githubName] = {
+                            state,
+                            timestamp,
+                            info: reviewerObj
+                        };
+                    }
                 }
             }
-            // Get All Users with No Submitted Reviews
-            requestedReviewersObjs.forEach((reviewer) => usersRequested.add(reviewer));
-            // Get All Users With Approved Review
-            const usersApproved = new Set();
-            for (let i = 0; i < reviews.length; i++) {
-                const review = reviews[i];
-                const timestamp = review.submitted_at;
-                if (review.state === "APPROVED") { // add timestamp
-                    usersApproved.add(review.user.login);
+            // Add Pending Reviews
+            for (let i = 0; i < requestedReviewersObjs.length; i++) {
+                const reviewer = requestedReviewersObjs[i];
+                const githubName = reviewer.githubName;
+                if (!latest_reviews[githubName] || latest_reviews[githubName].state !== "APPROVED") {
+                    latest_reviews[githubName] = {
+                        state: "PENDING",
+                        timestamp: null,
+                        info: reviewer
+                    };
                 }
             }
             // Check if PEER/QA/DEV Reviewers Approved
-            usersRequested.forEach((reviewer) => {
-                const username = reviewer.githubName;
-                const team = reviewer.team;
-                if (!usersApproved.has(username)) {
+            for (var reviewer in latest_reviews) {
+                const review = latest_reviews[reviewer];
+                const team = review.info.team;
+                const state = review.state;
+                if (state !== "APPROVED") {
                     team === "PEER" ? is_approved_by_peer = false : (team === "DEV" ? is_approved_by_dev = false : is_approved_by_qa = false);
                 }
-            });
+            }
+            ;
             // Check If Should Create DEV Tasks
             if (is_approved_by_peer && !is_approved_by_dev) {
                 DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
