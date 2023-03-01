@@ -212,6 +212,8 @@ export const run = async () => {
       /\bhttps?:\/\/\S+[\w|\/]/gi
     ) || [];
 
+    console.log("LINKS")
+    console.log(links)
     links.forEach((link: any) => {
       const linkRegex = link.replace(/\//gi, "\\/");
       const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
@@ -221,6 +223,8 @@ export const run = async () => {
         commentBody = commentBody.replace(imageRegex, `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
       } else if (commentBody.includes(`(${link})`)) {
         const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
+        console.log("capitalLinkSite")
+        console.log(capitalLinkSite)
         var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
         commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
       } else {

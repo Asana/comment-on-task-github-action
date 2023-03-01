@@ -15344,6 +15344,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // https://github.com/nsquared-team/blinkmetrics-app/pull/133
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
+        console.log("LINKS");
+        console.log(links);
         links.forEach((link) => {
             const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
@@ -15354,6 +15356,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             else if (commentBody.includes(`(${link})`)) {
                 const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
+                console.log("capitalLinkSite");
+                console.log(capitalLinkSite);
                 var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
