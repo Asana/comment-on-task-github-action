@@ -15364,6 +15364,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(capitalLinkSite);
                 console.log("LINK");
                 console.log(link);
+                console.log(commentBody.replace(link, `<a href="${link}"> 🔗 Link 🔗 </a>`));
                 commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
             }
         });
