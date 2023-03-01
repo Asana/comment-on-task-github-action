@@ -223,11 +223,11 @@ export const run = async () => {
         commentBody = commentBody.replace(imageRegex, `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
       } else if (commentBody.includes(`(${link})`)) {
         const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
-        console.log("capitalLinkSite")
-        console.log(capitalLinkSite)
         var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
         commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
       } else {
+        console.log("capitalLinkSite")
+        console.log(capitalLinkSite)
         commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
       }
     });
