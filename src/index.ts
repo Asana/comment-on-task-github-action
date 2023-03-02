@@ -232,7 +232,7 @@ export const run = async () => {
         console.log(link)
         console.log(commentBody.replace(new RegExp(`^${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`))
         if (pullRequestId === 725) {
-          commentBody = commentBody.replace(new RegExp(`^${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
+          commentBody = commentBody.replace(new RegExp(`\b${link}[\n\r\s]+\b|${link}$|${link }`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
         } else {
           commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
         }
