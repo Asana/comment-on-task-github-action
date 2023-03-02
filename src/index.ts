@@ -483,26 +483,31 @@ export const run = async () => {
     let commentResult: any = "";
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-      if (action === "edited") {
-        let comments = await asanaAxios.get(url);
-        const comment = comments.data.data.find(
-          (comment: any) =>
-            comment.resource_subtype === "comment_added" &&
-            (comment.created_by && comment.created_by.gid === ottoObj?.asanaId) &&
-            comment.text.includes(commentUrl)
-        );
-        commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
-          data: {
-            html_text: commentText,
-          },
-        });
-      }
-      else {
-        commentResult = await asanaAxios.post(url, {
-          data: {
-            html_text: commentText,
-          },
-        });
+      let comments = await asanaAxios.get(url);
+      const comment = comments.data.data.find(
+        (comment: any) =>
+          comment.resource_subtype === "comment_added" &&
+          (comment.created_by && comment.created_by.gid === ottoObj?.asanaId) &&
+          comment.text.includes(commentUrl)
+      );
+      switch (action) {
+        case "deleted":
+          commentResult = await asanaAxios.delete(`${REQUESTS.STORIES_URL}${comment.gid}`);
+          break;
+        case "edited":
+          commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
+            data: {
+              html_text: commentText,
+            },
+          });
+          break;
+        default:
+          commentResult = await asanaAxios.post(url, {
+            data: {
+              html_text: commentText,
+            },
+          });
+          break;
       }
     }
 

@@ -15594,23 +15594,28 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         let commentResult = "";
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${STORIES_URL}`;
-            if (action === "edited") {
-                let comments = yield requests_asanaAxios.get(url);
-                const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
-                    (comment.created_by && comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId)) &&
-                    comment.text.includes(commentUrl));
-                commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
-                    data: {
-                        html_text: commentText,
-                    },
-                });
-            }
-            else {
-                commentResult = yield requests_asanaAxios.post(url, {
-                    data: {
-                        html_text: commentText,
-                    },
-                });
+            let comments = yield requests_asanaAxios.get(url);
+            const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
+                (comment.created_by && comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId)) &&
+                comment.text.includes(commentUrl));
+            switch (action) {
+                case "deleted":
+                    commentResult = yield requests_asanaAxios.delete(`${STORIES_URL}${comment.gid}`);
+                    break;
+                case "edited":
+                    commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
+                        data: {
+                            html_text: commentText,
+                        },
+                    });
+                    break;
+                default:
+                    commentResult = yield requests_asanaAxios.post(url, {
+                        data: {
+                            html_text: commentText,
+                        },
+                    });
+                    break;
             }
         }
         // Prepare Comment Text for SetOutput Command
