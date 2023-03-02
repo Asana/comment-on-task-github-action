@@ -212,8 +212,6 @@ export const run = async () => {
       /\bhttps?:\/\/\S+[\w|\/]/gi
     ) || [];
 
-    console.log("LINKS")
-    console.log(links)
     links.forEach((link: any) => {
       const linkRegex = link.replace(/\//gi, "\\/");
       const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
@@ -226,17 +224,8 @@ export const run = async () => {
         var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
         commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
       } else {
-        console.log("capitalLinkSite")
-        console.log(capitalLinkSite)
-        console.log("LINK")
-        console.log(link)
-        console.log(commentBody.replace(new RegExp(`\\b${link}[\\n\\r\\s]+\\b|${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`))
-        if (pullRequestId === 725) {
-          link = link.replace(/\/$/, '');
-          commentBody = commentBody.replace(new RegExp(`\\S*?(${link}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
-        } else {
-          commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
-        }
+        link = link.replace(/\/$/, '');
+        commentBody = commentBody.replace(new RegExp(`\\S*?(${link}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
       }
     });
 

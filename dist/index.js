@@ -15344,8 +15344,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // https://github.com/nsquared-team/blinkmetrics-app/pull/133
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
-        console.log("LINKS");
-        console.log(links);
         links.forEach((link) => {
             const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
@@ -15360,18 +15358,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
             else {
-                console.log("capitalLinkSite");
-                console.log(capitalLinkSite);
-                console.log("LINK");
-                console.log(link);
-                console.log(commentBody.replace(new RegExp(`\\b${link}[\\n\\r\\s]+\\b|${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`));
-                if (pullRequestId === 725) {
-                    link = link.replace(/\/$/, '');
-                    commentBody = commentBody.replace(new RegExp(`\\S*?(${link}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
-                }
-                else {
-                    commentBody = commentBody.replace(link, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
-                }
+                link = link.replace(/\/$/, '');
+                commentBody = commentBody.replace(new RegExp(`\\S*?(${link}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
             }
         });
         // Get Mentioned Users In Comment
