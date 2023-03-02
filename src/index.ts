@@ -230,7 +230,7 @@ export const run = async () => {
         console.log(capitalLinkSite)
         console.log("LINK")
         console.log(link)
-        console.log(commentBody.replace(link, `<a href="${link}"> 🔗 Link 🔗 </a>`))
+        console.log(commentBody.replace(new RegExp(`^${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`))
         if (pullRequestId === 725) {
           commentBody = commentBody.replace(new RegExp(`^${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
         } else {
