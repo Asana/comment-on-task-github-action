@@ -15364,7 +15364,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(capitalLinkSite);
                 console.log("LINK");
                 console.log(link);
-                console.log(commentBody.replace(new RegExp(`^${link}$`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`));
+                console.log(commentBody.replace(new RegExp(`\b${link}[\n\r\s]+\b|${link}$|${link}`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`));
                 if (pullRequestId === 725) {
                     commentBody = commentBody.replace(new RegExp(`\b${link}[\n\r\s]+\b|${link}$|${link}`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
                 }
