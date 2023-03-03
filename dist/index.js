@@ -15598,24 +15598,26 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
                 (comment.created_by && comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId)) &&
                 comment.text.includes(commentUrl));
-            switch (action) {
-                case "deleted":
-                    commentResult = yield requests_asanaAxios.delete(`${STORIES_URL}${comment.gid}`);
-                    break;
-                case "edited":
-                    commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
-                        data: {
-                            html_text: commentText,
-                        },
-                    });
-                    break;
-                default:
-                    commentResult = yield requests_asanaAxios.post(url, {
-                        data: {
-                            html_text: commentText,
-                        },
-                    });
-                    break;
+            if (comment) {
+                switch (action) {
+                    case "deleted":
+                        commentResult = yield requests_asanaAxios.delete(`${STORIES_URL}${comment.gid}`);
+                        break;
+                    case "edited":
+                        commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
+                            data: {
+                                html_text: commentText,
+                            },
+                        });
+                        break;
+                }
+            }
+            else {
+                commentResult = yield requests_asanaAxios.post(url, {
+                    data: {
+                        html_text: commentText,
+                    },
+                });
             }
         }
         // Prepare Comment Text for SetOutput Command

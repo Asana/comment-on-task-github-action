@@ -490,24 +490,25 @@ export const run = async () => {
           (comment.created_by && comment.created_by.gid === ottoObj?.asanaId) &&
           comment.text.includes(commentUrl)
       );
-      switch (action) {
-        case "deleted":
-          commentResult = await asanaAxios.delete(`${REQUESTS.STORIES_URL}${comment.gid}`);
-          break;
-        case "edited":
-          commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
-            data: {
-              html_text: commentText,
-            },
-          });
-          break;
-        default:
-          commentResult = await asanaAxios.post(url, {
-            data: {
-              html_text: commentText,
-            },
-          });
-          break;
+      if (comment) {
+        switch (action) {
+          case "deleted":
+            commentResult = await asanaAxios.delete(`${REQUESTS.STORIES_URL}${comment.gid}`);
+            break;
+          case "edited":
+            commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
+              data: {
+                html_text: commentText,
+              },
+            });
+            break;
+        }
+      } else {
+        commentResult = await asanaAxios.post(url, {
+          data: {
+            html_text: commentText,
+          },
+        });
       }
     }
 
