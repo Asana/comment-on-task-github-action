@@ -15610,6 +15610,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                             },
                         });
                         break;
+                    default:
+                        commentResult = yield requests_asanaAxios.post(url, {
+                            data: {
+                                html_text: commentText,
+                            },
+                        });
+                        break;
                 }
             }
             else {

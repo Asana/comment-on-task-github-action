@@ -502,6 +502,13 @@ export const run = async () => {
               },
             });
             break;
+          default:
+            commentResult = await asanaAxios.post(url, {
+              data: {
+                html_text: commentText,
+              },
+            });
+            break;
         }
       } else {
         commentResult = await asanaAxios.post(url, {
