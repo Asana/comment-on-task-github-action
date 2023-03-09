@@ -40,6 +40,14 @@ export const run = async () => {
     const pullRequestState =
       context.payload.pull_request?.state || context.payload.issue?.state;
     const pullRequestMerged = context.payload.pull_request?.merged || false;
+    if(pullRequestId === 669){
+      const pullRequestParentBranch =
+      context.payload.pull_request?.base.ref || context.payload.issue?.base.ref;
+      console.log("NOT EQUAL TO MASTER?")
+      console.log(pullRequestParentBranch)
+      console.log(pullRequestParentBranch !== "master")
+      throw new Error("TEST")
+    }
     const reviewState = context.payload.review?.state || "";
     const commentUrl =
       context.payload.comment?.html_url ||
