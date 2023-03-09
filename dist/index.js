@@ -15380,9 +15380,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             username === "otto-bot-git" &&
             !commentBody.includes("Conflicts have been resolved");
         if (prMergeConflicts) {
-            // Move Asana Task To Next Section
+            // Move Asana Task To Next Section and Mark Incomplete
             for (const id of asanaTasksIds) {
                 moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
+                yield requests_asanaAxios.put(`${TASKS_URL}${id}`, {
+                    data: {
+                        completed: false,
+                    },
+                });
             }
         }
         if (prReviewRequested || prReadyForReview) {

@@ -252,9 +252,14 @@ export const run = async () => {
       !commentBody.includes("Conflicts have been resolved");
 
     if (prMergeConflicts) {
-      // Move Asana Task To Next Section
+      // Move Asana Task To Next Section and Mark Incomplete
       for (const id of asanaTasksIds!) {
         moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
+        await asanaAxios.put(`${REQUESTS.TASKS_URL}${id}`, {
+          data: {
+            completed: false,
+          },
+        });
       }
     }
 
