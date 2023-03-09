@@ -15215,13 +15215,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const pullRequestURL = ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.html_url) || ((_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.html_url);
         const pullRequestState = ((_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.state) || ((_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.state);
         const pullRequestMerged = ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.merged) || false;
-        if (pullRequestId === 669) {
-            const pullRequestParentBranch = (_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.base.ref;
-            console.log("NOT EQUAL TO MASTER?");
-            console.log(pullRequestParentBranch);
-            console.log(pullRequestParentBranch != "master");
-            throw new Error("TEST");
-        }
+        const pullRequestParentBranch = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.base.ref) || "";
         const reviewState = ((_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.state) || "";
         const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
             ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
@@ -15447,13 +15441,35 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
         }
-        // Check If PR Closed/Merged OR Changes Requested
-        if (prClosedMerged || prReviewChangesRequested) {
+        // Check If PR Closed and Merged 
+        if (prClosedMerged) {
             setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
-                    moveTaskToSection(id, prClosedMerged ? RELEASED_BETA : NEXT);
+                    moveTaskToSection(id, RELEASED_BETA);
+                    if (pullRequestParentBranch !== "master") {
+                        yield requests_asanaAxios.put(`${TASKS_URL}${id}`, {
+                            data: {
+                                completed: true,
+                            },
+                        });
+                    }
+                }
+            }), 60000);
+        }
+        // Check If PR Review is Changes Requested 
+        if (prReviewChangesRequested) {
+            setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                for (const id of asanaTasksIds) {
+                    const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
+                    deleteApprovalTasks(approvalSubtasks);
+                    moveTaskToSection(id, NEXT);
+                    yield requests_asanaAxios.put(`${TASKS_URL}${id}`, {
+                        data: {
+                            completed: false,
+                        },
+                    });
                 }
             }), 60000);
         }

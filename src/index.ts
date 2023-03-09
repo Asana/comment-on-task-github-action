@@ -40,14 +40,7 @@ export const run = async () => {
     const pullRequestState =
       context.payload.pull_request?.state || context.payload.issue?.state;
     const pullRequestMerged = context.payload.pull_request?.merged || false;
-    if(pullRequestId === 669){
-      const pullRequestParentBranch =
-      context.payload.pull_request?.base.ref
-      console.log("NOT EQUAL TO MASTER?")
-      console.log(pullRequestParentBranch)
-      console.log(pullRequestParentBranch != "master")
-      throw new Error("TEST")
-    }
+    const pullRequestParentBranch = context.payload.pull_request?.base.ref || ""
     const reviewState = context.payload.review?.state || "";
     const commentUrl =
       context.payload.comment?.html_url ||
@@ -325,13 +318,36 @@ export const run = async () => {
       }
     }
 
-    // Check If PR Closed/Merged OR Changes Requested
-    if (prClosedMerged || prReviewChangesRequested) {
+     // Check If PR Closed and Merged 
+     if (prClosedMerged) {
       setTimeout(async () => {
         for (const id of asanaTasksIds!) {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
-          moveTaskToSection(id, prClosedMerged ? SECTIONS.RELEASED_BETA : SECTIONS.NEXT);
+          moveTaskToSection(id, SECTIONS.RELEASED_BETA);
+          if (pullRequestParentBranch !== "master") {
+            await asanaAxios.put(`${REQUESTS.TASKS_URL}${id}`, {
+              data: {
+                completed: true,
+              },
+            });
+          }
+        }
+      }, 60000);
+    }
+
+    // Check If PR Review is Changes Requested 
+    if (prReviewChangesRequested) {
+      setTimeout(async () => {
+        for (const id of asanaTasksIds!) {
+          const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
+          deleteApprovalTasks(approvalSubtasks);
+          moveTaskToSection(id, SECTIONS.NEXT);
+          await asanaAxios.put(`${REQUESTS.TASKS_URL}${id}`, {
+            data: {
+              completed: false,
+            },
+          });
         }
       }, 60000);
     }
