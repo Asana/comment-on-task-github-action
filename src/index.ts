@@ -40,7 +40,7 @@ export const run = async () => {
     const pullRequestState =
       context.payload.pull_request?.state || context.payload.issue?.state;
     const pullRequestMerged = context.payload.pull_request?.merged || false;
-    const pullRequestParentBranch = context.payload.pull_request?.base.ref || ""
+    const pullRequestBaseBranch = context.payload.pull_request?.base.ref || ""
     const reviewState = context.payload.review?.state || "";
     const commentUrl =
       context.payload.comment?.html_url ||
@@ -324,8 +324,8 @@ export const run = async () => {
         for (const id of asanaTasksIds!) {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
-          moveTaskToSection(id, pullRequestParentBranch !== "master" ? SECTIONS.DONE : SECTIONS.RELEASED_BETA);
-          if (pullRequestParentBranch !== "master") {
+          moveTaskToSection(id, pullRequestBaseBranch !== "master" ? SECTIONS.DONE : SECTIONS.RELEASED_BETA);
+          if (pullRequestBaseBranch !== "master") {
             await asanaAxios.put(`${REQUESTS.TASKS_URL}${id}`, {
               data: {
                 completed: true,

@@ -15215,7 +15215,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const pullRequestURL = ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.html_url) || ((_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.html_url);
         const pullRequestState = ((_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.state) || ((_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.state);
         const pullRequestMerged = ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.merged) || false;
-        const pullRequestParentBranch = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.base.ref) || "";
+        const pullRequestBaseBranch = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.base.ref) || "";
         const reviewState = ((_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.state) || "";
         const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
             ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
@@ -15447,8 +15447,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
-                    moveTaskToSection(id, pullRequestParentBranch !== "master" ? DONE : RELEASED_BETA);
-                    if (pullRequestParentBranch !== "master") {
+                    moveTaskToSection(id, pullRequestBaseBranch !== "master" ? DONE : RELEASED_BETA);
+                    if (pullRequestBaseBranch !== "master") {
                         yield requests_asanaAxios.put(`${TASKS_URL}${id}`, {
                             data: {
                                 completed: true,
