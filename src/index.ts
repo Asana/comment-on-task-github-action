@@ -145,7 +145,7 @@ export const run = async () => {
         return;
       }
 
-      const task_notes = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`
+      const task_notes = `<a href='${action_url}'> Click Here To Investigate Action </a>`
       for (const id of asanaTasksIds!) {
         const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
 
@@ -170,7 +170,7 @@ export const run = async () => {
             data: {
               due_on: today.toISOString().substring(0, 10),
               approval_status: ci_status,
-              html_notes: task_notes
+              html_notes: "<body>" + task_notes + "</body>"
             },
           });
           continue;
@@ -557,7 +557,7 @@ export const addRequestedReview = async (
   }
 
   const action_url = pull_request_url + "/files"
-  const task_notes = `<body> <a href='${action_url}'> Click Here To Start Your Review </a> </body>`
+  const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`
   addApprovalTask(id, reviewer, "Review", "pending", task_notes);
 }
 
@@ -653,7 +653,7 @@ export const addApprovalTask = async (
       due_on: tomorrow.toISOString().substring(0, 10),
       resource_subtype: "approval",
       name: taskName,
-      html_notes: notes ? notes : "<body> </body>"
+      html_notes: "<body>" + notes + "</body>"
     },
   });
 };

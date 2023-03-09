@@ -15291,7 +15291,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 });
                 return;
             }
-            const task_notes = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
+            const task_notes = `<a href='${action_url}'> Click Here To Investigate Action </a>`;
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
                 // Check If Subtask Found
@@ -15312,7 +15312,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         data: {
                             due_on: today.toISOString().substring(0, 10),
                             approval_status: ci_status,
-                            html_notes: task_notes
+                            html_notes: "<body>" + task_notes + "</body>"
                         },
                     });
                     continue;
@@ -15658,7 +15658,7 @@ const addRequestedReview = (id, reviewer, creator, pull_request_url) => __awaite
         return;
     }
     const action_url = pull_request_url + "/files";
-    const task_notes = `<body> <a href='${action_url}'> Click Here To Start Your Review </a> </body>`;
+    const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`;
     addApprovalTask(id, reviewer, "Review", "pending", task_notes);
 });
 const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void 0, function* () {
@@ -15727,7 +15727,7 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
             due_on: tomorrow.toISOString().substring(0, 10),
             resource_subtype: "approval",
             name: taskName,
-            html_notes: notes ? notes : "<body> </body>"
+            html_notes: "<body>" + notes + "</body>"
         },
     });
 });
