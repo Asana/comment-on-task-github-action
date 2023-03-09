@@ -15447,7 +15447,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 for (const id of asanaTasksIds) {
                     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                     deleteApprovalTasks(approvalSubtasks);
-                    moveTaskToSection(id, RELEASED_BETA);
+                    moveTaskToSection(id, pullRequestParentBranch !== "master" ? DONE : RELEASED_BETA);
                     if (pullRequestParentBranch !== "master") {
                         yield requests_asanaAxios.put(`${TASKS_URL}${id}`, {
                             data: {

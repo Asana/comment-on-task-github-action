@@ -318,13 +318,13 @@ export const run = async () => {
       }
     }
 
-     // Check If PR Closed and Merged 
-     if (prClosedMerged) {
+    // Check If PR Closed and Merged 
+    if (prClosedMerged) {
       setTimeout(async () => {
         for (const id of asanaTasksIds!) {
           const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
           deleteApprovalTasks(approvalSubtasks);
-          moveTaskToSection(id, SECTIONS.RELEASED_BETA);
+          moveTaskToSection(id, pullRequestParentBranch !== "master" ? SECTIONS.DONE : SECTIONS.RELEASED_BETA);
           if (pullRequestParentBranch !== "master") {
             await asanaAxios.put(`${REQUESTS.TASKS_URL}${id}`, {
               data: {
