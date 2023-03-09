@@ -15657,7 +15657,9 @@ const addRequestedReview = (id, reviewer, creator, pull_request_url) => __awaite
     if (approvalSubtask) {
         return;
     }
-    addApprovalTask(id, reviewer, "Review", "pending");
+    const action_url = pull_request_url + "/files";
+    const task_notes = `<body> <a href='${action_url}'> Click Here To Start Your Review </a> </body>`;
+    addApprovalTask(id, reviewer, "Review", "pending", task_notes);
 });
 const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void 0, function* () {
     var _2;

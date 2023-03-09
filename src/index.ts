@@ -556,7 +556,9 @@ export const addRequestedReview = async (
     return;
   }
 
-  addApprovalTask(id, reviewer, "Review", "pending");
+  const action_url = pull_request_url + "/files"
+  const task_notes = `<body> <a href='${action_url}'> Click Here To Start Your Review </a> </body>`
+  addApprovalTask(id, reviewer, "Review", "pending", task_notes);
 }
 
 export const deleteApprovalTasks = async (
