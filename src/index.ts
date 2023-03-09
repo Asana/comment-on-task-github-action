@@ -145,7 +145,7 @@ export const run = async () => {
         return;
       }
 
-      const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`
+      const task_notes = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`
       for (const id of asanaTasksIds!) {
         const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
 
@@ -170,7 +170,7 @@ export const run = async () => {
             data: {
               due_on: today.toISOString().substring(0, 10),
               approval_status: ci_status,
-              html_notes: html_action_url
+              html_notes: task_notes
             },
           });
           continue;
@@ -181,7 +181,7 @@ export const run = async () => {
           deleteApprovalTasks(approvalSubtasks);
           moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
         }
-        addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
+        addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, task_notes);
       }
       return;
     }

@@ -15291,7 +15291,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 });
                 return;
             }
-            const html_action_url = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
+            const task_notes = `<body> <a href='${action_url}'> Click Here To Investigate Action </a> </body>`;
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
                 // Check If Subtask Found
@@ -15312,7 +15312,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         data: {
                             due_on: today.toISOString().substring(0, 10),
                             approval_status: ci_status,
-                            html_notes: html_action_url
+                            html_notes: task_notes
                         },
                     });
                     continue;
@@ -15322,7 +15322,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     deleteApprovalTasks(approvalSubtasks);
                     moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                 }
-                addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, html_action_url);
+                addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, task_notes);
             }
             return;
         }
