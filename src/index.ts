@@ -42,10 +42,10 @@ export const run = async () => {
     const pullRequestMerged = context.payload.pull_request?.merged || false;
     if(pullRequestId === 669){
       const pullRequestParentBranch =
-      context.payload.pull_request?.base.ref || context.payload.issue?.base.ref;
+      context.payload.pull_request?.base.ref
       console.log("NOT EQUAL TO MASTER?")
       console.log(pullRequestParentBranch)
-      console.log(pullRequestParentBranch !== "master")
+      console.log(pullRequestParentBranch != "master")
       throw new Error("TEST")
     }
     const reviewState = context.payload.review?.state || "";
