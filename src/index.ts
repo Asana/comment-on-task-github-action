@@ -155,7 +155,7 @@ export const run = async () => {
           // Check If Subtask rejected -> approved
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
-              addRequestedReview(id, reviewer, ottoObj);
+              addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
             }
           }
 
@@ -266,7 +266,7 @@ export const run = async () => {
       // Create Approval Tasks For Reviewers
       for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
         for (const id of asanaTasksIds!) {
-          addRequestedReview(id, reviewer, ottoObj);
+          addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
         }
       }
 
@@ -381,7 +381,7 @@ export const run = async () => {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
           followers.push(reviewer?.asanaId);
           for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj);
+            addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
           }
         });
       }
@@ -391,7 +391,7 @@ export const run = async () => {
         QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
           followers.push(reviewer?.asanaId);
           for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj);
+            addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
           }
         });
       }
@@ -546,7 +546,8 @@ export const run = async () => {
 export const addRequestedReview = async (
   id: String,
   reviewer: any,
-  creator: any
+  creator: any,
+  pull_request_url: any,
 ) => {
   const approvalSubtask = await getApprovalSubtask(id, false, reviewer, creator);
 
