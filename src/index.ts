@@ -206,12 +206,15 @@ export const run = async () => {
       commentBody = commentBody.replace(/</g, "");
     }
 
-
-    // https://github.com/nsquared-team/blinkmetrics-app/pull/133
     // Get Images/Links and Attach Them 
     const links = commentBody.match(
       /\bhttps?:\/\/\S+[\w|\/]/gi
     ) || [];
+
+    if(pullRequestId === 143){
+      console.log("LINKS");
+      console.log(links);
+    }
 
     links.forEach((link: any) => {
       const linkRegex = link.replace(/\//gi, "\\/");

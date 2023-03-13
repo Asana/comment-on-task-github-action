@@ -15342,9 +15342,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             commentBody = commentBody.replace(/>/g, "");
             commentBody = commentBody.replace(/</g, "");
         }
-        // https://github.com/nsquared-team/blinkmetrics-app/pull/133
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
+        if (pullRequestId === 143) {
+            console.log("LINKS");
+            console.log(links);
+        }
         links.forEach((link) => {
             const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
