@@ -15358,8 +15358,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
             else {
+                const defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\/]).*?`, 'gi');
+                if (pullRequestId === 143) {
+                    console.log("defaultRegex");
+                    console.log(defaultRegex);
+                }
                 link = link.replace(/\/$/, '');
-                commentBody = commentBody.replace(new RegExp(`\\S*?(${linkRegex}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
+                commentBody = commentBody.replace(defaultRegex, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
             }
         });
         // Get Mentioned Users In Comment
