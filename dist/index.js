@@ -15358,10 +15358,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
             else {
-                const defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
-                if (pullRequestId === 143) {
-                    console.log("defaultRegex");
-                    console.log(defaultRegex);
+                let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
+                const match = commentBody.match(defaultRegex);
+                if (!match) {
+                    defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
                 }
                 link = link.replace(/\/$/, '');
                 commentBody = commentBody.replace(defaultRegex, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
