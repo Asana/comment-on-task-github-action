@@ -15344,10 +15344,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
-        if (pullRequestId === 143) {
-            console.log("LINKS");
-            console.log(links);
-        }
         links.forEach((link) => {
             const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
@@ -15363,7 +15359,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             else {
                 link = link.replace(/\/$/, '');
-                commentBody = commentBody.replace(new RegExp(`\\S*?(${link}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
+                commentBody = commentBody.replace(new RegExp(`\\S*?(${linkRegex}[^\/]).*?`, 'gi'), `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
             }
         });
         // Get Mentioned Users In Comment
