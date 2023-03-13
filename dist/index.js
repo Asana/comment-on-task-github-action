@@ -15358,7 +15358,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
             else {
-                const defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\/]).*?`, 'gi');
+                const defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
                 if (pullRequestId === 143) {
                     console.log("defaultRegex");
                     console.log(defaultRegex);

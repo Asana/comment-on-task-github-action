@@ -223,7 +223,7 @@ export const run = async () => {
         var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
         commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
       } else {
-        const defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\/]).*?`, 'gi');
+        const defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
         if(pullRequestId === 143){
           console.log("defaultRegex");
           console.log(defaultRegex);
