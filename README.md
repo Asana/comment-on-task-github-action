@@ -68,7 +68,7 @@ jobs:
     name: Create a comment in Asana Task
     steps:
       - name: Create a comment
-        uses: Asana/comment-on-task-github-action@latest
+        uses: Asana/comment-on-task-github-action@v1.2
         id: createComment
         with:
           asana-secret: ${{ secrets.ASANA_SECRET }}
@@ -110,7 +110,7 @@ jobs:
     name: Comment on Asana Task
     steps:
       - name: Create a comment
-        uses: Asana/comment-on-task-github-action@latest
+        uses: Asana/comment-on-task-github-action@v1.2
         id: createComment
         with:
           asana-secret: ${{ secrets.ASANA_SECRET }}
