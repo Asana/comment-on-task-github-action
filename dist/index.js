@@ -15226,6 +15226,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             ((_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.merged);
         const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
+        const prReviewCommented = eventName === "pull_request_review" &&
+            reviewState === "commented";
         const prReviewRequested = eventName === "pull_request" &&
             !((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.draft) &&
             action === "review_requested";

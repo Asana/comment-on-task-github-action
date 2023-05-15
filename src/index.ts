@@ -55,6 +55,9 @@ export const run = async () => {
     const prReviewChangesRequested =
       eventName === "pull_request_review" &&
       reviewState === "changes_requested";
+    const prReviewCommented =
+      eventName === "pull_request_review" &&
+      reviewState === "commented";
     const prReviewRequested =
       eventName === "pull_request" &&
       !context.payload.pull_request?.draft &&
