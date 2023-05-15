@@ -317,7 +317,7 @@ export const run = async () => {
         if (approvalSubtask) {
           await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
             data: {
-              approval_status: reviewState,
+              approval_status: prReviewCommented ? 'changes_requested':reviewState,
             },
           });
         }

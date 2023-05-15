@@ -15441,7 +15441,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (approvalSubtask) {
                     yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                         data: {
-                            approval_status: reviewState,
+                            approval_status: prReviewCommented ? 'changes_requested' : reviewState,
                         },
                     });
                 }
