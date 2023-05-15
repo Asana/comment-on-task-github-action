@@ -15479,6 +15479,19 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }), 60000);
         }
+        // Check If PR Review is Commented 
+        if (prReviewCommented) {
+            setTimeout(() => __awaiter(void 0, void 0, void 0, function* () {
+                for (const id of asanaTasksIds) {
+                    moveTaskToSection(id, NEXT);
+                    yield requests_asanaAxios.put(`${TASKS_URL}${id}`, {
+                        data: {
+                            completed: false,
+                        },
+                    });
+                }
+            }), 60000);
+        }
         // Check if PR Review Approved
         if (prApproved) {
             // Retrieve All Reviews of PR

@@ -358,6 +358,20 @@ export const run = async () => {
       }, 60000);
     }
 
+    // Check If PR Review is Commented 
+    if (prReviewCommented) {
+      setTimeout(async () => {
+        for (const id of asanaTasksIds!) {
+          moveTaskToSection(id, SECTIONS.NEXT);
+          await asanaAxios.put(`${REQUESTS.TASKS_URL}${id}`, {
+            data: {
+              completed: false,
+            },
+          });
+        }
+      }, 60000);
+    }
+
     // Check if PR Review Approved
     if (prApproved) {
       // Retrieve All Reviews of PR
