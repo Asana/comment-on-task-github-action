@@ -15440,7 +15440,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, false, userObj, ottoObj);
                 // Update Approval Subtask Of User
-                if (true) {
+                if (approvalSubtask) {
+                    // Get Correct State
                     let finalState = "";
                     if (prReviewCommented && reviewBody) {
                         finalState = "changes_requested";
@@ -15449,15 +15450,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         finalState = reviewState;
                     }
                     if (finalState) {
-                        throw new Error("ENTERED" + finalState);
                         yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
                             data: {
                                 approval_status: finalState,
                             },
                         });
-                    }
-                    else {
-                        throw new Error("DID NOT ENTER" + finalState);
                     }
                 }
             }

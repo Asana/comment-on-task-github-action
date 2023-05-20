@@ -316,7 +316,8 @@ export const run = async () => {
         const approvalSubtask = await getApprovalSubtask(id, false, userObj, ottoObj);
 
         // Update Approval Subtask Of User
-        if (true) {
+        if (approvalSubtask) {
+          // Get Correct State
           let finalState = "";
           if (prReviewCommented && reviewBody) {
             finalState = "changes_requested";
@@ -325,14 +326,11 @@ export const run = async () => {
           }
   
           if (finalState) {
-            throw new Error("ENTERED" + finalState);
             await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
               data: {
                 approval_status: finalState,
               },
             });
-          } else {
-            throw new Error("DID NOT ENTER" + finalState);
           }
         }
       }
