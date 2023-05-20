@@ -316,7 +316,7 @@ export const run = async () => {
         const approvalSubtask = await getApprovalSubtask(id, false, userObj, ottoObj);
 
         // Update Approval Subtask Of User
-        if (approvalSubtask) {
+        if (true) {
           let finalState = "";
           if (prReviewCommented && reviewBody) {
             finalState = "changes_requested";

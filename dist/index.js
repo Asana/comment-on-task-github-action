@@ -15440,7 +15440,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             for (const id of asanaTasksIds) {
                 const approvalSubtask = yield getApprovalSubtask(id, false, userObj, ottoObj);
                 // Update Approval Subtask Of User
-                if (approvalSubtask) {
+                if (true) {
                     let finalState = "";
                     if (prReviewCommented && reviewBody) {
                         finalState = "changes_requested";
