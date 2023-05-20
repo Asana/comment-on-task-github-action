@@ -41,7 +41,9 @@ export const run = async () => {
       context.payload.pull_request?.state || context.payload.issue?.state;
     const pullRequestMerged = context.payload.pull_request?.merged || false;
     const pullRequestBaseBranch = context.payload.pull_request?.base.ref || ""
+    const acceptedReviewStates = ["approved", "pending", "changes_requested"];
     const reviewState = context.payload.review?.state || "";
+    const reviewBody = context.payload.review?.body || "";
     const commentUrl =
       context.payload.comment?.html_url ||
       context.payload.review?.html_url ||
@@ -315,11 +317,23 @@ export const run = async () => {
 
         // Update Approval Subtask Of User
         if (approvalSubtask) {
-          await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
-            data: {
-              approval_status: prReviewCommented ? 'changes_requested':reviewState,
-            },
-          });
+          let finalState = "";
+          if (prReviewCommented && reviewBody) {
+            finalState = "changes_requested";
+          } else if (acceptedReviewStates.includes(reviewState)) {
+            finalState = reviewState
+          }
+  
+          if (finalState) {
+            throw new Error("ENTERED" + finalState);
+            await asanaAxios.put(`${REQUESTS.TASKS_URL}${approvalSubtask.gid}`, {
+              data: {
+                approval_status: finalState,
+              },
+            });
+          } else {
+            throw new Error("DID NOT ENTER" + finalState);
+          }
         }
       }
     }

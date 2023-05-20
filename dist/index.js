@@ -15192,7 +15192,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
     try {
         // Validate Inputs
         const eventName = github.context.eventName;
@@ -15216,20 +15216,22 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const pullRequestState = ((_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.state) || ((_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.state);
         const pullRequestMerged = ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.merged) || false;
         const pullRequestBaseBranch = ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.base.ref) || "";
+        const acceptedReviewStates = ["approved", "pending", "changes_requested"];
         const reviewState = ((_m = github.context.payload.review) === null || _m === void 0 ? void 0 : _m.state) || "";
-        const commentUrl = ((_o = github.context.payload.comment) === null || _o === void 0 ? void 0 : _o.html_url) ||
-            ((_p = github.context.payload.review) === null || _p === void 0 ? void 0 : _p.html_url) ||
+        const reviewBody = ((_o = github.context.payload.review) === null || _o === void 0 ? void 0 : _o.body) || "";
+        const commentUrl = ((_p = github.context.payload.comment) === null || _p === void 0 ? void 0 : _p.html_url) ||
+            ((_q = github.context.payload.review) === null || _q === void 0 ? void 0 : _q.html_url) ||
             "";
         // Store Conditions
         const prClosedMerged = eventName === "pull_request" &&
             action === "closed" &&
-            ((_q = github.context.payload.pull_request) === null || _q === void 0 ? void 0 : _q.merged);
+            ((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.merged);
         const prReviewChangesRequested = eventName === "pull_request_review" &&
             reviewState === "changes_requested";
         const prReviewCommented = eventName === "pull_request_review" &&
             reviewState === "commented";
         const prReviewRequested = eventName === "pull_request" &&
-            !((_r = github.context.payload.pull_request) === null || _r === void 0 ? void 0 : _r.draft) &&
+            !((_s = github.context.payload.pull_request) === null || _s === void 0 ? void 0 : _s.draft) &&
             action === "review_requested";
         const prReadyForReview = eventName === "pull_request" &&
             action === "ready_for_review";
@@ -15241,16 +15243,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             action === "synchronize";
         const prPush = eventName === "push";
         // Store User That Triggered Job
-        const username = ((_s = github.context.payload.comment) === null || _s === void 0 ? void 0 : _s.user.login) ||
-            ((_t = github.context.payload.review) === null || _t === void 0 ? void 0 : _t.user.login) ||
-            ((_u = github.context.payload.sender) === null || _u === void 0 ? void 0 : _u.login);
+        const username = ((_t = github.context.payload.comment) === null || _t === void 0 ? void 0 : _t.user.login) ||
+            ((_u = github.context.payload.review) === null || _u === void 0 ? void 0 : _u.user.login) ||
+            ((_v = github.context.payload.sender) === null || _v === void 0 ? void 0 : _v.login);
         const userObj = users.find((user) => user.githubName === username);
         const userUrl = mentionUrl.concat(userObj === null || userObj === void 0 ? void 0 : userObj.asanaUrlId);
         const userHTML = `<a href="${userUrl}">@${userObj === null || userObj === void 0 ? void 0 : userObj.asanaName}</a>`;
         // Store Otto
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
-        const requestedReviewers = ((_v = github.context.payload.pull_request) === null || _v === void 0 ? void 0 : _v.requested_reviewers) || [];
+        const requestedReviewers = ((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.requested_reviewers) || [];
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
@@ -15330,7 +15332,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         // Get Arrows and Replace Them   
-        let commentBody = ((_w = github.context.payload.comment) === null || _w === void 0 ? void 0 : _w.body) || ((_x = github.context.payload.review) === null || _x === void 0 ? void 0 : _x.body) || "";
+        let commentBody = ((_x = github.context.payload.comment) === null || _x === void 0 ? void 0 : _x.body) || ((_y = github.context.payload.review) === null || _y === void 0 ? void 0 : _y.body) || "";
         const isReply = commentBody.charAt(0) === ">";
         if (commentBody.includes(">") || commentBody.includes("<")) {
             if (isReply) {
@@ -15439,11 +15441,24 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const approvalSubtask = yield getApprovalSubtask(id, false, userObj, ottoObj);
                 // Update Approval Subtask Of User
                 if (approvalSubtask) {
-                    yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
-                        data: {
-                            approval_status: prReviewCommented ? 'changes_requested' : reviewState,
-                        },
-                    });
+                    let finalState = "";
+                    if (prReviewCommented && reviewBody) {
+                        finalState = "changes_requested";
+                    }
+                    else if (acceptedReviewStates.includes(reviewState)) {
+                        finalState = reviewState;
+                    }
+                    if (finalState) {
+                        throw new Error("ENTERED" + finalState);
+                        yield requests_asanaAxios.put(`${TASKS_URL}${approvalSubtask.gid}`, {
+                            data: {
+                                approval_status: finalState,
+                            },
+                        });
+                    }
+                    else {
+                        throw new Error("DID NOT ENTER" + finalState);
+                    }
                 }
             }
         }
@@ -15627,12 +15642,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request_review_comment": {
-                const path = (_y = github.context.payload.comment) === null || _y === void 0 ? void 0 : _y.path;
+                const path = (_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.path;
                 const files = path.split("/");
                 const fileName = files[files.length - 1];
-                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_z = github.context.payload.comment) === null || _z === void 0 ? void 0 : _z.original_line}):\n\n${commentBody} </body>`;
-                if ((_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.in_reply_to_id) {
-                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.original_line}):\n\n${commentBody} </body>`;
+                commentText = `<body> ${userHTML} is requesting the following <a href="${commentUrl}">changes</a> on ${fileName} (Line ${(_0 = github.context.payload.comment) === null || _0 === void 0 ? void 0 : _0.original_line}):\n\n${commentBody} </body>`;
+                if ((_1 = github.context.payload.comment) === null || _1 === void 0 ? void 0 : _1.in_reply_to_id) {
+                    commentText = `<body> ${userHTML} <a href="${commentUrl}">replied</a> on ${fileName} (Line ${(_2 = github.context.payload.comment) === null || _2 === void 0 ? void 0 : _2.original_line}):\n\n${commentBody} </body>`;
                 }
                 break;
             }
@@ -15690,7 +15705,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         if (isAxiosError(error)) {
             console.log(error.response);
-            console.log(((_2 = error.response) === null || _2 === void 0 ? void 0 : _2.data) || "Unknown error");
+            console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
         }
         if (error instanceof Error)
             (0,core.setFailed)(error.message);
@@ -15709,7 +15724,7 @@ const addRequestedReview = (id, reviewer, creator, pull_request_url) => __awaite
     addApprovalTask(id, reviewer, "Review", "pending", task_notes);
 });
 const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void 0, function* () {
-    var _3;
+    var _4;
     // Delete Approval Tasks
     for (const subtask of approvalSubtasks) {
         try {
@@ -15718,7 +15733,7 @@ const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void
         catch (error) {
             if (isAxiosError(error)) {
                 console.log(error.response);
-                console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
+                console.log(((_4 = error.response) === null || _4 === void 0 ? void 0 : _4.data) || "Unknown error");
             }
             if (error instanceof Error)
                 (0,core.setFailed)(error.message);
