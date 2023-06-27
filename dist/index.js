@@ -15349,8 +15349,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
         links.forEach((link) => {
-            let linkRegex = link.replace(/\//gi, "\\/");
-            linkRegex = link.replace(/\?/gi, "\\?");
+            const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
             const capitalLinkSite = linkSite.charAt(0).toUpperCase() + linkSite.slice(1);
             // Images
@@ -15369,6 +15368,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
                 const match = commentBody.match(defaultRegex);
                 if (!match) {
+                    link = link.replace(/\?/gi, "\\?");
                     defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
                 }
                 link = link.replace(/\/$/, '');

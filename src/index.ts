@@ -217,8 +217,7 @@ export const run = async () => {
     ) || [];
 
     links.forEach((link: any) => {
-      let linkRegex = link.replace(/\//gi, "\\/");
-      linkRegex = link.replace(/\?/gi, "\\?");
+      const linkRegex = link.replace(/\//gi, "\\/");
       const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
       const capitalLinkSite = linkSite.charAt(0).toUpperCase() + linkSite.slice(1);
       // Images
@@ -233,8 +232,10 @@ export const run = async () => {
       // Links
       } else {
         let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
+        
         const match = commentBody.match(defaultRegex);
         if (!match) {
+          link = link.replace(/\?/gi, "\\?");
           defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
         }
 
