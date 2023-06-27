@@ -217,33 +217,27 @@ export const run = async () => {
     ) || [];
 
     links.forEach((link: any) => {
-      const linkRegex = link.replace(/\//gi, "\\/");
+      let linkRegex = link.replace(/\//gi, "\\/");
+      linkRegex = link.replace(/\?/gi, "\\?");
       const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
       const capitalLinkSite = linkSite.charAt(0).toUpperCase() + linkSite.slice(1);
+      // Images
       if (commentBody.includes(`src="${link}"`)) {
         const imageRegex = new RegExp(`img[\\w\\W]+?${linkRegex}"`, 'gi');
         commentBody = commentBody.replace(imageRegex, `<a href="${link}"> 🔗 Image Attachment 🔗 </a>`);
+      // HyperLinks
       } else if (commentBody.includes(`(${link})`)) {
         const hyperlinkRegex = new RegExp(`\\[(.+?)\\]\\(${linkRegex}\\)`, 'gi');
         var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
         commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
+      // Links
       } else {
         let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
         const match = commentBody.match(defaultRegex);
         if (!match) {
-          console.log("NO MATCH");
           defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
         }
 
-        if(pullRequestId == 162){
-          console.log("link")
-          console.log(link)
-          console.log("defaultRegex")
-          console.log(defaultRegex)
-          console.log("match")
-          console.log(match)
-          throw new Error("END");
-        }
         link = link.replace(/\/$/, '');
         commentBody = commentBody.replace(defaultRegex, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
       }
