@@ -15365,6 +15365,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
                 const match = commentBody.match(defaultRegex);
                 if (!match) {
+                    console.log("NO MATCH");
                     defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
                 }
                 if (pullRequestId == 162) {

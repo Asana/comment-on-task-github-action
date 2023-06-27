@@ -231,6 +231,7 @@ export const run = async () => {
         let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
         const match = commentBody.match(defaultRegex);
         if (!match) {
+          console.log("NO MATCH");
           defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
         }
 
