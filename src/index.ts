@@ -228,13 +228,20 @@ export const run = async () => {
         var hyperlink = hyperlinkRegex.exec(commentBody) || `🔗 ${capitalLinkSite} Link 🔗 `;
         commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
       } else {
-        if(pullRequestId == 162){
-          throw new Error("ENTERED");
-        }
         let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
         const match = commentBody.match(defaultRegex);
         if (!match) {
           defaultRegex = new RegExp(`\\S*?(${link}).*?`, 'gi');
+        }
+
+        if(pullRequestId == 162){
+          console.log("link")
+          console.log(link)
+          console.log("defaultRegex")
+          console.log(defaultRegex)
+          console.log("match")
+          console.log(match)
+          throw new Error("END");
         }
         link = link.replace(/\/$/, '');
         commentBody = commentBody.replace(defaultRegex, `<a href="${link}"> 🔗 ${capitalLinkSite} Link 🔗 </a>`);
