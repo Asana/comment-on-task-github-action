@@ -15348,9 +15348,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
-        if (pullRequestId == 162) {
-            throw new Error(links);
-        }
         links.forEach((link) => {
             const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
@@ -15365,6 +15362,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 commentBody = commentBody.replace(hyperlinkRegex, `<a href="${link}"> 🔗 ${hyperlink[1]} 🔗 </a>`);
             }
             else {
+                if (pullRequestId == 162) {
+                    throw new Error("ENTERED");
+                }
                 let defaultRegex = new RegExp(`\\S*?(${linkRegex}[^\\/]).*?`, 'gi');
                 const match = commentBody.match(defaultRegex);
                 if (!match) {
