@@ -15348,6 +15348,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Get Images/Links and Attach Them 
         const links = commentBody.match(/\bhttps?:\/\/\S+[\w|\/]/gi) || [];
+        if (pullRequestId == 162) {
+            throw new Error(links);
+        }
         links.forEach((link) => {
             const linkRegex = link.replace(/\//gi, "\\/");
             const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');

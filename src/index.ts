@@ -216,6 +216,10 @@ export const run = async () => {
       /\bhttps?:\/\/\S+[\w|\/]/gi
     ) || [];
 
+    if(pullRequestId == 162){
+      throw new Error(links);
+    }
+    
     links.forEach((link: any) => {
       const linkRegex = link.replace(/\//gi, "\\/");
       const linkSite = link.replace(/.+\/\/|www.|\..+/g, '');
