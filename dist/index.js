@@ -15347,9 +15347,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     // Check If Subtask rejected -> approved
                     // Add Review Subtasks for PEER or DEV or QA
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
+                        console.log("APPROVED");
                         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                             addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+                            console.log(pullRequestId);
                             if (pullRequestId === 997) {
+                                console.log("ENTERED");
                                 moveTaskToSection(id, TESTING_REVIEW, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                             }
                         }
