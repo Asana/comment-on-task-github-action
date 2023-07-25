@@ -797,7 +797,7 @@ export const getApprovalSubtask = async (
   assignee: any,
   creator: any
 ) => {
-  const url = `${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}`;
+  const url = `${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}` + ',approval_status';
   const subtasks = await asanaAxios.get(url);
 
   const approvalSubtask = subtasks.data.data.find(
