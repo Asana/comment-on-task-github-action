@@ -15033,6 +15033,7 @@ const REPOS_URL = "/repos/";
 const PULLS_URL = "/pulls/";
 const ISSUES_URL = "/issues/";
 const REVIEWS_URL = "/reviews";
+const REQUESTED_REVIEWRS_URL = "/requested_reviewers";
 const LABELS_URL = "/labels";
 
 ;// CONCATENATED MODULE: ./src/requests/asanaAxios.ts
@@ -15316,7 +15317,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // If CI fialed, create changes requested from otto
                 if (ci_status === "rejected") {
                     // Retrieve All Reviews of PR
-                    const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
+                    const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REQUESTED_REVIEWRS_URL}`;
                     const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
                     console.log('reviews');
                     console.log(reviews);

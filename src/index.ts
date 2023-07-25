@@ -155,7 +155,7 @@ export const run = async () => {
         // If CI fialed, create changes requested from otto
         if ( ci_status === "rejected" ) {
           // Retrieve All Reviews of PR
-          const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+          const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REQUESTED_REVIEWRS_URL}`;
           const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
   
           console.log('reviews')
