@@ -158,6 +158,9 @@ export const run = async () => {
           const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
           const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
   
+          console.log('reviews')
+          console.log(reviews)
+
           // Get all Reviews by otto
           let otto_reviews = reviews.filter( function ( review: any ) {
             const githubName = review.user.login;
@@ -165,12 +168,13 @@ export const run = async () => {
             return reviewerObj === ottoObj;
           });
   
-          // if otto review not found, create changes requested review, so on re-request review it would move to testing/review
+          console.log('otto reviews')
+          console.log(otto_reviews)
+
+          // if otto review not found, create pending review, so on re-request review it would move to testing/review
           if ( otto_reviews.length === 0 ) {
-            const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
             await githubAxios.post(githubUrl, {
-              event: 'REQUEST_CHANGES',
-              body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
+              reviewers: ['otto-bot-git']
             });
           }
         }

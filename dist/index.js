@@ -15318,18 +15318,20 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     // Retrieve All Reviews of PR
                     const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
                     const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
+                    console.log('reviews');
+                    console.log(reviews);
                     // Get all Reviews by otto
                     let otto_reviews = reviews.filter(function (review) {
                         const githubName = review.user.login;
                         const reviewerObj = users.find((user) => user.githubName === githubName);
                         return reviewerObj === ottoObj;
                     });
-                    // if otto review not found, create changes requested review, so on re-request review it would move to testing/review
+                    console.log('otto reviews');
+                    console.log(otto_reviews);
+                    // if otto review not found, create pending review, so on re-request review it would move to testing/review
                     if (otto_reviews.length === 0) {
-                        const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
                         yield requests_githubAxios.post(githubUrl, {
-                            event: 'REQUEST_CHANGES',
-                            body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
+                            reviewers: ['otto-bot-git']
                         });
                     }
                 }
