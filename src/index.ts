@@ -266,7 +266,7 @@ export const run = async () => {
     const prMergeConflicts =
       eventName === "issue_comment" &&
       username === "otto-bot-git" &&
-      !commentBody.includes("Conflicts have been resolved");
+      commentBody.includes("This pull request has conflicts");
 
     if (prMergeConflicts) {
       // Move Asana Task To Next Section and Mark Incomplete
