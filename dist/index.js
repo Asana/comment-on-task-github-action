@@ -15346,6 +15346,10 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 if (approvalSubtask) {
                     // Check If Subtask rejected -> approved
                     // Add Review Subtasks for PEER or DEV or QA
+                    console.log('approvalSubtask.approval_status');
+                    console.log(approvalSubtask.approval_status);
+                    console.log('ci_status');
+                    console.log(ci_status);
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
                         console.log("APPROVED");
                         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
