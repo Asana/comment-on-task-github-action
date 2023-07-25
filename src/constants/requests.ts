@@ -16,5 +16,5 @@ export const REPOS_URL = "/repos/";
 export const PULLS_URL = "/pulls/";
 export const ISSUES_URL = "/issues/";
 export const REVIEWS_URL = "/reviews";
-export const REQUESTED_REVIEWRS_URL = '/requested_reviewers';
+export const REQUESTED_REVIEWRS_URL = "/requested_reviewers";
 export const LABELS_URL = "/labels";
