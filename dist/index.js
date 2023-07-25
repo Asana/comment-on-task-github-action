@@ -15317,7 +15317,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // If CI fialed, create changes requested from otto
                 if (ci_status === "rejected") {
                     // Retrieve All Reviews of PR
-                    const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REQUESTED_REVIEWRS_URL}`;
+                    const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
                     const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
                     console.log('reviews');
                     console.log(reviews);
@@ -15332,7 +15332,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     // if otto review not found, create pending review, so on re-request review it would move to testing/review
                     if (otto_reviews.length === 0) {
                         yield requests_githubAxios.post(githubUrl, {
-                            reviewers: ['otto-bot-git']
+                            event: 'REQUEST_CHANGES',
+                            body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
+                            reviewer_id: 'otto-bot-git',
                         });
                     }
                 }
