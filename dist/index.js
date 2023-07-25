@@ -15314,30 +15314,30 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 return;
             }
             if (pullRequestId === 997) {
-                // If CI fialed, create changes requested from otto
-                if (ci_status === "rejected") {
-                    // Retrieve All Reviews of PR
-                    const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
-                    const reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
-                    console.log('reviews');
-                    console.log(reviews);
-                    // Get all Reviews by otto
-                    let otto_reviews = reviews.filter(function (review) {
-                        const githubName = review.user.login;
-                        const reviewerObj = users.find((user) => user.githubName === githubName);
-                        return reviewerObj === ottoObj;
-                    });
-                    console.log('otto reviews');
-                    console.log(otto_reviews);
-                    // if otto review not found, create pending review, so on re-request review it would move to testing/review
-                    if (otto_reviews.length === 0) {
-                        yield requests_githubAxios.post(githubUrl, {
-                            event: 'REQUEST_CHANGES',
-                            body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
-                            reviewer_id: 'otto-bot-git',
-                        });
-                    }
-                }
+                // // If CI fialed, create changes requested from otto
+                // if ( ci_status === "rejected" ) {
+                //   // Retrieve All Reviews of PR
+                //   const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+                //   const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
+                //   console.log('reviews')
+                //   console.log(reviews)
+                //   // Get all Reviews by otto
+                //   let otto_reviews = reviews.filter( function ( review: any ) {
+                //     const githubName = review.user.login;
+                //     const reviewerObj = users.find((user) => user.githubName === githubName);
+                //     return reviewerObj === ottoObj;
+                //   });
+                //   console.log('otto reviews')
+                //   console.log(otto_reviews)
+                //   // if otto review not found, create pending review, so on re-request review it would move to testing/review
+                //   if ( otto_reviews.length === 0 ) {
+                //     await githubAxios.post(githubUrl, {
+                //       event: 'REQUEST_CHANGES',
+                //       body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
+                //       reviewer_id: 'otto-bot-git',
+                //     });
+                //   }
+                // }
             }
             const task_notes = `<a href='${action_url}'> Click Here To Investigate Action </a>`;
             for (const id of asanaTasksIds) {
@@ -15349,6 +15349,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
                         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                             addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+                            if (pullRequestId === 997) {
+                                moveTaskToSection(id, TESTING_REVIEW, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
+                            }
                         }
                     }
                     // Check if Subtask approved -> rejected
@@ -15450,14 +15453,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         if (prReviewRequested || prReadyForReview) {
             if (pullRequestId === 997) {
-                // if requested from otto and ssa repo, then add label ci-run-full
-                const reviewerObj = users.find((user) => user.githubName === github.context.payload.requested_reviewer.login);
-                if (reviewerObj === ottoObj && repoName === 'nsquared-team/ssa-plugin') {
-                    const githubUrl = `${REPOS_URL}${repoName}${ISSUES_URL}${pullRequestId}${LABELS_URL}`;
-                    yield requests_githubAxios.post(githubUrl, {
-                        labels: ["ci-run-full"]
-                    });
-                }
+                // // if requested from otto and ssa repo, then add label ci-run-full
+                // const reviewerObj = users.find((user) => user.githubName === context.payload.requested_reviewer.login);
+                // if ( reviewerObj === ottoObj && repoName === 'nsquared-team/ssa-plugin') {
+                //   const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.ISSUES_URL}${pullRequestId}${REQUESTS.LABELS_URL}`;
+                //   await githubAxios.post(githubUrl, {
+                //     labels: ["ci-run-full"]
+                //   });
+                // }
             }
             // Move Tasks to Testing Review
             for (const id of asanaTasksIds) {
@@ -15569,12 +15572,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}${REVIEWS_URL}`;
             let reviews = yield requests_githubAxios.get(githubUrl).then((response) => response.data);
             if (pullRequestId === 997) {
-                // Get all Reviews except otto
-                reviews = reviews.filter(function (review) {
-                    const githubName = review.user.login;
-                    const reviewerObj = users.find((user) => user.githubName === githubName);
-                    return reviewerObj !== ottoObj;
-                });
+                // // Get all Reviews except otto
+                // reviews = reviews.filter( function ( review: any ) {
+                //   const githubName = review.user.login;
+                //   const reviewerObj = users.find((user) => user.githubName === githubName);
+                //   return reviewerObj !== ottoObj;
+                // });
             }
             let is_approved_by_qa = true;
             let is_approved_by_dev = true;
