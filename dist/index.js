@@ -15031,7 +15031,9 @@ const ADD_TASK_URL = "/addTask";
 const BASE_GITHUB_URL = "https://api.github.com/";
 const REPOS_URL = "/repos/";
 const PULLS_URL = "/pulls/";
+const ISSUES_URL = "/issues/";
 const REVIEWS_URL = "/reviews";
+const LABELS_URL = "/labels";
 
 ;// CONCATENATED MODULE: ./src/requests/asanaAxios.ts
 
@@ -15316,12 +15318,14 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 // Check If Subtask Found
                 if (approvalSubtask) {
                     // Check If Subtask rejected -> approved
+                    // Add Review Subtasks for PEER or DEV or QA
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
                         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                             addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
                         }
                     }
                     // Check if Subtask approved -> rejected
+                    // Delete All approval tasks and move to next
                     if (approvalSubtask.approval_status === "approved" && ci_status === "rejected") {
                         const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
                         deleteApprovalTasks(approvalSubtasks);
@@ -15405,7 +15409,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         // Check if PR has Merge Conflicts
         const prMergeConflicts = eventName === "issue_comment" &&
             username === "otto-bot-git" &&
-            !commentBody.includes("Conflicts have been resolved");
+            commentBody.includes("This pull request has conflicts");
         if (prMergeConflicts) {
             // Move Asana Task To Next Section and Mark Incomplete
             for (const id of asanaTasksIds) {

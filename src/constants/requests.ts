@@ -14,4 +14,6 @@ export const ADD_TASK_URL = "/addTask";
 export const BASE_GITHUB_URL = "https://api.github.com/";
 export const REPOS_URL = "/repos/";
 export const PULLS_URL = "/pulls/";
+export const ISSUES_URL = "/issues/";
 export const REVIEWS_URL = "/reviews";
+export const LABELS_URL = "/labels";
