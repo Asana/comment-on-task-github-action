@@ -95,8 +95,6 @@ export const run = async () => {
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
 
-      console.log('requestedReviewers')
-      console.log(requestedReviewers)
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
       const reviewerObj = users.find(
@@ -160,8 +158,6 @@ export const run = async () => {
         //   const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
         //   const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
   
-        //   console.log('reviews')
-        //   console.log(reviews)
 
         //   // Get all Reviews by otto
         //   let otto_reviews = reviews.filter( function ( review: any ) {
@@ -170,8 +166,6 @@ export const run = async () => {
         //     return reviewerObj === ottoObj;
         //   });
   
-        //   console.log('otto reviews')
-        //   console.log(otto_reviews)
 
         //   // if otto review not found, create pending review, so on re-request review it would move to testing/review
         //   if ( otto_reviews.length === 0 ) {
@@ -194,15 +188,12 @@ export const run = async () => {
           // Check If Subtask rejected -> approved
           // Add Review Subtasks for PEER or DEV or QA
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
-            console.log("APPROVED")
-            
+            if( pullRequestId === 997 ) {
+              moveTaskToSection(id, SECTIONS.TESTING_REVIEW, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
+            }
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
               addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
-              console.log(pullRequestId)
-              if( pullRequestId === 997 ) {
-                console.log("ENTERED")
-                moveTaskToSection(id, SECTIONS.TESTING_REVIEW, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
-              }
+
             }
           }
 

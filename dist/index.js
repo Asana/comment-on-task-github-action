@@ -15270,8 +15270,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
         // Store Requested Reviewers
         const requestedReviewers = ((_w = github.context.payload.pull_request) === null || _w === void 0 ? void 0 : _w.requested_reviewers) || [];
-        console.log('requestedReviewers');
-        console.log(requestedReviewers);
         let requestedReviewersObjs = [];
         for (const reviewer of requestedReviewers) {
             const reviewerObj = users.find((user) => user.githubName === reviewer.login);
@@ -15321,16 +15319,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 //   // Retrieve All Reviews of PR
                 //   const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
                 //   const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
-                //   console.log('reviews')
-                //   console.log(reviews)
                 //   // Get all Reviews by otto
                 //   let otto_reviews = reviews.filter( function ( review: any ) {
                 //     const githubName = review.user.login;
                 //     const reviewerObj = users.find((user) => user.githubName === githubName);
                 //     return reviewerObj === ottoObj;
                 //   });
-                //   console.log('otto reviews')
-                //   console.log(otto_reviews)
                 //   // if otto review not found, create pending review, so on re-request review it would move to testing/review
                 //   if ( otto_reviews.length === 0 ) {
                 //     await githubAxios.post(githubUrl, {
@@ -15349,14 +15343,11 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     // Check If Subtask rejected -> approved
                     // Add Review Subtasks for PEER or DEV or QA
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
-                        console.log("APPROVED");
+                        if (pullRequestId === 997) {
+                            moveTaskToSection(id, TESTING_REVIEW, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
+                        }
                         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                             addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
-                            console.log(pullRequestId);
-                            if (pullRequestId === 997) {
-                                console.log("ENTERED");
-                                moveTaskToSection(id, TESTING_REVIEW, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
-                            }
                         }
                     }
                     // Check if Subtask approved -> rejected
