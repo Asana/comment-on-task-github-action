@@ -166,6 +166,7 @@ export const run = async () => {
           });
 
           console.log("ENTERED")
+          console.log(otto_reviews)
           // if otto review not found, create pending review, so on re-request review it would move to testing/review
           if ( otto_reviews.length === 0 ) {
             await githubAxios.post(githubUrl, {

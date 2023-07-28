@@ -15326,6 +15326,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                         return reviewerObj === ottoObj;
                     });
                     console.log("ENTERED");
+                    console.log(otto_reviews);
                     // if otto review not found, create pending review, so on re-request review it would move to testing/review
                     if (otto_reviews.length === 0) {
                         yield requests_githubAxios.post(githubUrl, {
