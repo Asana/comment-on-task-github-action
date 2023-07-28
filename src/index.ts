@@ -151,7 +151,7 @@ export const run = async () => {
         return;
       }
 
-      if( pullRequestId === 997 ) {
+      if( pullRequestId === 1006 ) {
         // If CI fialed, create changes requested from otto
         if ( ci_status === "rejected" ) {
           // Retrieve All Reviews of PR
@@ -188,7 +188,7 @@ export const run = async () => {
           // Check If Subtask rejected -> approved
           // Add Review Subtasks for PEER or DEV or QA
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
-            if( pullRequestId === 997 ) {
+            if( pullRequestId === 1006 ) {
               // moveTaskToSection(id, SECTIONS.TESTING_REVIEW, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
             }
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
@@ -312,7 +312,7 @@ export const run = async () => {
     }
 
     if (prReviewRequested || prReadyForReview) {
-      if( pullRequestId === 997 ) {
+      if( pullRequestId === 1006 ) {
         // // if requested from otto and ssa repo, then add label ci-run-full
         // const reviewerObj = users.find((user) => user.githubName === context.payload.requested_reviewer.login);
         // if ( reviewerObj === ottoObj && repoName === 'nsquared-team/ssa-plugin') {
@@ -441,7 +441,7 @@ export const run = async () => {
       const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
       let reviews = await githubAxios.get(githubUrl).then((response) => response.data);
 
-      if( pullRequestId === 997 ) {
+      if( pullRequestId === 1006 ) {
         // // Get all Reviews except otto
         // reviews = reviews.filter( function ( review: any ) {
         //   const githubName = review.user.login;
