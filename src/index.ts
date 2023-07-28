@@ -152,30 +152,28 @@ export const run = async () => {
       }
 
       if( pullRequestId === 997 ) {
-        // // If CI fialed, create changes requested from otto
-        // if ( ci_status === "rejected" ) {
-        //   // Retrieve All Reviews of PR
-        //   const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
-        //   const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
+        // If CI fialed, create changes requested from otto
+        if ( ci_status === "rejected" ) {
+          // Retrieve All Reviews of PR
+          const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}${REQUESTS.REVIEWS_URL}`;
+          const reviews = await githubAxios.get(githubUrl).then((response) => response.data);
   
+          // Get all Reviews by otto
+          let otto_reviews = reviews.filter( function ( review: any ) {
+            const githubName = review.user.login;
+            const reviewerObj = users.find((user) => user.githubName === githubName);
+            return reviewerObj === ottoObj;
+          });
 
-        //   // Get all Reviews by otto
-        //   let otto_reviews = reviews.filter( function ( review: any ) {
-        //     const githubName = review.user.login;
-        //     const reviewerObj = users.find((user) => user.githubName === githubName);
-        //     return reviewerObj === ottoObj;
-        //   });
-  
-
-        //   // if otto review not found, create pending review, so on re-request review it would move to testing/review
-        //   if ( otto_reviews.length === 0 ) {
-        //     await githubAxios.post(githubUrl, {
-        //       event: 'REQUEST_CHANGES',
-        //       body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
-        //       reviewer_id: 'otto-bot-git',
-        //     });
-        //   }
-        // }
+          // if otto review not found, create pending review, so on re-request review it would move to testing/review
+          if ( otto_reviews.length === 0 ) {
+            await githubAxios.post(githubUrl, {
+              event: 'REQUEST_CHANGES',
+              body: 'This pull request has failed actions in the CI, please resolve those before we can evaluate the pull request.',
+              reviewer_id: 'otto-bot-git',
+            });
+          }
+        }
       }
 
       const task_notes = `<a href='${action_url}'> Click Here To Investigate Action </a>`
@@ -189,7 +187,7 @@ export const run = async () => {
           // Add Review Subtasks for PEER or DEV or QA
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
             if( pullRequestId === 997 ) {
-              moveTaskToSection(id, SECTIONS.TESTING_REVIEW, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
+              // moveTaskToSection(id, SECTIONS.TESTING_REVIEW, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
             }
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
               addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
