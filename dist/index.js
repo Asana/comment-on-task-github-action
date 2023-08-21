@@ -15315,7 +15315,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             const task_notes = `<a href='${action_url}'> Click Here To Investigate Action </a>`;
             for (const id of asanaTasksIds) {
-                const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj, ottoObj);
+                const approvalSubtask = yield getApprovalSubtask(id, true, ottoObj);
                 // Check If Subtask Found
                 if (approvalSubtask) {
                     // Check If Subtask rejected -> approved
@@ -15323,7 +15323,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
                         moveTaskToSection(id, TESTING_REVIEW, [APPROVED, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                         for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
-                            addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+                            addRequestedReview(id, reviewer, pullRequestURL);
                         }
                     }
                     // Check if Subtask approved -> rejected
@@ -15431,7 +15431,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             // Create Approval Tasks For Reviewers
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                 for (const id of asanaTasksIds) {
-                    addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+                    addRequestedReview(id, reviewer, pullRequestURL);
                 }
             }
             // Delete Duplicate Tasks
@@ -15462,7 +15462,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
-                const approvalSubtask = yield getApprovalSubtask(id, false, userObj, ottoObj);
+                const approvalSubtask = yield getApprovalSubtask(id, false, userObj);
                 // Update Approval Subtask Of User
                 if (approvalSubtask) {
                     // Get Correct State
@@ -15581,7 +15581,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 DEV_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
                     followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
                     for (const id of asanaTasksIds) {
-                        addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+                        addRequestedReview(id, reviewer, pullRequestURL);
                     }
                 }));
             }
@@ -15590,7 +15590,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 QA_requestedReviewersObjs.forEach((reviewer) => __awaiter(void 0, void 0, void 0, function* () {
                     followers.push(reviewer === null || reviewer === void 0 ? void 0 : reviewer.asanaId);
                     for (const id of asanaTasksIds) {
-                        addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+                        addRequestedReview(id, reviewer, pullRequestURL);
                     }
                 }));
             }
@@ -15734,8 +15734,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             (0,core.setFailed)("Unknown error");
     }
 });
-const addRequestedReview = (id, reviewer, creator, pull_request_url) => __awaiter(void 0, void 0, void 0, function* () {
-    const approvalSubtask = yield getApprovalSubtask(id, false, reviewer, creator);
+const addRequestedReview = (id, reviewer, pull_request_url) => __awaiter(void 0, void 0, void 0, function* () {
+    const approvalSubtask = yield getApprovalSubtask(id, false, reviewer);
     // If Request Reviewer already has incomplete subtask
     if (approvalSubtask) {
         return;
@@ -15814,13 +15814,12 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
         },
     });
 });
-const getApprovalSubtask = (asanaTaskId, is_complete, assignee, creator) => __awaiter(void 0, void 0, void 0, function* () {
+const getApprovalSubtask = (asanaTaskId, is_complete, assignee) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${TASKS_URL}${asanaTaskId}${SUBTASKS_URL}` + ',approval_status';
     const subtasks = yield requests_asanaAxios.get(url);
     const approvalSubtask = subtasks.data.data.find((subtask) => subtask.resource_subtype === "approval" &&
         subtask.completed === is_complete &&
-        (subtask.assignee && subtask.assignee.gid === (assignee === null || assignee === void 0 ? void 0 : assignee.asanaId)) &&
-        subtask.created_by.gid === (creator === null || creator === void 0 ? void 0 : creator.asanaId));
+        (subtask.assignee && subtask.assignee.gid === (assignee === null || assignee === void 0 ? void 0 : assignee.asanaId)));
     return approvalSubtask;
 });
 run();

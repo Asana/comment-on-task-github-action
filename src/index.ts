@@ -153,7 +153,7 @@ export const run = async () => {
 
       const task_notes = `<a href='${action_url}'> Click Here To Investigate Action </a>`
       for (const id of asanaTasksIds!) {
-        const approvalSubtask = await getApprovalSubtask(id, true, ottoObj, ottoObj);
+        const approvalSubtask = await getApprovalSubtask(id, true, ottoObj);
 
         // Check If Subtask Found
         if (approvalSubtask) {
@@ -163,7 +163,7 @@ export const run = async () => {
           if (approvalSubtask.approval_status === "rejected" && ci_status === "approved") {
             moveTaskToSection(id, SECTIONS.TESTING_REVIEW, [SECTIONS.APPROVED, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
-              addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+              addRequestedReview(id, reviewer, pullRequestURL);
             }
           }
 
@@ -289,7 +289,7 @@ export const run = async () => {
       // Create Approval Tasks For Reviewers
       for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
         for (const id of asanaTasksIds!) {
-          addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+          addRequestedReview(id, reviewer, pullRequestURL);
         }
       }
 
@@ -322,7 +322,7 @@ export const run = async () => {
 
     if (prReviewSubmitted) {
       for (const id of asanaTasksIds!) {
-        const approvalSubtask = await getApprovalSubtask(id, false, userObj, ottoObj);
+        const approvalSubtask = await getApprovalSubtask(id, false, userObj);
 
         // Update Approval Subtask Of User
         if (approvalSubtask) {
@@ -451,7 +451,7 @@ export const run = async () => {
         DEV_requestedReviewersObjs.forEach(async (reviewer: any) => {
           followers.push(reviewer?.asanaId);
           for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+            addRequestedReview(id, reviewer, pullRequestURL);
           }
         });
       }
@@ -461,7 +461,7 @@ export const run = async () => {
         QA_requestedReviewersObjs.forEach(async (reviewer: any) => {
           followers.push(reviewer?.asanaId);
           for (const id of asanaTasksIds!) {
-            addRequestedReview(id, reviewer, ottoObj, pullRequestURL);
+            addRequestedReview(id, reviewer, pullRequestURL);
           }
         });
       }
@@ -616,10 +616,9 @@ export const run = async () => {
 export const addRequestedReview = async (
   id: String,
   reviewer: any,
-  creator: any,
   pull_request_url: any,
 ) => {
-  const approvalSubtask = await getApprovalSubtask(id, false, reviewer, creator);
+  const approvalSubtask = await getApprovalSubtask(id, false, reviewer);
 
   // If Request Reviewer already has incomplete subtask
   if (approvalSubtask) {
@@ -731,8 +730,7 @@ export const addApprovalTask = async (
 export const getApprovalSubtask = async (
   asanaTaskId: String,
   is_complete: boolean,
-  assignee: any,
-  creator: any
+  assignee: any
 ) => {
   const url = `${REQUESTS.TASKS_URL}${asanaTaskId}${REQUESTS.SUBTASKS_URL}` + ',approval_status';
   const subtasks = await asanaAxios.get(url);
@@ -741,8 +739,7 @@ export const getApprovalSubtask = async (
     (subtask: any) =>
       subtask.resource_subtype === "approval" &&
       subtask.completed === is_complete &&
-      (subtask.assignee && subtask.assignee.gid === assignee?.asanaId) &&
-      subtask.created_by.gid === creator?.asanaId
+      (subtask.assignee && subtask.assignee.gid === assignee?.asanaId)
   );
 
   return approvalSubtask;
