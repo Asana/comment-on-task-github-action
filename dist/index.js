@@ -15302,6 +15302,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
                 let pullRequestDescription = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
                 let body = "";
+                if (pullRequestId === 1101) {
+                    console.log("OLD DESC");
+                    console.log(pullRequestDescription);
+                    console.log("NEW DESC");
+                    console.log(new_pr_description);
+                }
                 if (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.includes("A list of unique sandbox sites was created")) {
                     body = pullRequestDescription.replace(/## CI\/QA Testing Sandbox(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview release zip files./ig, new_pr_description);
                 }
@@ -15309,7 +15315,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     body = (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.concat("\n\n" + new_pr_description)) || "";
                 }
                 if (pullRequestId === 1101) {
-                    console.log("BODY");
+                    console.log("RESULT");
                     throw new Error(body);
                 }
                 yield requests_githubAxios.patch(githubUrl, {

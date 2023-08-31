@@ -139,6 +139,13 @@ export const run = async () => {
         let pullRequestDescription = await githubAxios.get(githubUrl).then((response) => response.data.body);
         let body = "";
 
+        if(pullRequestId === 1101) {
+          console.log("OLD DESC")
+          console.log(pullRequestDescription)
+          console.log("NEW DESC")
+          console.log(new_pr_description)
+        }
+
         if (pullRequestDescription?.includes("A list of unique sandbox sites was created")) {
           body = pullRequestDescription.replace(/## CI\/QA Testing Sandbox(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview release zip files./ig, new_pr_description);
         } else {
@@ -146,9 +153,10 @@ export const run = async () => {
         }
 
         if(pullRequestId === 1101) {
-          console.log("BODY")
+          console.log("RESULT")
           throw new Error(body)
         }
+
         await githubAxios.patch(githubUrl, {
           body
         });
