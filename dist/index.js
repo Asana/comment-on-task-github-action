@@ -15300,7 +15300,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             if (ci_status === "edit_pr_description") {
                 // Retrieve Body of PR
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
-                let pullRequestDescription = yield requests_githubAxios.get(githubUrl).then((response) => response.data.body);
+                let pullRequestDescription = (yield requests_githubAxios.get(githubUrl).then((response) => response.data.body)) || "";
                 let body = "";
                 if (pullRequestId === 1101) {
                     console.log("OLD DESC");

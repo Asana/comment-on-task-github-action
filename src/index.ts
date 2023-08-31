@@ -136,7 +136,7 @@ export const run = async () => {
       if (ci_status === "edit_pr_description") {
         // Retrieve Body of PR
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
-        let pullRequestDescription = await githubAxios.get(githubUrl).then((response) => response.data.body);
+        let pullRequestDescription = await githubAxios.get(githubUrl).then((response) => response.data.body) || "";
         let body = "";
 
         if(pullRequestId === 1101) {
