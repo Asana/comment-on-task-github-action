@@ -145,6 +145,10 @@ export const run = async () => {
           body = pullRequestDescription?.concat("\n\n" + new_pr_description) || ""
         }
 
+        if(pullRequestId === 1101) {
+          console.log("BODY")
+          throw new Error(body)
+        }
         await githubAxios.patch(githubUrl, {
           body
         });
