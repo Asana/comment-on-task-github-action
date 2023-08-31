@@ -15295,10 +15295,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
             return linkArray[linkArray.length - 1];
         })) || [];
+        console.log("HERE");
         // Check if Automated CI Testing
         if (prSynchronize || prPush) {
+            console.log("SYNC OR PUSH");
             if (ci_status === "edit_pr_description") {
                 // Retrieve Body of PR
+                console.log("REACHED");
                 const githubUrl = `${REPOS_URL}${repoName}${PULLS_URL}${pullRequestId}`;
                 let pullRequestDescription = (yield requests_githubAxios.get(githubUrl).then((response) => response.data.body)) || "";
                 let body = "";

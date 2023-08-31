@@ -130,11 +130,14 @@ export const run = async () => {
         return linkArray[linkArray.length - 1];
       }) || [];
 
+    console.log("HERE")
     // Check if Automated CI Testing
     if (prSynchronize || prPush) {
 
+      console.log("SYNC OR PUSH")
       if (ci_status === "edit_pr_description") {
         // Retrieve Body of PR
+        console.log("REACHED")
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         let pullRequestDescription = await githubAxios.get(githubUrl).then((response) => response.data.body) || "";
         let body = "";
