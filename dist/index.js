@@ -15308,11 +15308,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 else {
                     body = (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.concat("\n\n" + new_pr_description)) || "";
                 }
-                if (pullRequestId === 1088) {
-                    console.log("RESULT");
-                    console.log(body);
-                    throw new Error("SOMETHING WENT WRONG");
-                }
                 yield requests_githubAxios.patch(githubUrl, {
                     body
                 });
