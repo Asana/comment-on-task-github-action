@@ -15309,14 +15309,21 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     console.log(new_pr_description);
                 }
                 if (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.includes("A list of unique sandbox sites was created")) {
+                    if (pullRequestId === 1101) {
+                        console.log("BODY ALREADY HAD ZIPS");
+                    }
                     body = pullRequestDescription.replace(/## CI\/QA Testing Sandbox(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview release zip files./ig, new_pr_description);
                 }
                 else {
+                    if (pullRequestId === 1101) {
+                        console.log("BODY DOES NOT HAVE ZIPS");
+                    }
                     body = (pullRequestDescription === null || pullRequestDescription === void 0 ? void 0 : pullRequestDescription.concat("\n\n" + new_pr_description)) || "";
                 }
                 if (pullRequestId === 1101) {
                     console.log("RESULT");
-                    throw new Error(body);
+                    console.log(body);
+                    throw new Error("SOMETHING WENT WRONG");
                 }
                 yield requests_githubAxios.patch(githubUrl, {
                     body
