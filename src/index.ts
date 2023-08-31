@@ -130,14 +130,10 @@ export const run = async () => {
         return linkArray[linkArray.length - 1];
       }) || [];
 
-    console.log("HERE")
     // Check if Automated CI Testing
     if (prSynchronize || prPush) {
-
-      console.log("SYNC OR PUSH")
       if (ci_status === "edit_pr_description") {
         // Retrieve Body of PR
-        console.log("REACHED")
         const githubUrl = `${REQUESTS.REPOS_URL}${repoName}${REQUESTS.PULLS_URL}${pullRequestId}`;
         let pullRequestDescription = await githubAxios.get(githubUrl).then((response) => response.data.body) || "";
         let body = "";
@@ -146,12 +142,6 @@ export const run = async () => {
           body = pullRequestDescription.replace(/## CI\/QA Testing Sandbox(.|\n|\r)*Please comment and open a new review on this pull request if you find any issues when testing the preview release zip files./ig, new_pr_description);
         } else {
           body = pullRequestDescription?.concat("\n\n" + new_pr_description) || ""
-        }
-
-        if(pullRequestId === 1102) {
-          console.log("RESULT")
-          console.log(body)
-          throw new Error("SOMETHING WENT WRONG")
         }
 
         await githubAxios.patch(githubUrl, {
