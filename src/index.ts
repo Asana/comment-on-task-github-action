@@ -281,16 +281,19 @@ export const run = async () => {
     }
 
     if (prReviewRequested || prReadyForReview) {
+      console.log("REACHED 1")
       // Move Tasks to Testing Review
       for (const id of asanaTasksIds!) {
         moveTaskToSection(id, SECTIONS.TESTING_REVIEW);
       }
+      console.log("REACHED 2")
       // Create Approval Tasks For Reviewers
       for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
         for (const id of asanaTasksIds!) {
           addRequestedReview(id, reviewer, pullRequestURL);
         }
       }
+      console.log("REACHED 3")
 
       // Delete Duplicate Tasks
       setTimeout(async function () {
@@ -317,6 +320,7 @@ export const run = async () => {
         }
 
       }, 20000) // Timeout 20 seconds in case another job is still creating tasks
+      console.log("REACHED 4")
     }
 
     if (prReviewSubmitted) {
