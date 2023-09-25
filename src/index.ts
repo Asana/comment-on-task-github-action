@@ -535,10 +535,13 @@ export const run = async () => {
           action === "ready_for_review" ||
           action === "edited"
         ) {
+          console.log("REACHED 7")
           return;
         } else if (action === "closed" && pullRequestMerged) {
+          console.log("REACHED 8")
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is merged and ${pullRequestState}. </body>`;
         } else {
+          console.log("REACHED 9")
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
         }
         break;
