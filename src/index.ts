@@ -478,6 +478,8 @@ export const run = async () => {
 
     }
 
+    console.log("REACHED 5")
+
     // Call Asana Axios To Add Followers To the Tasks
     for (const id of asanaTasksIds!) {
       const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.ADD_FOLLOWERS_URL}`;
@@ -492,6 +494,7 @@ export const run = async () => {
       followersStatus.push({ taskId: id, status: followersResult.status });
     }
 
+    console.log("REACHED 6")
     // Get Correct Dynamic Comment
     let commentText = "";
     switch (eventName) {
@@ -551,7 +554,6 @@ export const run = async () => {
         break;
       }
     }
-    console.log("REACHED 5")
 
     // Post Comment to Asana
     let commentResult: any = "";

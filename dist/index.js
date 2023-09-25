@@ -15605,6 +15605,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
         }
+        console.log("REACHED 5");
         // Call Asana Axios To Add Followers To the Tasks
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${ADD_FOLLOWERS_URL}`;
@@ -15618,6 +15619,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             });
             followersStatus.push({ taskId: id, status: followersResult.status });
         }
+        console.log("REACHED 6");
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (eventName) {
@@ -15677,7 +15679,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             }
         }
-        console.log("REACHED 5");
         // Post Comment to Asana
         let commentResult = "";
         for (const id of asanaTasksIds) {
