@@ -15650,7 +15650,12 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
                 break;
             case "pull_request":
-                if (action === "closed" && pullRequestMerged) {
+                if (action === "review_requested" ||
+                    action === "ready_for_review" ||
+                    action === "edited") {
+                    return;
+                }
+                else if (action === "closed" && pullRequestMerged) {
                     commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is merged and ${pullRequestState}. </body>`;
                 }
                 else {
@@ -15670,7 +15675,40 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Post Comment to Asana
         let commentResult = "";
-        if (commentText !== "") {
+        for (const id of asanaTasksIds) {
+            const url = `${TASKS_URL}${id}${STORIES_URL}`;
+            let comments = yield requests_asanaAxios.get(url);
+            const comment = comments.data.data.find((comment) => comment.resource_subtype === "comment_added" &&
+                (comment.created_by && comment.created_by.gid === (ottoObj === null || ottoObj === void 0 ? void 0 : ottoObj.asanaId)) &&
+                comment.text.includes(commentUrl));
+            if (comment) {
+                switch (action) {
+                    case "deleted":
+                        commentResult = yield requests_asanaAxios.delete(`${STORIES_URL}${comment.gid}`);
+                        break;
+                    case "edited":
+                        commentResult = yield requests_asanaAxios.put(`${STORIES_URL}${comment.gid}`, {
+                            data: {
+                                html_text: commentText,
+                            },
+                        });
+                        break;
+                    default:
+                        commentResult = yield requests_asanaAxios.post(url, {
+                            data: {
+                                html_text: commentText,
+                            },
+                        });
+                        break;
+                }
+            }
+            else {
+                commentResult = yield requests_asanaAxios.post(url, {
+                    data: {
+                        html_text: commentText,
+                    },
+                });
+            }
         }
         // Prepare Comment Text for SetOutput Command
         commentText = commentText.replace(/\(/g, "\\(");
