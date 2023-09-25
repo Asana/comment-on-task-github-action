@@ -523,14 +523,7 @@ export const run = async () => {
         }
         break;
       case "pull_request":
-        if (
-          action === "review_requested" ||
-          action === "ready_for_review" ||
-          action === "edited"
-        ) {
-          console.log("REACHED 7")
-          return;
-        } else if (action === "closed" && pullRequestMerged) {
+        if (action === "closed" && pullRequestMerged) {
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is merged and ${pullRequestState}. </body>`;
         } else {
           commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
@@ -551,42 +544,8 @@ export const run = async () => {
 
     // Post Comment to Asana
     let commentResult: any = "";
-    for (const id of asanaTasksIds!) {
-      const url = `${REQUESTS.TASKS_URL}${id}${REQUESTS.STORIES_URL}`;
-      let comments = await asanaAxios.get(url);
-      const comment = comments.data.data.find(
-        (comment: any) =>
-          comment.resource_subtype === "comment_added" &&
-          (comment.created_by && comment.created_by.gid === ottoObj?.asanaId) &&
-          comment.text.includes(commentUrl)
-      );
-      if (comment) {
-        switch (action) {
-          case "deleted":
-            commentResult = await asanaAxios.delete(`${REQUESTS.STORIES_URL}${comment.gid}`);
-            break;
-          case "edited":
-            commentResult = await asanaAxios.put(`${REQUESTS.STORIES_URL}${comment.gid}`, {
-              data: {
-                html_text: commentText,
-              },
-            });
-            break;
-          default:
-            commentResult = await asanaAxios.post(url, {
-              data: {
-                html_text: commentText,
-              },
-            });
-            break;
-        }
-      } else {
-        commentResult = await asanaAxios.post(url, {
-          data: {
-            html_text: commentText,
-          },
-        });
-      }
+    if(commentText !== "") {
+
     }
 
     // Prepare Comment Text for SetOutput Command
@@ -604,9 +563,7 @@ export const run = async () => {
     setOutput("comment", commentText);
 
   } catch (error) {
-    console.log("REACHED?")
     if (utils.isAxiosError(error)) {
-      console.log("Cool?")
       console.log(error.response);
       console.log(error.response?.data || "Unknown error");
     }
