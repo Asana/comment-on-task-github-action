@@ -15677,6 +15677,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 break;
             }
         }
+        console.log("REACHED 5");
         // Post Comment to Asana
         let commentResult = "";
         for (const id of asanaTasksIds) {

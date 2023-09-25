@@ -551,6 +551,7 @@ export const run = async () => {
         break;
       }
     }
+    console.log("REACHED 5")
 
     // Post Comment to Asana
     let commentResult: any = "";
