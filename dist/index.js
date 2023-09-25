@@ -15424,19 +15424,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         }
         if (prReviewRequested || prReadyForReview) {
-            console.log("REACHED 1");
             // Move Tasks to Testing Review
             for (const id of asanaTasksIds) {
                 moveTaskToSection(id, TESTING_REVIEW);
             }
-            console.log("REACHED 2");
             // Create Approval Tasks For Reviewers
             for (const reviewer of !PEER_DEV_requestedReviewersObjs.length ? (!DEV_requestedReviewersObjs.length ? QA_requestedReviewersObjs : DEV_requestedReviewersObjs) : PEER_DEV_requestedReviewersObjs) {
                 for (const id of asanaTasksIds) {
                     addRequestedReview(id, reviewer, pullRequestURL);
                 }
             }
-            console.log("REACHED 3");
             // Delete Duplicate Tasks
             setTimeout(function () {
                 return __awaiter(this, void 0, void 0, function* () {
@@ -15462,7 +15459,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     }
                 });
             }, 20000); // Timeout 20 seconds in case another job is still creating tasks
-            console.log("REACHED 4");
         }
         if (prReviewSubmitted) {
             for (const id of asanaTasksIds) {
@@ -15605,7 +15601,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
         }
-        console.log("REACHED 5");
         // Call Asana Axios To Add Followers To the Tasks
         for (const id of asanaTasksIds) {
             const url = `${TASKS_URL}${id}${ADD_FOLLOWERS_URL}`;
@@ -15619,7 +15614,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             });
             followersStatus.push({ taskId: id, status: followersResult.status });
         }
-        console.log("REACHED 6");
         // Get Correct Dynamic Comment
         let commentText = "";
         switch (eventName) {
@@ -15663,11 +15657,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     return;
                 }
                 else if (action === "closed" && pullRequestMerged) {
-                    console.log("REACHED 8");
                     commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is merged and ${pullRequestState}. </body>`;
                 }
                 else {
-                    console.log("REACHED 9");
                     commentText = `<body> <a href="${pullRequestURL}">PR #${pullRequestId}</a> is ${pullRequestState}. </body>`;
                 }
                 break;
@@ -15733,7 +15725,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         (0,core.setOutput)("comment", commentText);
     }
     catch (error) {
+        console.log("REACHED?");
         if (isAxiosError(error)) {
+            console.log("Cool?");
             console.log(error.response);
             console.log(((_3 = error.response) === null || _3 === void 0 ? void 0 : _3.data) || "Unknown error");
         }
