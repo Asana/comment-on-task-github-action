@@ -5,6 +5,10 @@ branding:
   icon: circle
   color: green
 inputs:
+  action-url:
+    description: 'The Action URL used in the Asana task description.'
+    required: false
+    default: ''
   github-pat:
     description: 'The GitHub personal access token for the action.'
     required: false
