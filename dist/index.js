@@ -15140,13 +15140,6 @@ const users = [
         team: "PEER_DEV",
     },
     {
-        asanaId: "1204729337178920",
-        asanaUrlId: "1204729330711274",
-        asanaName: "Rasha Massoud",
-        githubName: "rasha-massoud",
-        team: "PEER_DEV",
-    },
-    {
         asanaId: "1204727612436974",
         asanaUrlId: "1204728859544195",
         asanaName: "Ali Al Najjar",
