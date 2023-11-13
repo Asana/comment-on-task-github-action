@@ -7,6 +7,7 @@ import * as REQUESTS from "./constants/requests";
 import * as SECTIONS from "./constants/sections";
 import { users } from "./constants/users";
 import githubAxios from "./requests/githubAxios";
+import { ASANA_PAT } from "./constants/inputs";
 
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
 const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
@@ -95,6 +96,9 @@ export const run = async () => {
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
 
+    if(pullRequestId == 9) {
+      console.log(getInput(ASANA_PAT))
+    }
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
       const reviewerObj = users.find(
