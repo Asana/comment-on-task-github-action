@@ -22,6 +22,10 @@ export const run = async () => {
 
     console.log("context.payload", context.payload);
 
+    const pullRequestId = context.payload.pull_request?.number || context.payload.issue?.number;
+    if(pullRequestId == 9) {
+      console.log(getInput(ASANA_PAT))
+    }
     // Store Constant Values
     const today = new Date();
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
@@ -34,8 +38,7 @@ export const run = async () => {
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
       context.payload.pull_request?.body || context.payload.issue?.body;
-    const pullRequestId =
-      context.payload.pull_request?.number || context.payload.issue?.number;
+
     const pullRequestURL =
       context.payload.pull_request?.html_url || context.payload.issue?.html_url;
     const pullRequestState =
@@ -96,9 +99,6 @@ export const run = async () => {
     const requestedReviewers =
       context.payload.pull_request?.requested_reviewers || [];
 
-    if(pullRequestId == 9) {
-      console.log(getInput(ASANA_PAT))
-    }
     let requestedReviewersObjs: any = [];
     for (const reviewer of requestedReviewers) {
       const reviewerObj = users.find(
