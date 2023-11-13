@@ -7,7 +7,6 @@ import * as REQUESTS from "./constants/requests";
 import * as SECTIONS from "./constants/sections";
 import { users } from "./constants/users";
 import githubAxios from "./requests/githubAxios";
-import { ASANA_PAT } from "./constants/inputs";
 
 const allowedProjects = utils.getProjectsFromInput(INPUTS.ALLOWED_PROJECTS);
 const blockedProjects = utils.getProjectsFromInput(INPUTS.BLOCKED_PROJECTS);
@@ -22,11 +21,6 @@ export const run = async () => {
 
     console.log("context.payload", context.payload);
 
-    const pullRequestId = context.payload.pull_request?.number || context.payload.issue?.number;
-    if(pullRequestId == 9) {
-      console.log("ASANA PAT")
-      console.log(getInput(ASANA_PAT))
-    }
     // Store Constant Values
     const today = new Date();
     const ci_status = getInput(INPUTS.COMMENT_TEXT);
@@ -39,7 +33,8 @@ export const run = async () => {
     const repoName = context.payload.repository?.full_name;
     const pullRequestDescription =
       context.payload.pull_request?.body || context.payload.issue?.body;
-
+    const pullRequestId =
+      context.payload.pull_request?.number || context.payload.issue?.number;
     const pullRequestURL =
       context.payload.pull_request?.html_url || context.payload.issue?.html_url;
     const pullRequestState =

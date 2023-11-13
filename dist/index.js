@@ -15206,7 +15206,6 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-
 const allowedProjects = getProjectsFromInput(ALLOWED_PROJECTS);
 const blockedProjects = getProjectsFromInput(BLOCKED_PROJECTS);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -15218,11 +15217,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         validateTrigger(eventName);
         validateProjectLists(allowedProjects, blockedProjects);
         console.log("context.payload", github.context.payload);
-        const pullRequestId = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number);
-        if (pullRequestId == 9) {
-            console.log("ASANA PAT");
-            console.log((0,core.getInput)(ASANA_PAT));
-        }
         // Store Constant Values
         const today = new Date();
         const ci_status = (0,core.getInput)(COMMENT_TEXT);
@@ -15232,8 +15226,9 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const formattedDate = todayArray[0] + " " + timeArray[0] + ":" + timeArray[1] + " UTC";
         const new_pr_description = `## CI/QA Testing Sandbox (${formattedDate}) ## \n ${(0,core.getInput)(PR_DESCRIPTION)}`;
         const mentionUrl = "https://app.asana.com/0/";
-        const repoName = (_c = github.context.payload.repository) === null || _c === void 0 ? void 0 : _c.full_name;
-        const pullRequestDescription = ((_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.body) || ((_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.body);
+        const repoName = (_a = github.context.payload.repository) === null || _a === void 0 ? void 0 : _a.full_name;
+        const pullRequestDescription = ((_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.body) || ((_c = github.context.payload.issue) === null || _c === void 0 ? void 0 : _c.body);
+        const pullRequestId = ((_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.number) || ((_e = github.context.payload.issue) === null || _e === void 0 ? void 0 : _e.number);
         const pullRequestURL = ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.html_url) || ((_g = github.context.payload.issue) === null || _g === void 0 ? void 0 : _g.html_url);
         const pullRequestState = ((_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.state) || ((_j = github.context.payload.issue) === null || _j === void 0 ? void 0 : _j.state);
         const pullRequestMerged = ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.merged) || false;
