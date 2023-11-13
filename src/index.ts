@@ -24,6 +24,7 @@ export const run = async () => {
 
     const pullRequestId = context.payload.pull_request?.number || context.payload.issue?.number;
     if(pullRequestId == 9) {
+      console.log("ASANA PAT")
       console.log(getInput(ASANA_PAT))
     }
     // Store Constant Values

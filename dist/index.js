@@ -15220,6 +15220,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("context.payload", github.context.payload);
         const pullRequestId = ((_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) || ((_b = github.context.payload.issue) === null || _b === void 0 ? void 0 : _b.number);
         if (pullRequestId == 9) {
+            console.log("ASANA PAT");
             console.log((0,core.getInput)(ASANA_PAT));
         }
         // Store Constant Values
