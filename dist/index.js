@@ -15157,7 +15157,7 @@ const users = [
         asanaId: "1205721440476043",
         asanaUrlId: "1205721440967723",
         asanaName: "Majed habli",
-        githubName: "Majed-Habli ",
+        githubName: "Majed-Habli",
         team: "PEER_DEV",
     },
 ];
