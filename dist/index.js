@@ -15349,7 +15349,6 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
                     moveTaskToSection(id, NEXT, [IN_PROGRESS, RELEASED_BETA, RELEASED_PAID, RELEASED_FREE]);
                 }
                 addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, task_notes);
-                cleanupApprovalTasks(id);
             }
             return;
         }
@@ -15745,7 +15744,6 @@ const addRequestedReview = (id, reviewer, pull_request_url) => __awaiter(void 0,
     const action_url = pull_request_url + "/files";
     const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`;
     addApprovalTask(id, reviewer, "Review", "pending", task_notes);
-    cleanupApprovalTasks(id);
 });
 const cleanupApprovalTasks = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
@@ -15845,6 +15843,7 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
             html_notes: "<body>" + notes + "</body>"
         },
     });
+    yield cleanupApprovalTasks(id);
 });
 const getApprovalSubtask = (asanaTaskId, is_complete, assignee) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${TASKS_URL}${asanaTaskId}${SUBTASKS_URL}` + ',approval_status';

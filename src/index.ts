@@ -190,7 +190,6 @@ export const run = async () => {
           moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
         }
         addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, task_notes);
-        cleanupApprovalTasks(id);
       }
       return;
     }
@@ -628,7 +627,6 @@ export const addRequestedReview = async (
   const action_url = pull_request_url + "/files"
   const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`
   addApprovalTask(id, reviewer, "Review", "pending", task_notes);
-  cleanupApprovalTasks(id);
 }
 
 export const cleanupApprovalTasks = async (
@@ -759,6 +757,7 @@ export const addApprovalTask = async (
       html_notes: "<body>" + notes + "</body>"
     },
   });
+  await cleanupApprovalTasks(id);
 };
 
 export const getApprovalSubtask = async (
