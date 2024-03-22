@@ -1,4 +1,4 @@
-import { getInput, setFailed, setOutput } from "@actions/core";
+import { getInput, setFailed, setOutput, info } from "@actions/core";
 import { context } from "@actions/github";
 import * as utils from "./utils";
 import * as INPUTS from "./constants/inputs";
@@ -643,20 +643,20 @@ export const cleanupApprovalTasks = async (
   const PeerDevAsanaIDS = users.filter((user) => user.team === "PEER_DEV").map((user) => user.asanaId);
   
   if(approvalSubtasks.some((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid))) {
-    console.log("QA Team Tasks are pending")
+    info("QA Team Tasks are pending")
     // if some other team tasks are pending, delete QA tasks
     if(approvalSubtasks.some((subtask:any) => !QATeamAsanaIDs.includes(subtask.assignee.gid))){
-      console.log("Some other team tasks are pending")
+      info("Some other team tasks are pending")
       const QA_approvalSubtasks = approvalSubtasks.filter((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid));
       deleteApprovalTasks(QA_approvalSubtasks);
     }
   }
   // we should not have any tasks assigned to Nathan or Natalie MacLees if other peer dev tasks are pending
   if(approvalSubtasks.some((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid))) {
-    console.log("DEV Team Tasks are pending")
+    info("DEV Team Tasks are pending")
     // if some peer dev tasks are pending, delete DEV tasks
     if(approvalSubtasks.some((subtask:any) => !DevAsanaIDS.includes(subtask.assignee.gid) && !QATeamAsanaIDs.includes(subtask.assignee.gid))){
-      console.log("Peer Dev Team Tasks are pending")
+      info("Peer Dev Team Tasks are pending")
       const DEV_approvalSubtasks = approvalSubtasks.filter((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid));
       deleteApprovalTasks(DEV_approvalSubtasks);
     }
