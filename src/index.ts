@@ -627,6 +627,37 @@ export const addRequestedReview = async (
   const action_url = pull_request_url + "/files"
   const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`
   addApprovalTask(id, reviewer, "Review", "pending", task_notes);
+  cleanupApprovalTasks(id, reviewer, pull_request_url);
+}
+
+export const cleanupApprovalTasks = async (
+  id: String,
+  reviewer: any,
+  pull_request_url: any
+) => {
+  const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
+  // get all approval subtasks
+  const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
+  // we should not have any QA tasks if other team tasks are pending
+  const QATeamAsanaIDs = users.filter((user) => user.team === "QA").map((user) => user.asanaId);
+  const DevAsanaIDS = users.filter((user) => user.team === "DEV").map((user) => user.asanaId);
+  const PeerDevAsanaIDS = users.filter((user) => user.team === "PEER_DEV").map((user) => user.asanaId);
+  
+  if(approvalSubtasks.some((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid))) {
+    // if some other team tasks are pending, delete QA tasks
+    if(approvalSubtasks.some((subtask:any) => !QATeamAsanaIDs.includes(subtask.assignee.gid))){
+      const QA_approvalSubtasks = approvalSubtasks.filter((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid));
+      deleteApprovalTasks(QA_approvalSubtasks);
+    }
+  }
+  // we should not have any tasks assigned to Nathan or Natalie MacLees if other peer dev tasks are pending
+  if(approvalSubtasks.some((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid))) {
+    // if some peer dev tasks are pending, delete DEV tasks
+    if(approvalSubtasks.some((subtask:any) => !DevAsanaIDS.includes(subtask.assignee.gid) && !QATeamAsanaIDs.includes(subtask.assignee.gid))){
+      const DEV_approvalSubtasks = approvalSubtasks.filter((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid));
+      deleteApprovalTasks(DEV_approvalSubtasks);
+    }
+  }
 }
 
 export const deleteApprovalTasks = async (
