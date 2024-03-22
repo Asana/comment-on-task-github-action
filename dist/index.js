@@ -15751,6 +15751,7 @@ const cleanupApprovalTasks = (id) => __awaiter(void 0, void 0, void 0, function*
     const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
     // get all approval subtasks
     const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
+    (0,core.info)("Approval Subtasks:" + JSON.stringify(approvalSubtasks));
     // we should not have any QA tasks if other team tasks are pending
     const QATeamAsanaIDs = users.filter((user) => user.team === "QA").map((user) => user.asanaId);
     const DevAsanaIDS = users.filter((user) => user.team === "DEV").map((user) => user.asanaId);

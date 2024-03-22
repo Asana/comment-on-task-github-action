@@ -637,26 +637,27 @@ export const cleanupApprovalTasks = async (
   const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
   // get all approval subtasks
   const approvalSubtasks = await getAllApprovalSubtasks(id, ottoObj);
+  info("Approval Subtasks:" + JSON.stringify(approvalSubtasks));
   // we should not have any QA tasks if other team tasks are pending
   const QATeamAsanaIDs = users.filter((user) => user.team === "QA").map((user) => user.asanaId);
   const DevAsanaIDS = users.filter((user) => user.team === "DEV").map((user) => user.asanaId);
   const PeerDevAsanaIDS = users.filter((user) => user.team === "PEER_DEV").map((user) => user.asanaId);
   
   if(approvalSubtasks.some((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid))) {
-    info("QA Team Tasks are pending")
+    info("QA Team Tasks are pending");
     // if some other team tasks are pending, delete QA tasks
     if(approvalSubtasks.some((subtask:any) => !QATeamAsanaIDs.includes(subtask.assignee.gid))){
-      info("Some other team tasks are pending")
+      info("Some other team tasks are pending");
       const QA_approvalSubtasks = approvalSubtasks.filter((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid));
       deleteApprovalTasks(QA_approvalSubtasks);
     }
   }
   // we should not have any tasks assigned to Nathan or Natalie MacLees if other peer dev tasks are pending
   if(approvalSubtasks.some((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid))) {
-    info("DEV Team Tasks are pending")
+    info("DEV Team Tasks are pending");
     // if some peer dev tasks are pending, delete DEV tasks
     if(approvalSubtasks.some((subtask:any) => !DevAsanaIDS.includes(subtask.assignee.gid) && !QATeamAsanaIDs.includes(subtask.assignee.gid))){
-      info("Peer Dev Team Tasks are pending")
+      info("Peer Dev Team Tasks are pending");
       const DEV_approvalSubtasks = approvalSubtasks.filter((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid));
       deleteApprovalTasks(DEV_approvalSubtasks);
     }
