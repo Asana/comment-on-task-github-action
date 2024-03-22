@@ -190,6 +190,7 @@ export const run = async () => {
           moveTaskToSection(id, SECTIONS.NEXT, [SECTIONS.IN_PROGRESS, SECTIONS.RELEASED_BETA, SECTIONS.RELEASED_PAID, SECTIONS.RELEASED_FREE]);
         }
         addApprovalTask(id, ottoObj, "Automated CI Testing", ci_status, task_notes);
+        cleanupApprovalTasks(id);
       }
       return;
     }
@@ -627,13 +628,11 @@ export const addRequestedReview = async (
   const action_url = pull_request_url + "/files"
   const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`
   addApprovalTask(id, reviewer, "Review", "pending", task_notes);
-  cleanupApprovalTasks(id, reviewer, pull_request_url);
+  cleanupApprovalTasks(id);
 }
 
 export const cleanupApprovalTasks = async (
   id: String,
-  reviewer: any,
-  pull_request_url: any
 ) => {
   const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
   // get all approval subtasks
@@ -644,16 +643,20 @@ export const cleanupApprovalTasks = async (
   const PeerDevAsanaIDS = users.filter((user) => user.team === "PEER_DEV").map((user) => user.asanaId);
   
   if(approvalSubtasks.some((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid))) {
+    console.log("QA Team Tasks are pending")
     // if some other team tasks are pending, delete QA tasks
     if(approvalSubtasks.some((subtask:any) => !QATeamAsanaIDs.includes(subtask.assignee.gid))){
+      console.log("Some other team tasks are pending")
       const QA_approvalSubtasks = approvalSubtasks.filter((subtask:any) => QATeamAsanaIDs.includes(subtask.assignee.gid));
       deleteApprovalTasks(QA_approvalSubtasks);
     }
   }
   // we should not have any tasks assigned to Nathan or Natalie MacLees if other peer dev tasks are pending
   if(approvalSubtasks.some((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid))) {
+    console.log("DEV Team Tasks are pending")
     // if some peer dev tasks are pending, delete DEV tasks
     if(approvalSubtasks.some((subtask:any) => !DevAsanaIDS.includes(subtask.assignee.gid) && !QATeamAsanaIDs.includes(subtask.assignee.gid))){
+      console.log("Peer Dev Team Tasks are pending")
       const DEV_approvalSubtasks = approvalSubtasks.filter((subtask:any) => DevAsanaIDS.includes(subtask.assignee.gid));
       deleteApprovalTasks(DEV_approvalSubtasks);
     }
