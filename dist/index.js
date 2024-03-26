@@ -14956,6 +14956,7 @@ __nccwpck_require__.r(__webpack_exports__);
 __nccwpck_require__.d(__webpack_exports__, {
   "addApprovalTask": () => (/* binding */ addApprovalTask),
   "addRequestedReview": () => (/* binding */ addRequestedReview),
+  "cleanupApprovalTasks": () => (/* binding */ cleanupApprovalTasks),
   "deleteApprovalTasks": () => (/* binding */ deleteApprovalTasks),
   "getAllApprovalSubtasks": () => (/* binding */ getAllApprovalSubtasks),
   "getApprovalSubtask": () => (/* binding */ getApprovalSubtask),
@@ -15744,6 +15745,35 @@ const addRequestedReview = (id, reviewer, pull_request_url) => __awaiter(void 0,
     const task_notes = `<a href='${action_url}'> Click Here To Start Your Review </a>`;
     addApprovalTask(id, reviewer, "Review", "pending", task_notes);
 });
+const cleanupApprovalTasks = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const ottoObj = users.find((user) => user.githubName === "otto-bot-git");
+    // get all approval subtasks
+    const approvalSubtasks = yield getAllApprovalSubtasks(id, ottoObj);
+    (0,core.info)("Approval Subtasks:" + JSON.stringify(approvalSubtasks));
+    // we should not have any QA tasks if other team tasks are pending
+    const QATeamAsanaIDs = users.filter((user) => user.team === "QA").map((user) => user.asanaId);
+    const DevAsanaIDS = users.filter((user) => user.team === "DEV").map((user) => user.asanaId);
+    const PeerDevAsanaIDS = users.filter((user) => user.team === "PEER_DEV").map((user) => user.asanaId);
+    if (approvalSubtasks.some((subtask) => QATeamAsanaIDs.includes(subtask.assignee.gid))) {
+        (0,core.info)("QA Team Tasks are pending");
+        // if some other team tasks are pending, delete QA tasks
+        if (approvalSubtasks.some((subtask) => !QATeamAsanaIDs.includes(subtask.assignee.gid))) {
+            (0,core.info)("Some other team tasks are pending");
+            const QA_approvalSubtasks = approvalSubtasks.filter((subtask) => QATeamAsanaIDs.includes(subtask.assignee.gid));
+            deleteApprovalTasks(QA_approvalSubtasks);
+        }
+    }
+    // we should not have any tasks assigned to Nathan or Natalie MacLees if other peer dev tasks are pending
+    if (approvalSubtasks.some((subtask) => DevAsanaIDS.includes(subtask.assignee.gid))) {
+        (0,core.info)("DEV Team Tasks are pending");
+        // if some peer dev tasks are pending, delete DEV tasks
+        if (approvalSubtasks.some((subtask) => !DevAsanaIDS.includes(subtask.assignee.gid) && !QATeamAsanaIDs.includes(subtask.assignee.gid))) {
+            (0,core.info)("Peer Dev Team Tasks are pending");
+            const DEV_approvalSubtasks = approvalSubtasks.filter((subtask) => DevAsanaIDS.includes(subtask.assignee.gid));
+            deleteApprovalTasks(DEV_approvalSubtasks);
+        }
+    }
+});
 const deleteApprovalTasks = (approvalSubtasks) => __awaiter(void 0, void 0, void 0, function* () {
     var _4;
     // Delete Approval Tasks
@@ -15813,6 +15843,7 @@ const addApprovalTask = (id, requestedReviewer, taskName, approvalStatus, notes)
             html_notes: "<body>" + notes + "</body>"
         },
     });
+    yield cleanupApprovalTasks(id);
 });
 const getApprovalSubtask = (asanaTaskId, is_complete, assignee) => __awaiter(void 0, void 0, void 0, function* () {
     const url = `${TASKS_URL}${asanaTaskId}${SUBTASKS_URL}` + ',approval_status';
