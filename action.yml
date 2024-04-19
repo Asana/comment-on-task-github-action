@@ -2,7 +2,7 @@ name: 'Add comment to Asana Task'
 description: 'Check pull request description for specific Asana task URLs and post comments to them whenever the workflow runs'
 author: Asana
 branding:
-  icon: circle
+  icon: triangle
   color: green
 inputs:
   asana-secret:
