@@ -15168,6 +15168,13 @@ const users = [
         githubName: "zeinshhadi",
         team: "PEER_DEV",
     },
+    {
+      asanaId: "1206085151962031",
+      asanaUrlId: "1206085151962037",
+      asanaName: "Ola Smeha",
+      githubName: "ola-smaha",
+      team: "PEER_DEV",
+  },
 ];
 
 ;// CONCATENATED MODULE: ./src/requests/githubAxios.ts
