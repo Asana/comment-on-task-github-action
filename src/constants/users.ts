@@ -124,5 +124,12 @@ export const users = [
     asanaName: "Tarek Alkhatib",
     githubName: "Tarek-Al-Khatib",
     team: "PEER_DEV"
+  },
+  {
+    asanaId: "1209360736572407",
+    asanaUrlId: "1209360736572414",
+    asanaName: "Yousif Dahabra",
+    githubName: "yousifdahabra",
+    team: "PEER_DEV",
   }
 ];
